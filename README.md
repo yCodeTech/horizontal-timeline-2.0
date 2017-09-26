@@ -6,7 +6,7 @@ An easy to customize, horizontal timeline powered by CSS and jQuery.
 Adapted by Studocwho.
 
 This version:
-   - Set event dot intervals.
+   - Fixed event dot intervals.
    - Prev/Next buttons are now the prev/next event.
    - New scroll left/right buttons allow scrolling the timeline (like the prev/next buttons did).
    - New inactive states of buttons.
