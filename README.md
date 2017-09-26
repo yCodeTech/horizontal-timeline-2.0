@@ -1,8 +1,6 @@
-Horizontal Timeline
+Horizontal Timeline 2.0
 =========
-
-An easy to customize, horizontal timeline powered by CSS and jQuery.
-
+Created by CodyHouse.
 Adapted by Studocwho.
 
 This version:
