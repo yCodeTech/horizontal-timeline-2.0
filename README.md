@@ -11,6 +11,7 @@ This version:
    - New inactive states of buttons.
    - Dynamically creating the event dots according to the total of events there are, setting information found from the event-content data attributes.
    - month only, year only or full date event dot captions.
+   - New Autoplay feature.
 
 
 [Original Article on CodyHouse](http://codyhouse.co/gem/horizontal-timeline/)
