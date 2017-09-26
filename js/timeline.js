@@ -1,6 +1,9 @@
 jQuery(document).ready(function($){
 	var timelines = $('.cd-horizontal-timeline'),
-		eventsMinDistance = 60;
+		dotIntevals = 200,
+		fullDate = false,
+		onlyYear = true,
+		onlyMonth = false;
 
 	(timelines.length > 0) && initTimeline(timelines);
 
@@ -8,6 +11,63 @@ jQuery(document).ready(function($){
 		timelines.each(function(){
 			var timeline = $(this),
 				timelineComponents = {};
+				
+			//** Added by Studocwho **//
+			
+			// Dynamically creates the timeline according to how many events there are.
+			
+			var $wrapper = '<div class="timeline"/>',
+				$events = '<div class="events-wrapper"><div class="events"><ol id="dotCaptions"></ol><span class="filling-line" aria-hidden="true"></span></div></div>',
+				
+				// Both Navs uses Font Awesome for the icons http://fontawesome.io
+				// Icons require Font Awesome CSS:
+				// https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css
+				// You can change the nav icons if you don't want to use this
+				
+				// Timeline Nav
+				$navWrapper = '<ul class="cd-timeline-navigation" id="timelineNav"/>',
+				$leftArrow = '<li><a href="" class="prev inactive fa fa-arrow-left"></a></li>',
+				$rightArrow = '<li><a href="" class="next fa fa-arrow-right"></a></li>',
+				
+				// Timeline Scroll
+				$scrollNav = '<ul class="cd-timeline-navigation" id="timelineScroll"/>',
+				$scrollLeftArrow = '<li><a href="" class="fa fa-chevron-left scroll-left inactive"></a></li>',
+				$scrollRightArrow = '<li><a href="" class="fa fa-chevron-right scroll-right"></a></li>';
+
+			// Create the timeline HTML
+			timelines.prepend($wrapper);
+			$(".timeline").html($events);
+			$(".timeline").append($navWrapper).append($scrollNav);
+			$("#timelineNav").append($leftArrow).append($rightArrow);
+			$("#timelineScroll").append($scrollLeftArrow).append($scrollRightArrow);
+			
+			// Function to get all data attributes from the events markup, hold in a variable and write html for  
+			// each event and print the corresponding variable into each.
+			if(fullDate == true && onlyYear == false && onlyMonth == false) {
+				$('.events-content li').map(function() {
+					var date = $(this).data('date');
+					$('.timeline ol').append('<li><a href="" data-date="'+date+'">'+date+'</a></li>');
+				});
+			}
+			else if (onlyYear == true && fullDate == false && onlyMonth == false) {
+				$('.events-content li').map(function() {
+					var date = $(this).data('date');
+					var year = $(this).data('year');
+					$('.timeline ol').append('<li><a href="" data-date="'+date+'">'+year+'</a></li>');
+				});
+			}
+			else if (onlyMonth == true && fullDate == false && onlyYear == false) {
+				$('.events-content li').map(function() {
+					var date = $(this).data('date');
+					var month = $(this).data('month');
+					$('.timeline ol').append('<li><a href="" data-date="'+date+'">'+month+'</a></li>');
+				});
+			}
+
+			$('.events li:first-child a').addClass('selected');
+			
+		//** End Studocwho contribution **//
+				
 			//cache timeline components 
 			timelineComponents['timelineWrapper'] = timeline.find('.events-wrapper');
 			timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
@@ -17,24 +77,67 @@ jQuery(document).ready(function($){
 			timelineComponents['eventsMinLapse'] = minLapse(timelineComponents['timelineDates']);
 			timelineComponents['timelineNavigation'] = timeline.find('.cd-timeline-navigation');
 			timelineComponents['eventsContent'] = timeline.children('.events-content');
+			
 
 			//assign a left postion to the single events along the timeline
-			setDatePosition(timelineComponents, eventsMinDistance);
+			setDatePosition(timelineComponents);
 			//assign a width to the timeline
-			var timelineTotWidth = setTimelineWidth(timelineComponents, eventsMinDistance);
+			var timelineTotWidth = setTimelineWidth(timelineComponents);
 			//the timeline has been initialize - show it
 			timeline.addClass('loaded');
-
+			
+			
+			
+			//** Added by Studocwho **//
+			
+			// Adds id to the first li of the event-content list.
+			$('.events-content li:first-child').attr('id', 'first');
+			// Adds id to the last li of the event-content list.
+			$('.events-content li:last').attr('id', 'last');
+			
+			//** End Studocwho Contribution **//
+			
+			
 			//detect click on the next arrow
 			timelineComponents['timelineNavigation'].on('click', '.next', function(event){
 				event.preventDefault();
-				updateSlide(timelineComponents, timelineTotWidth, 'next');
+				
+				//** Added by Studocwho **//
+				
+				// Shows next content on click of arrow.
+				showNewContent(timelineComponents, timelineTotWidth, 'next');
+				 
+				//** End Studocwho Contribution **//
 			});
 			//detect click on the prev arrow
 			timelineComponents['timelineNavigation'].on('click', '.prev', function(event){
 				event.preventDefault();
-				updateSlide(timelineComponents, timelineTotWidth, 'prev');
+				
+				//** Added by Studocwho **//
+				
+				// Shows prev content on click of arrow.
+				showNewContent(timelineComponents, timelineTotWidth, 'prev');
+				
+				//** End Studocwho Contribution **//
 			});
+			
+			
+			//** Added by Studocwho **//
+			
+			// On click scroll timeline left
+			$('#timelineScroll .scroll-left').click(function(e) {
+				updateSlide(timelineComponents, timelineTotWidth, 'prev');
+				e.preventDefault();
+			});
+			// On click scroll timeline right
+			$('#timelineScroll .scroll-right').click(function(e) {
+				updateSlide(timelineComponents, timelineTotWidth, 'next');
+				e.preventDefault();
+			});
+			
+			//** End Studocwho Contribution **//
+			
+			
 			//detect click on the a single event - show new event content
 			timelineComponents['eventsWrapper'].on('click', 'a', function(event){
 				event.preventDefault();
@@ -43,26 +146,66 @@ jQuery(document).ready(function($){
 				updateOlderEvents($(this));
 				updateFilling($(this), timelineComponents['fillingLine'], timelineTotWidth);
 				updateVisibleContent($(this), timelineComponents['eventsContent']);
+				buttonDisable();
 			});
+			
+			//** Added by Studocwho **//
+			
+			// Requires the jQuery plugin TouchSwipe: http://labs.rampinteractive.co.uk/touchSwipe/demos/index.html
+			// On swipe, show next/prev event content
+			// TouchSwipe has more events/options than jquery mobile
+			timelineComponents['eventsContent'].swipe({
+				
+				swipeRight:function(event, direction, distance, duration, fingerCount) {
+					var mq = checkMQ();
+					( mq == 'mobile' ) && showNewContent(timelineComponents, timelineTotWidth, 'prev');
+					buttonDisable();
+				},        
+			
+				swipeLeft:function(event, direction, distance, duration, fingerCount) {
+					var mq = checkMQ();
+					( mq == 'mobile' ) && showNewContent(timelineComponents, timelineTotWidth, 'next');	
+					buttonDisable();	
+				},
+					//Default is 75px, set to 0 for demo so any distance triggers swipe
+					threshold:0,
+			});
+			
+			//** End Studocwho Contribution **//
 
-			//on swipe, show next/prev event content
+			// Requires jquery mobile touch plugin
+			// On swipe, show next/prev event content
 			timelineComponents['eventsContent'].on('swipeleft', function(){
 				var mq = checkMQ();
 				( mq == 'mobile' ) && showNewContent(timelineComponents, timelineTotWidth, 'next');
+				buttonDisable();
 			});
 			timelineComponents['eventsContent'].on('swiperight', function(){
 				var mq = checkMQ();
 				( mq == 'mobile' ) && showNewContent(timelineComponents, timelineTotWidth, 'prev');
+				buttonDisable();
 			});
 
-			//keyboard navigation
+			// Keyboard navigation
 			$(document).keyup(function(event){
 				if(event.which=='37' && elementInViewport(timeline.get(0)) ) {
+					// Left arrow
 					showNewContent(timelineComponents, timelineTotWidth, 'prev');
+					buttonDisable();
 				} else if( event.which=='39' && elementInViewport(timeline.get(0))) {
+					// Right arrow
 					showNewContent(timelineComponents, timelineTotWidth, 'next');
+					buttonDisable();
 				}
 			});
+			
+			
+			//on click of buttons call disable function	
+			timelineComponents['timelineNavigation'].on('click', 'a', function(event){
+				event.preventDefault();
+				buttonDisable();
+			});
+			
 		});
 	}
 
@@ -72,8 +215,8 @@ jQuery(document).ready(function($){
 			wrapperWidth = Number(timelineComponents['timelineWrapper'].css('width').replace('px', ''));
 		//translate the timeline to the left('next')/right('prev') 
 		(string == 'next') 
-			? translateTimeline(timelineComponents, translateValue - wrapperWidth + eventsMinDistance, wrapperWidth - timelineTotWidth)
-			: translateTimeline(timelineComponents, translateValue + wrapperWidth - eventsMinDistance);
+			? translateTimeline(timelineComponents, translateValue - wrapperWidth, wrapperWidth - timelineTotWidth)
+			: translateTimeline(timelineComponents, translateValue + wrapperWidth);
 	}
 
 	function showNewContent(timelineComponents, timelineTotWidth, string) {
@@ -106,15 +249,16 @@ jQuery(document).ready(function($){
         	translateTimeline(timelineComponents, - eventLeft + timelineWidth/2, timelineWidth - timelineTotWidth);
         }
 	}
-
+	
 	function translateTimeline(timelineComponents, value, totWidth) {
 		var eventsWrapper = timelineComponents['eventsWrapper'].get(0);
 		value = (value > 0) ? 0 : value; //only negative translate value
 		value = ( !(typeof totWidth === 'undefined') &&  value < totWidth ) ? totWidth : value; //do not translate more than timeline width
 		setTransformValue(eventsWrapper, 'translateX', value+'px');
 		//update navigation arrows visibility
-		(value == 0 ) ? timelineComponents['timelineNavigation'].find('.prev').addClass('inactive') : timelineComponents['timelineNavigation'].find('.prev').removeClass('inactive');
-		(value == totWidth ) ? timelineComponents['timelineNavigation'].find('.next').addClass('inactive') : timelineComponents['timelineNavigation'].find('.next').removeClass('inactive');
+		(value == 0 ) ? timelineComponents['timelineNavigation'].find('.scroll-left').addClass('inactive') : timelineComponents['timelineNavigation'].find('.scroll-left').removeClass('inactive');
+		
+		(value == totWidth ) ? timelineComponents['timelineNavigation'].find('.scroll-right').addClass('inactive') : timelineComponents['timelineNavigation'].find('.scroll-right').removeClass('inactive');		
 	}
 
 	function updateFilling(selectedEvent, filling, totWidth) {
@@ -127,11 +271,21 @@ jQuery(document).ready(function($){
 		setTransformValue(filling.get(0), 'scaleX', scaleValue);
 	}
 
+	//** Added by Studocwho **//
+	
+	// Fixed intervals between dates (e.g. 100px) specified in the dotInteval variable.
 	function setDatePosition(timelineComponents, min) {
-		for (i = 0; i < timelineComponents['timelineDates'].length; i++) { 
-		    var distance = daydiff(timelineComponents['timelineDates'][0], timelineComponents['timelineDates'][i]),
-		    	distanceNorm = Math.round(distance/timelineComponents['eventsMinLapse']) + 2;
-		    timelineComponents['timelineEvents'].eq(i).css('left', distanceNorm*min+'px');
+		var distance = 0,
+			distanceNorm = 0,
+ 			distnew = 0,
+ 			distprev = 0;
+					
+		for (i = 0; i < timelineComponents['timelineDates'].length; i++) {
+				distance = Math.abs(daydiff(timelineComponents['timelineDates'][0], timelineComponents['timelineDates'][i]));
+				distanceNorm = Math.round(distance / timelineComponents['eventsMinLapse']) + 2;
+				distnew = distprev + dotIntevals;
+				timelineComponents['timelineEvents'].eq(i).css('left', distnew + 'px');
+				distprev = distnew; 
 		}
 	}
 
@@ -139,13 +293,16 @@ jQuery(document).ready(function($){
 		var timeSpan = daydiff(timelineComponents['timelineDates'][0], timelineComponents['timelineDates'][timelineComponents['timelineDates'].length-1]),
 			timeSpanNorm = timeSpan/timelineComponents['eventsMinLapse'],
 			timeSpanNorm = Math.round(timeSpanNorm) + 4,
-			totalWidth = timeSpanNorm*width;
+			
+			totalWidth = (timelineComponents['timelineDates'].length * dotIntevals) + dotIntevals;
 		timelineComponents['eventsWrapper'].css('width', totalWidth+'px');
 		updateFilling(timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents['fillingLine'], totalWidth);
 		updateTimelinePosition('next', timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents);
 	
 		return totalWidth;
 	}
+	
+	//** End Studocwho Contribution **//
 
 	function updateVisibleContent(event, eventsContent) {
 		var eventDate = event.data('date'),
@@ -154,19 +311,29 @@ jQuery(document).ready(function($){
 			selectedContentHeight = selectedContent.height();
 
 		if (selectedContent.index() > visibleContent.index()) {
-			var classEnetering = 'selected enter-right',
+			var classEntering = 'selected enter-right',
 				classLeaving = 'leave-left';
 		} else {
-			var classEnetering = 'selected enter-left',
+			var classEntering = 'selected enter-left',
 				classLeaving = 'leave-right';
 		}
-
-		selectedContent.attr('class', classEnetering);
-		visibleContent.attr('class', classLeaving).one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(){
-			visibleContent.removeClass('leave-right leave-left');
-			selectedContent.removeClass('enter-left enter-right');
-		});
-		eventsContent.css('height', selectedContentHeight+'px');
+		
+		//** Added by Studocwho **//
+		
+		// Gets value of existing hardcoded class (eg. jumbotron)
+		var val = selectedContent.prop("class");
+		
+		//** End Studocwho Contribution **//
+		
+		
+		//adds existing class value to the funtion, so we don't lose classes and styling.
+		selectedContent.attr('class', val + ' ' + classEntering);
+		visibleContent.attr('class', val + ' ' + classLeaving)
+					  .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(){
+							visibleContent.removeClass('leave-right leave-left');
+							selectedContent.removeClass('enter-left enter-right');
+					  });
+		/*eventsContent.css('height', selectedContentHeight+'px');*/
 	}
 
 	function updateOlderEvents(event) {
@@ -265,4 +432,34 @@ jQuery(document).ready(function($){
 		//check if mobile or desktop device
 		return window.getComputedStyle(document.querySelector('.cd-horizontal-timeline'), '::before').getPropertyValue('content').replace(/'/g, "").replace(/"/g, "");
 	}
+	
+	//** Added by Studocwho **//
+	
+	//function to add or remove disabled class to next button depending on whether the last item is selected or not	
+	function buttonDisable(){
+		var nextButton = $('.cd-timeline-navigation .next'),
+			prevButton = $('.cd-timeline-navigation .prev'),
+			leftButton = $('.cd-timeline-navigation .scroll-left'),
+			rightButton = $('.cd-timeline-navigation .scroll-right');
+		
+		window.setTimeout(function(){
+			//first - disable prev
+			if($("#first").is('.selected')) {
+				prevButton.addClass('inactive');
+			}
+			else {
+				prevButton.removeClass('inactive');
+			}
+			//last - disable next
+			if($("#last").is('.selected')) {
+				nextButton.addClass('inactive');
+			}
+			else {
+				nextButton.removeClass('inactive');	
+			}
+		},100);
+	}
+	
+	//** End Studocwho Contribution **//
+	
 });
