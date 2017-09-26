@@ -13,8 +13,6 @@ This version:
    - month only, year only or full date event dot captions.
 
 
-[Article on CodyHouse](http://codyhouse.co/gem/horizontal-timeline/)
-
-[Demo](https://codyhouse.co/demo/horizontal-timeline/index.html)
+[Original Article on CodyHouse](http://codyhouse.co/gem/horizontal-timeline/)
  
 [Terms](http://codyhouse.co/terms/)
