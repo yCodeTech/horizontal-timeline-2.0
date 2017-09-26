@@ -1,6 +1,7 @@
 Horizontal Timeline 2.0
 =========
 Created by CodyHouse.
+
 Adapted by Studocwho.
 
 This version:
