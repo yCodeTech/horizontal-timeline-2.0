@@ -1,10 +1,10 @@
 jQuery(document).ready(function($){
 	var timelines = $('.cd-horizontal-timeline'),
 		dotIntevals = 200,
-		fullDate = false,
-		onlyYear = true,
+		fullDate = true,
+		onlyYear = false,
 		onlyMonth = false,
-		autoplay = true,
+		autoplay = false,
 		autoplaySpeed = 8000; // ms
 
 	(timelines.length > 0) && initTimeline(timelines);
