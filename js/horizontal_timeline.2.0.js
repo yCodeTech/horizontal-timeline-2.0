@@ -3,7 +3,9 @@ jQuery(document).ready(function($){
 		dotIntevals = 200,
 		fullDate = false,
 		onlyYear = true,
-		onlyMonth = false;
+		onlyMonth = false,
+		autoplay = true,
+		autoplaySpeed = 8000; // ms
 
 	(timelines.length > 0) && initTimeline(timelines);
 
@@ -32,7 +34,11 @@ jQuery(document).ready(function($){
 				// Timeline Scroll
 				$scrollNav = '<ul class="cd-timeline-navigation" id="timelineScroll"/>',
 				$scrollLeftArrow = '<li><a href="" class="fa fa-chevron-left scroll-left inactive"></a></li>',
-				$scrollRightArrow = '<li><a href="" class="fa fa-chevron-right scroll-right"></a></li>';
+				$scrollRightArrow = '<li><a href="" class="fa fa-chevron-right scroll-right"></a></li>',
+				
+				pausePlayWrapper = '<div class="cd-timeline-navigation" id="pausePlay"/>',
+				pauseButton = '<a href="" class="fa fa-pause pause"></a>',
+				playButton = '<a href="" class="fa fa-play play"></a>';
 
 			// Create the timeline HTML
 			timelines.prepend($wrapper);
@@ -62,6 +68,59 @@ jQuery(document).ready(function($){
 					var month = $(this).data('month');
 					$('.timeline ol').append('<li><a href="" data-date="'+date+'">'+month+'</a></li>');
 				});
+			}
+			
+			// Autoplay function
+			if (autoplay == true){
+				// Add the pause button
+				$('.timeline').append(pausePlayWrapper);
+				$('#pausePlay').append(pauseButton);
+				
+				// Set variables to use later
+				var	isPaused = false,
+					current = 0,
+					currentevent = $('.events a');
+					
+				setInterval(function(){
+					// If isPaused = false, start the autoplay cycle, otherwise pause the cycle.
+					if(!isPaused) {
+						// Count each cycle
+						current ++;
+						// Trigger a click on the next button to go through each event.
+						$('.next').trigger('click');
+						
+						// If the current count is equal to the number of events 
+						if(current == currentevent.length) {
+							// Trigger click on the first event to go back to the start of the cycle. 
+							$('.events a:first').trigger('click');
+							// Slide the timeline to the start so we can see each event on the timeline each cycle.
+							updateSlide(timelineComponents, timelineTotWidth, 'start');
+							// Set the current count back to 0 to start again.
+							current = 0;	
+						}
+					}
+				}, autoplaySpeed); // Speed
+				
+				// On click of pause button
+				$(document).on('click','.pause', function(e) {
+					e.preventDefault();
+					// Set isPaused to true to pause the cycle.
+					isPaused = true;
+					// Change the html of the button to a play button
+					$('#pausePlay').html(playButton);	
+					console.log('paused');					
+				});
+				// On click of play button
+				$(document).on('click','.play', function(e) {
+					e.preventDefault();
+					// Set isPaused to false to play the cycle.
+					isPaused = false;
+					// Change html of the button back to a pause button
+					$('#pausePlay').html(pauseButton);	
+					console.log('play');
+				});
+				
+				// NOTE: if autoplay cycle is paused, clicking any timeline button will not reset the autoplay cycle to play.
 			}
 
 			$('.events li:first-child a').addClass('selected');
@@ -122,7 +181,7 @@ jQuery(document).ready(function($){
 			});
 			
 			
-			//** Added by Studocwho **//
+			//** Added by Studocwho **//			
 			
 			// On click scroll timeline left
 			$('#timelineScroll .scroll-left').click(function(e) {
@@ -217,6 +276,15 @@ jQuery(document).ready(function($){
 		(string == 'next') 
 			? translateTimeline(timelineComponents, translateValue - wrapperWidth, wrapperWidth - timelineTotWidth)
 			: translateTimeline(timelineComponents, translateValue + wrapperWidth);
+			
+		//** Added by Studocwho **//
+		
+		// Allows the timeline scroll back to the start of the timeline - used by Autoplay.
+		if (string == 'start') {
+			translateTimeline(timelineComponents, wrapperWidth);
+		}
+		
+		//** End Studocwho Contribution **//
 	}
 
 	function showNewContent(timelineComponents, timelineTotWidth, string) {
@@ -459,6 +527,8 @@ jQuery(document).ready(function($){
 			}
 		},100);
 	}
+	
+	
 	
 	//** End Studocwho Contribution **//
 	
