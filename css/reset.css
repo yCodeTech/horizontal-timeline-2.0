@@ -21,11 +21,14 @@ time, mark, audio, video {
 	border: 0;
 	font-size: 100%;
 	font: inherit;
-	vertical-align: baseline;
+}
+html, body {
+	width:100%;
+	height:100%;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section, main {
+footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
@@ -45,4 +48,13 @@ q:before, q:after {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
+}
+button:focus {
+    outline: none !important;
+}
+i {
+	font-style: italic;
+}
+b {
+	font-weight:bold;
 }
