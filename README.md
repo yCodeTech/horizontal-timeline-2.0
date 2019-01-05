@@ -64,15 +64,15 @@ $('#example').timeline();
 /* The Defaults */
 
 $('#example').timeline({
-   desktopDateIntervals: 200,
-   tabletDateIntervals: 150,
-   mobileDateIntervals: 120,
+   desktopDateIntervals: 200,   //************\\
+   tabletDateIntervals: 150,   // Minimum: 120 \\
+   mobileDateIntervals: 120,  //****************\\
    minimalFirstDateInterval: true,
 
-   dateDisplay: "dateTime",
+   dateDisplay: "dateTime",  // dateTime, date, time, dayMonth, monthYear, year
 
    autoplay: false,
-   autoplaySpeed: 8000,
+   autoplaySpeed: 8000,  // ms ... e.g. 1000 ms = 1 sec
    autoplayPause_onHover: false, 
 
    useScrollWheel: false,
