@@ -1,5 +1,5 @@
 # Horizontal Timeline 2.0
-#### by[Studocwho](https://github.com/studocwho)
+#### by [Studocwho](https://github.com/studocwho)
 
 A new adapted version of the Horizontal Timeline originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/); now revamped as a jQuery plugin!
 
