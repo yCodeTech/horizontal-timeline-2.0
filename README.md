@@ -80,3 +80,5 @@ $('#example').timeline({
    useKeyboardKeys: false
 });
 ```
+
+[Check out the docs](http://horizontal-timeline.ycodetech.co.uk/).
