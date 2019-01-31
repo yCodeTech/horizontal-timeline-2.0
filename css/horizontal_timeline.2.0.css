@@ -1,12 +1,15 @@
 /* -------------------------------- 
-
+ 
 Horizontal Timeline 2.0
-    by Studocwho
+    by Studocwho @ yCodeTech
+	
+Original Horizontal Timeline by CodyHouse
 
+Licensed under the MIT license	
+	
 Docs at http://horizontal-timeline.ycodetech.co.uk
 
 -------------------------------- */
-
 html, body {
 	overflow-x: hidden;
 	/*  If body height: 100%, then the goToTimelineLink setting doesn't work.
@@ -16,68 +19,43 @@ html, body {
 	font-size: initial;
 	line-height: 1;
 }
-.cd-horizontal-timeline {
+.horizontal-timeline {
 	opacity: 0;
 	margin: 2em auto;
 	-webkit-transition: opacity 0.2s;
 	-moz-transition: opacity 0.2s;
 	transition: opacity 0.2s;
 }
-.cd-horizontal-timeline ol {
+.horizontal-timeline ol {
 	margin: 0;
 	padding: 0;
 	width: 100%;
 }
-/* never visible - this is used in jQuery to check the current MQ */
-.cd-horizontal-timeline::before {
-	content: 'tinyMobile';
+/* Never visible - this is used in jQuery to check the current MQ */
+.horizontal-timeline::before {
+	content: 'desktop';
 	display: none;
 }
-@media only screen and (min-width: 370px) and (max-width: 500px) {
-	.cd-horizontal-timeline::before {
-		/* never visible - this is used in jQuery to check the current MQ */
-		content: 'mobile';
-	}
-}
-@media only screen and (min-width: 501px) and (max-width: 700px) {
-	.cd-horizontal-timeline::before {
-		/* never visible - this is used in jQuery to check the current MQ */
-		content: 'smallTablet';
-	}
-}
-@media only screen and (min-width: 701px) and (max-width: 1100px) {
-	.cd-horizontal-timeline::before {
-		/* never visible - this is used in jQuery to check the current MQ */
-		content: 'tablet';
-	}
-}
-@media only screen and (min-width: 1100px) {
-	.cd-horizontal-timeline {
-		margin: 6em auto;
-	}
-	.cd-horizontal-timeline::before {
-		/* never visible - this is used in jQuery to check the current MQ */
-		content: 'desktop';
-	}
-}
-.cd-horizontal-timeline.loaded {
+.horizontal-timeline.loaded {
 	opacity: 1;
 	margin: 0 !important;
 }
-.cd-horizontal-timeline .timeline {
+.horizontal-timeline .touch-enabled {
+	cursor: grab;
+}
+/* Timeline */
+.horizontal-timeline .timeline {
 	position: relative;
 	height: 100px;
-	max-width: 800px;
 	margin: 0 auto;
 }
-.cd-horizontal-timeline .events-wrapper {
+.horizontal-timeline .events-wrapper {
 	position: relative;
 	height: 100%;
 	margin: 0 40px;
 	overflow: hidden;
 }
-/* Timeline */
-.cd-horizontal-timeline .events {
+.horizontal-timeline .events {
 	position: absolute;
 	z-index: 1;
 	left: 0;
@@ -90,7 +68,7 @@ html, body {
 	transition: transform 0.4s;
 }
 /* Filling line */
-.cd-horizontal-timeline .filling-line {
+.horizontal-timeline .filling-line {
 	position: absolute;
 	z-index: 1;
 	left: 0;
@@ -112,8 +90,8 @@ html, body {
 	-moz-transition: -moz-transform 0.3s;
 	transition: transform 0.3s;
 }
-/* Event dates on the Timeline */
-.cd-horizontal-timeline .events a {
+/* Event dates on the timeline */
+.horizontal-timeline .events a {
 	position: absolute;
 	bottom: 0;
 	z-index: 2;
@@ -128,8 +106,8 @@ html, body {
 	-o-transform: translateZ(0);
 	transform: translateZ(0);
 }
-/* Event dates for the dates on the Timeline */
-.cd-horizontal-timeline .events a::after {
+/* Dots for the event dates on the timeline */
+.horizontal-timeline .events a::after {
 	content: '';
 	position: absolute;
 	left: 40%;
@@ -142,76 +120,82 @@ html, body {
 	-moz-transition: background-color 0.3s, border-color 0.3s;
 	transition: background-color 0.3s, border-color 0.3s;
 }
-.cd-horizontal-timeline .events a.selected {
+/* Stop mouse pointer events on a selected event */
+.horizontal-timeline .events a.selected {
 	pointer-events: none;
 }
-.cd-horizontal-timeline .events a.selected::after, 
-.cd-horizontal-timeline .events a.older-event::after {
+.horizontal-timeline .events a.selected::after, 
+.horizontal-timeline .events a.older-event::after {
 	background-color: #002bff;
 }
-.cd-horizontal-timeline .events a:hover {
+.horizontal-timeline .events a:hover {
 	text-decoration: underline;
 }
 /* Navigation */
-.cd-timeline-navigation a {
+.timeline-navigation {
 	position: absolute;
-	z-index: 1;
 	top: 50%;
-	bottom: auto;
-	text-decoration: none;
-	color: #242940;
 	-webkit-transform: translateY(-50%);
 	-moz-transform: translateY(-50%);
 	-ms-transform: translateY(-50%);
 	-o-transform: translateY(-50%);
 	transform: translateY(-50%);
+	z-index: 1;
 }
-.cd-timeline-navigation a:hover {
+.timeline-navigation a {
+    text-decoration: none;
+    color: #242940;
+}
+.timeline-navigation a:hover {
 	color: #002bff;
 	border-color: #002bff;
 }
-/* Next */
-.cd-timeline-navigation a.next {
-	right: 0px;
+/* Scroll-Left, Scroll-Right */
+.timeline-navigation a.scroll-left,
+.timeline-navigation a.scroll-right {
+	position: absolute;
+	top: 50px;
 }
-/* Scroll-Left */
-.cd-timeline-navigation a.scroll-left {
-	left: -50px;
+.timeline-navigation#rightNav,
+.timeline-navigation a.scroll-right {
+	right: 0;
 }
-/* Scroll-Right */
-.cd-timeline-navigation a.scroll-right {
-	right: -50px;
-}
-.cd-timeline-navigation a.inactive {
+/* Inactive */
+.timeline-navigation a.inactive {
 	cursor: not-allowed;
 	border-color: #d3d3d3;
 	color: #d3d3d3;
 }
 /* Autoplay Pause/Play button */
-.cd-timeline-navigation#pausePlay {
+.timeline-navigation#pausePlay {
 	position: relative;
-	width: 41.15px;
-	height: 48px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: -30px;
+    top: 0;
+    text-align: center;
 }
 /* Event content */
-.cd-horizontal-timeline .events-content {
+.horizontal-timeline .events-content {
 	position: relative;
-	width: 90%;
-	max-width: 800px;
 	margin: 2em 0;
 	margin-left: auto;
     margin-right: auto;
-	-webkit-transition: height 0.4s;
-	-moz-transition: height 0.4s;
-	transition: height 0.4s;
+	-webkit-transition: height 0.4s 0.2s;
+	-moz-transition: height 0.4s 0.2s;
+	transition: height 0.4s 0.2s;
 }
-.cd-horizontal-timeline .touch-enabled {
-	cursor: grab;
+/* Autoplay progress bar */
+.horizontal-timeline .events-content .progressBarWrapper {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+	margin-top: -4px;
+	padding: 0 20px;
 }
-.cd-horizontal-timeline .events-content li {
+.horizontal-timeline .events-content .progressBar {
+  	width: 0;
+  	height: inherit;
+  	background: #002bff;
+}
+.horizontal-timeline .events-content li {
 	position: absolute;
 	z-index: 1;
 	width: 100%;
@@ -222,49 +206,48 @@ html, body {
 	background: #ccc;
 	border-radius: 20px;
 	opacity: 0;
+	
+	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+	
 	-webkit-animation-duration: 0.4s;
 	-moz-animation-duration: 0.4s;
 	animation-duration: 0.4s;
-	-webkit-animation-timing-function: ease-in-out;
-	-moz-animation-timing-function: ease-in-out;
-	animation-timing-function: ease-in-out;
+	
+	-webkit-transition: opacity 0.4s 0.2s;
+	-moz-transition: opacity 0.4s 0.2s;
+	transition: opacity 0.4s 0.2s;
 }
-/* The selected events content*/
-.cd-horizontal-timeline .events-content li.selected {
+/* The selected events content */
+.horizontal-timeline .events-content li.selected {
 	position: relative;
 	z-index: 2;
 	opacity: 1;
 }
-.cd-horizontal-timeline .events-content h2 {
-	font-weight: 400;
-	font-size: 25pt;
-	text-align: center;
-}
-.cd-horizontal-timeline .events-content p {
-	font-size: 16pt;
-	padding-left: 10%;
-	padding-right: 10%;
-}
 /* Event content animations */
-.cd-horizontal-timeline .events-content li.enter-right, 
-.cd-horizontal-timeline .events-content li.leave-right {
-	-webkit-animation-name: cd-enter-right;
-	-moz-animation-name: cd-enter-right;
-	animation-name: cd-enter-right;
+.horizontal-timeline .events-content li.enter-right, 
+.horizontal-timeline .events-content li.leave-right {
+	-webkit-animation-name: timeline-enter-right;
+	-moz-animation-name: timeline-enter-right;
+	animation-name: timeline-enter-right;
 }
-.cd-horizontal-timeline .events-content li.enter-left, 
-.cd-horizontal-timeline .events-content li.leave-left {
-	-webkit-animation-name: cd-enter-left;
-	-moz-animation-name: cd-enter-left;
-	animation-name: cd-enter-left;
+.horizontal-timeline .events-content li.enter-left, 
+.horizontal-timeline .events-content li.leave-left {
+	-webkit-animation-name: timeline-enter-left;
+	-moz-animation-name: timeline-enter-left;
+	animation-name: timeline-enter-left;
 }
-.cd-horizontal-timeline .events-content li.leave-right, 
-.cd-horizontal-timeline .events-content li.leave-left {
+.horizontal-timeline .events-content li.leave-right, 
+.horizontal-timeline .events-content li.leave-left {
 	-webkit-animation-direction: reverse;
 	-moz-animation-direction: reverse;
 	animation-direction: reverse;
 }
-@-webkit-keyframes cd-enter-right {
+@-webkit-keyframes timeline-enter-right {
 	0% {
 	 opacity: 0;
 	 -webkit-transform: translateX(100%);
@@ -274,7 +257,7 @@ html, body {
 	 -webkit-transform: translateX(0%);
 	}
 }
-@-moz-keyframes cd-enter-right {
+@-moz-keyframes timeline-enter-right {
 	0% {
 	 opacity: 0;
 	 -moz-transform: translateX(100%);
@@ -284,7 +267,7 @@ html, body {
 	 -moz-transform: translateX(0%);
 	}
 }
-@keyframes cd-enter-right {
+@keyframes timeline-enter-right {
 	0% {
 	 opacity: 0;
 	 -webkit-transform: translateX(100%);
@@ -302,7 +285,7 @@ html, body {
 	 transform: translateX(0%);
 	}
 }
-@-webkit-keyframes cd-enter-left {
+@-webkit-keyframes timeline-enter-left {
 	0% {
 	 opacity: 0;
 	 -webkit-transform: translateX(-100%);
@@ -312,7 +295,7 @@ html, body {
 	 -webkit-transform: translateX(0%);
 	}
 }
-@-moz-keyframes cd-enter-left {
+@-moz-keyframes timeline-enter-left {
 	0% {
 	 opacity: 0;
 	 -moz-transform: translateX(-100%);
@@ -322,7 +305,7 @@ html, body {
 	 -moz-transform: translateX(0%);
 	}
 }
-@keyframes cd-enter-left {
+@keyframes timeline-enter-left {
 	0% {
 	 opacity: 0;
 	 -webkit-transform: translateX(-100%);
@@ -340,13 +323,32 @@ html, body {
 	 transform: translateX(0%);
 	}
 }
-@media only screen and (min-width: 100px) and (max-width: 1100px) {
-	.cd-timeline-navigation a.scroll-left {
-		left: 0;
-		top: 100px;
+@media only screen and (min-width: 1100px) {
+	.horizontal-timeline {
+		margin: 6em auto;
 	}
-	.cd-timeline-navigation a.scroll-right {
-		right: 0;
-		top: 100px;
+}
+@media only screen and (min-width: 701px) and (max-width: 1100px) {
+	/* Never visible - this is used in jQuery to check the current MQ */
+	.horizontal-timeline::before {
+		content: 'tablet';
+	}
+}
+@media only screen and (min-width: 501px) and (max-width: 700px) {
+	/* Never visible - this is used in jQuery to check the current MQ */
+	.horizontal-timeline::before {
+		content: 'smallTablet';
+	}
+}
+@media only screen and (min-width: 361px) and (max-width: 500px) {
+	/* Never visible - this is used in jQuery to check the current MQ */
+	.horizontal-timeline::before {
+		content: 'mobile';
+	}
+}
+@media only screen and (max-width: 360px) {
+	/* Never visible - this is used in jQuery to check the current MQ */
+	.horizontal-timeline::before {
+		content: 'tinyMobile';
 	}
 }
