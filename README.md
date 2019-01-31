@@ -37,7 +37,7 @@ For full documentation please check out the [Horizontal Timeline 2.0 website](ht
 Unlike the original, 2.0 dynamically creates the timeline according to the amount of event content there is. Making it even simplier to setup! All you need to do is create the event content…
 
 ``` html
-<div class="cd-horizontal-timeline" id="example">
+<div class="horizontal-timeline" id="example">
    <div class="events-content">
       <ol>
          <li class="selected" data-date="16/01/2014">
@@ -55,7 +55,7 @@ And then initialise the timeline with jQuery using the default options.
 
 ```html
 <script>
-$('#example').timeline();
+$('#example').horizontalTimeline();
 </script>
 ```
 
@@ -64,7 +64,7 @@ $('#example').timeline();
 ```javascript
 /* The Defaults */
 
-$('#example').timeline({
+$('#example').horizontalTimeline({
    desktopDateIntervals: 200,   //************\\
    tabletDateIntervals: 150,   // Minimum: 120 \\
    mobileDateIntervals: 120,  //****************\\
