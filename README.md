@@ -17,6 +17,7 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added new go-to timeline link with customisable scroll functionality. 
    - Added mouse-wheel support for scrolling the event content.
    - Added TouchSwipe functionality for touch devices.
+   - Added new refresh, destroy, addEvent, removeEvent methods.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
