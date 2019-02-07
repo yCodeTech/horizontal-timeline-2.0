@@ -1407,21 +1407,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			fileExists,
 			// Variables for script and style
 			js = type == 'js',
-			css = type == 'css',
-			// Make the name lowercase
-			lowerCaseName = name.toLowerCase();	
+			css = type == 'css';
 			
 		// If js, check if the lowercase form of the name is in a src attribute in a <script> tag
-		if(js) fileExists = $('script').is('[src*="'+ lowerCaseName +'"]');
+		if(js) fileExists = $('script[src*="'+name+'" i]');
 		// Else if css, check if the lowercase form of the name is in a href attribute in a <link> tag
-		else if (css) fileExists = $('link').is('[href*="'+ lowerCaseName +'"]');
+		else if (css) fileExists = $('link[href*="'+name+'" i]');
 		
 		// If loadedFile is undefined/not set, create a new array for the loaded files.
 		if (loadedFile == undefined) loadedFile = new Array();
 
 		// If loadedFile array doesn't include the url AND
 		// the file doesn't exist in the document...
-		if (!loadedFile.includes(url) && !fileExists) {
+		if (!loadedFile.includes(url) && !fileExists.length) {
 			// File isn't loaded yet...				
 			// If adding js...
 			if(js) {
@@ -1451,7 +1449,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		}
 		// Else if the file exists in the document AND
 		// the URL isn't in the loadedFile array... 
-		else if (fileExists == true && !loadedFile.includes(url)) {
+		else if (fileExists.length && !loadedFile.includes(url)) {
 			// The file is already loaded in the document via a <script> tag...
 			if(js) {
 				console.log(name+' has already been loaded by a <script> tag in the document, no need to load it again. Timeline instance:', this.$element);
@@ -1477,7 +1475,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		$('body').data('plugin_'+ this._name +'_loadedFile', loadedFile);
 	} // End addFile function
 
-   	// A really lightweight plugin wrapper around the constructor,
+    // A really lightweight plugin wrapper around the constructor,
     // preventing against multiple instantiations and allowing any
     // public function (ie. a function whose name doesn't start
     // with an underscore) to be called via the jQuery plugin,
