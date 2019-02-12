@@ -59,7 +59,7 @@ html, body {
 	position: absolute;
 	z-index: 1;
 	left: 0;
-	top: 49px;
+	top: 49.5px; /* .5 stops the visual glitches where the black timeline is visible slightly just under the filling line. */
 	height: 5px;
 	/* width will be set using JavaScript */
 	background: #000;
