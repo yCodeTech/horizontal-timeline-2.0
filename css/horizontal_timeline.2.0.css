@@ -144,7 +144,7 @@ html, body {
 }
 .timeline-navigation a {
     text-decoration: none;
-    color: #242940;
+    color: #000;
 }
 .timeline-navigation a:hover {
 	color: #002bff;
