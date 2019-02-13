@@ -1243,7 +1243,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		var eventDate = event.data('date'),
 			visibleContent = eventsContent.find('.selected'),
 			selectedContent = eventsContent.find('[data-date="'+ eventDate +'"]'),
-			selectedContentHeight = selectedContent.height();
+			selectedContentHeight = selectedContent.outerHeight();
 
 		if (selectedContent.index() > visibleContent.index()) {
 			var classEntering = 'selected enter-right',
@@ -1262,7 +1262,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 							selectedContent.removeClass('enter-left enter-right');
 					  }).removeClass('selected');
 					  
-		eventsContent.css('height', selectedContentHeight+'px');			  
+		eventsContent.height(selectedContentHeight+'px');			  
 					  
 		if (this.settings.autoplay == true && !this.$element.data('plugin_'+ this._name)['mouseEvent']) this._setup.autoplay.moved(this);
 	}
