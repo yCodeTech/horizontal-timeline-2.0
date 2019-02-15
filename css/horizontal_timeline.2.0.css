@@ -197,7 +197,6 @@ html, body {
 }
 .horizontal-timeline .events-content li {
 	position: absolute;
-	z-index: 1;
 	width: 100%;
 	left: 0;
 	top: 0;
