@@ -10,14 +10,9 @@ Licensed under the MIT license
 Docs at http://horizontal-timeline.ycodetech.co.uk
 
 -------------------------------- */
-html, body {
+body {
+	/* Stop horizontal scrollbar from appearing/disappearing when the content slides across and changes. */
 	overflow-x: hidden;
-	/*  If body height: 100%, then the goToTimelineLink setting doesn't work.
-		We need to override it and set it back to it's original state.
-	*/
-	height: unset;
-	font-size: initial;
-	line-height: 1;
 }
 .horizontal-timeline {
 	opacity: 0;
