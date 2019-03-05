@@ -738,7 +738,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// Find the .events-content from the href selector
 				timelineComponents['eventsContent'] = $target.children('.events-content');
 				// Find the events content li
-				timelineComponents['eventsContentLi'] = timelineComponents['eventsContent'].find('li');
+				timelineComponents['eventsContentList'] = timelineComponents['eventsContent'].find('li');
 						
 					// Get the data-gototimeline options object
 				var datagoto = $this.data('gototimeline'),
