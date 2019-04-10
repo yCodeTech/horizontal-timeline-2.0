@@ -1410,16 +1410,30 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			css = type == 'css';
 			
 		// If js, check if the lowercase form of the name is in a src attribute in a <script> tag
-		if(js) fileExists = $('script[src*="'+name+'" i]');
+		if(js) 
+			// Using fileExists = $('script[src*="'+name+'" i]'); would be more appropriate,
+			// but due to lack of browser support, it can't be used yet.
+			fileExists = $('link[href*="'+name+'"').filter(function() {
+			   return this.value.toLowerCase() == name;
+			});
+		
 		// Else if css, check if the lowercase form of the name is in a href attribute in a <link> tag
-		else if (css) fileExists = $('link[href*="'+name+'" i]');
+		else if (css) 
+			// Using fileExists = $('link[href*="'+name+'" i]'); would be more appropriate,
+			// but due to lack of browser support, it can't be used yet.
+			fileExists = $('link[href*="'+name+'"').filter(function() {
+			   return this.value.toLowerCase() == name;
+			});
 		
 		// If loadedFile is undefined/not set, create a new array for the loaded files.
 		if (loadedFile == undefined) loadedFile = new Array();
 
 		// If loadedFile array doesn't include the url AND
 		// the file doesn't exist in the document...
-		if (!loadedFile.includes(url) && !fileExists.length) {
+		
+		// Using !loadedFile.includes(url) would be more ideal,
+		// but due to no support in IE11, we can't use it.
+		if (loadedFile.indexOf(url) == -1 && !fileExists.length) {
 			// File isn't loaded yet...				
 			// If adding js...
 			if(js) {
@@ -1449,7 +1463,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		}
 		// Else if the file exists in the document AND
 		// the URL isn't in the loadedFile array... 
-		else if (fileExists.length && !loadedFile.includes(url)) {
+		
+		// Using !loadedFile.includes(url) would be more ideal,
+		// but due to no support in IE11, we can't use it.
+		else if (fileExists.length && loadedFile.indexOf(url) == -1) {
 			// The file is already loaded in the document via a <script> tag...
 			if(js) {
 				console.log(name+' has already been loaded by a <script> tag in the document, no need to load it again. Timeline instance:', this.$element);
