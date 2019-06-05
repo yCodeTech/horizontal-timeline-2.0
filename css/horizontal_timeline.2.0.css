@@ -129,7 +129,7 @@ body {
 /* Navigation */
 .timeline-navigation {
 	position: absolute;
-	top: 50%;
+	top: 52%;
 	-webkit-transform: translateY(-50%);
 	-moz-transform: translateY(-50%);
 	-ms-transform: translateY(-50%);
@@ -137,7 +137,14 @@ body {
 	transform: translateY(-50%);
 	z-index: 1;
 }
+.timeline-navigation#leftNav {
+    left: -6px;
+}
+.timeline-navigation#rightNav {
+	right: -6px;
+}
 .timeline-navigation a {
+	display: block;
     text-decoration: none;
     color: #000;
 }
@@ -150,10 +157,6 @@ body {
 .timeline-navigation a.scroll-right {
 	position: absolute;
 	top: 50px;
-}
-.timeline-navigation#rightNav,
-.timeline-navigation a.scroll-right {
-	right: 0;
 }
 /* Inactive */
 .timeline-navigation a.inactive {
