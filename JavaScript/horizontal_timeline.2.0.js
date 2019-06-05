@@ -33,29 +33,29 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
     var pluginName = 'horizontalTimeline',
         defaults = {
         	desktopDateIntervals: 200,   //************\\
-			tabletDateIntervals: 150,   // Minimum: 120 \\
-			mobileDateIntervals: 120,  //****************\\
-			minimalFirstDateInterval: true,
+		tabletDateIntervals: 150,   // Minimum: 120 \\
+		mobileDateIntervals: 120,  //****************\\
+		minimalFirstDateInterval: true,
 			
-			dateDisplay: "dateTime", // dateTime, date, time, dayMonth, monthYear, year
+		dateDisplay: "dateTime", // dateTime, date, time, dayMonth, monthYear, year
 			
-			autoplay: false,
-			autoplaySpeed: 8, // Sec
-			autoplayPause_onHover: false, 
+		autoplay: false,
+		autoplaySpeed: 8, // Sec
+		autoplayPause_onHover: false, 
 			
-			useScrollWheel: false,
-			useTouchSwipe: true,
-			useKeyboardKeys: false,
-			addRequiredFile: true,
-			useFontAwesomeIcons: true,
+		useScrollWheel: false,
+		useTouchSwipe: true,
+		useKeyboardKeys: false,
+		addRequiredFile: true,
+		useFontAwesomeIcons: true,
 			
-			iconBaseClass: "fas fa-3x",	
-			scrollLeft_iconClass: "fa-chevron-circle-left",
-			scrollRight_iconClass: "fa-chevron-circle-right",	
-			prev_iconClass: "fa-arrow-circle-left",
-			next_iconClass: "fa-arrow-circle-right",	
-			pause_iconClass: "fa-pause-circle",
-			play_iconClass: "fa-play-circle"
+		iconBaseClass: "fas fa-3x",	
+		scrollLeft_iconClass: "fa-chevron-circle-left",
+		scrollRight_iconClass: "fa-chevron-circle-right",	
+		prev_iconClass: "fa-arrow-circle-left",
+		next_iconClass: "fa-arrow-circle-right",	
+		pause_iconClass: "fa-pause-circle",
+		play_iconClass: "fa-play-circle"
         };
 
     // The actual plugin constructor
