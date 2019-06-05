@@ -29,20 +29,20 @@ For full documentation please check out the [Horizontal Timeline 2.0 website](ht
 
 ```html
 <head>
-// Add horizontal_timeline.2.0.min.css 
-<link rel="stylesheet" type="text/css" href="CSS/horizontal_timeline.2.0.min.css">
+    // Add horizontal_timeline.2.0.min.css 
+    <link rel="stylesheet" type="text/css" href="CSS/horizontal_timeline.2.0.min.css">
 
-// OR add via jsdilvr CDN via the Github repo
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2/css/horizontal_timeline.2.0.min.css">
-   
-// Add jQuery 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-   
-// Add horizontal_timeline.2.0.min.js
-<script src="JavaScript/horizontal_timeline.2.0.min.js"></script>
-   
-// OR add via jsdilvr CDN via the Github repo
-<script src="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2/JavaScript/horizontal_timeline.2.0.min.js"></script>   
+    // OR add via jsdilvr CDN via the Github repo
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2/css/horizontal_timeline.2.0.min.css">
+
+    // Add jQuery 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+    // Add horizontal_timeline.2.0.min.js
+    <script src="JavaScript/horizontal_timeline.2.0.min.js"></script>
+
+    // OR add via jsdilvr CDN via the Github repo
+    <script src="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2/JavaScript/horizontal_timeline.2.0.min.js"></script>   
 </head>
 
 ```
@@ -94,7 +94,7 @@ $('#example').horizontalTimeline({
    useTouchSwipe: true,
    useKeyboardKeys: false,
    addRequiredFile: true,
-	useFontAwesomeIcons: true,
+   useFontAwesomeIcons: true,
 			
    iconBaseClass: "fas fa-3x",
    scrollLeft_iconClass: "fa-chevron-circle-left",
