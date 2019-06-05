@@ -15,6 +15,7 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Event dates can now be displayed in various ways: dateTime, date, time, dayMonth, monthYear, year.
    - Added new autoplay feature with pause/play buttons and adjustable speed.
    - Added on hover pause/play functionality for autoplay.
+   - Added a progress bar for autoplay.
    - Added new go-to timeline link with customisable scroll functionality. 
    - Added mouse-wheel support for scrolling the event content.
    - Added TouchSwipe functionality for touch devices.
