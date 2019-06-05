@@ -18,6 +18,8 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added mouse-wheel support for scrolling the event content.
    - Added TouchSwipe functionality for touch devices.
    - Added new refresh, destroy, addEvent, removeEvent methods.
+   - Added a new option to disable the loading of the required files.
+   - Added new options for the button icons.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
