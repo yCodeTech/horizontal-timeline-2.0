@@ -1,7 +1,8 @@
 # Horizontal Timeline 2.0
-#### by [Studocwho](https://github.com/studocwho)
+#### by [yCodeTech](https://github.com/yCodeTech)
+#### Twitter [@yCodeTech](https://twitter.com/yCodeTech)
 
-A new adapted version of the Horizontal Timeline originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/); now revamped as a jQuery plugin!
+Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a JavaScript plugin originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/), to create a dynamic timeline on the horizontal axis.
 
 Version 2.0 adds functionality that has been previously requested for the original version, and more:
    - Transformed into a jQuery plugin, with support for multiple timeline instances utilising ID's.
@@ -31,7 +32,7 @@ For full documentation please check out the [Horizontal Timeline 2.0 website](ht
 <link rel="stylesheet" type="text/css" href="CSS/horizontal_timeline.2.0.min.css">
 
 // OR add via jsdilvr CDN via the Github repo
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2.0.3/css/horizontal_timeline.2.0.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2/css/horizontal_timeline.2.0.min.css">
    
 // Add jQuery 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -40,10 +41,12 @@ For full documentation please check out the [Horizontal Timeline 2.0 website](ht
 <script src="JavaScript/horizontal_timeline.2.0.min.js"></script>
    
 // OR add via jsdilvr CDN via the Github repo
-<script src="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2.0.3/JavaScript/horizontal_timeline.2.0.min.js"></script>   
+<script src="https://cdn.jsdelivr.net/gh/ycodetech/horizontal-timeline-2.0@2/JavaScript/horizontal_timeline.2.0.min.js"></script>   
 </head>
 
 ```
+The easiest way to link the files in your document is to add them via <a href="https://www.jsdelivr.com/package/gh/ycodetech/horizontal-timeline-2.0" target="new">jsdilvr CDN</a>. Otherwise, you can download them from here on Github.
+
 Unlike the original, 2.0 dynamically creates the timeline according to the amount of event content there is. Making it even simplier to setup! All you need to do is create the event content…
 
 ``` html
@@ -83,12 +86,22 @@ $('#example').horizontalTimeline({
    dateDisplay: "dateTime",  // dateTime, date, time, dayMonth, monthYear, year
 
    autoplay: false,
-   autoplaySpeed: 8000,  // ms ... e.g. 1000 ms = 1 sec
+   autoplaySpeed: 8,  // Sec
    autoplayPause_onHover: false, 
 
    useScrollWheel: false,
    useTouchSwipe: true,
-   useKeyboardKeys: false
+   useKeyboardKeys: false,
+   addRequiredFile: true,
+	useFontAwesomeIcons: true,
+			
+   iconBaseClass: "fas fa-3x",
+   scrollLeft_iconClass: "fa-chevron-circle-left",
+   scrollRight_iconClass: "fa-chevron-circle-right",
+   prev_iconClass: "fa-arrow-circle-left",
+   next_iconClass: "fa-arrow-circle-right",
+   pause_iconClass: "fa-pause-circle",
+   play_iconClass: "fa-play-circle"
 });
 ```
 
