@@ -32,7 +32,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
     // Create the defaults once
     var pluginName = 'horizontalTimeline',
         defaults = {
-            desktopDateIntervals: 200,   //************\\
+        	desktopDateIntervals: 200,   //************\\
 			tabletDateIntervals: 150,   // Minimum: 120 \\
 			mobileDateIntervals: 120,  //****************\\
 			minimalFirstDateInterval: true,
@@ -40,12 +40,22 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			dateDisplay: "dateTime", // dateTime, date, time, dayMonth, monthYear, year
 			
 			autoplay: false,
-			autoplaySpeed: 8, // sec
+			autoplaySpeed: 8, // Sec
 			autoplayPause_onHover: false, 
 			
 			useScrollWheel: false,
 			useTouchSwipe: true,
-			useKeyboardKeys: false
+			useKeyboardKeys: false,
+			addRequiredFile: true,
+			useFontAwesomeIcons: true,
+			
+			iconBaseClass: "fas fa-3x",	
+			scrollLeft_iconClass: "fa-chevron-circle-left",
+			scrollRight_iconClass: "fa-chevron-circle-right",	
+			prev_iconClass: "fa-arrow-circle-left",
+			next_iconClass: "fa-arrow-circle-right",	
+			pause_iconClass: "fa-pause-circle",
+			play_iconClass: "fa-play-circle"
         };
 
     // The actual plugin constructor
@@ -71,14 +81,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
         // the options via the instance, e.g. this.element 
         // and this.settings
 		var self = this, 
-			contentList = this.$element.find('li');
+		    contentList = this.$element.find('li');
 		if(contentList.length == 0) this.$element.css('opacity', 1).html('<h3>There are no events at this point in time.<br><br>Please add some content.</h3>');
 		
-		var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css";
+		var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
 			
 		// Function to load the file
-		// (name of the plugin, url, type)	
-		this._addFile('Font-Awesome', url, 'css');
+		// (url, type)	
+		this._addFile(url, 'css');
 		
 		this._create();
 		
@@ -110,10 +120,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 		// If any events-content has .selected class...
 		if (timelineComponents['eventsContentList'].hasClass('selected')) {
-				// Get date from data-date attribute
-			var	date = timelineComponents['eventsContentSelected'].data('date'),
-				// Find the event date matching the data-date
-				selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
+			    // Get date from data-date attribute
+			var date = timelineComponents['eventsContentSelected'].data('date'),
+			    // Find the event date matching the data-date
+			    selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
 				
 			// Add .selected class to the matched element
 			selectedDate.addClass('selected');
@@ -135,7 +145,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		var timelineTotalWidth = this._setTimelineWidth(timelineComponents);
 		// Set the filling line to the selected event
 		this._updateFilling(timelineComponents['eventsWrapper']
-								.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
+			.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
 		// The timeline has been initialised - show it
 		this.$element.addClass('loaded');
 		
@@ -144,25 +154,25 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	/* Dynamically creates the timeline according to the amount of events. */
 	Timeline.prototype._create = function () {		
 		var $timelineWrapper = '<div class="timeline"></div>',
-			$timelineEventsWrapper = '<div class="events-wrapper"><div class="events"><span class="filling-line" aria-hidden="true"></span></div></div>',
+		    $timelineEventsWrapper = '<div class="events-wrapper"><div class="events"><span class="filling-line" aria-hidden="true"></span></div></div>',
 			
-			// All buttons uses Font Awesome for the icons
-			// Icons require Font Awesome CSS
-			// This CSS file has been added to the document if not already present.
+		    // All buttons uses Font Awesome for the icons
+		    // Icons require Font Awesome CSS
+		    // This CSS file has been added to the document if not already present.
 			
-			// Left Nav
-			$leftNav = '<div class="timeline-navigation" id="leftNav"></div>',
-			$prevButton = '<a href="" class="fa fa-3x fa-arrow-circle-left prev inactive"></a>',
-			$scrollLeftButton = '<a href="" class="fa fa-3x fa-chevron-circle-left scroll-left inactive"></a>',
+		    // Left Nav
+		    $leftNav = '<div class="timeline-navigation" id="leftNav"></div>',
+		    $prevButton = '<a href="" class="fa fa-3x fa-arrow-circle-left prev inactive"></a>',
+		    $scrollLeftButton = '<a href="" class="fa fa-3x fa-chevron-circle-left scroll-left inactive"></a>',
 			
-			// Right Nav
-			$rightNav = '<div class="timeline-navigation" id="rightNav"></div>',
-			$nextButton = '<a href="" class="fa fa-3x fa-arrow-circle-right next"></a>',
-			$scrollRightButton = '<a href="" class="fa fa-3x fa-chevron-circle-right scroll-right"></a>',
+		    // Right Nav
+		    $rightNav = '<div class="timeline-navigation" id="rightNav"></div>',
+		    $nextButton = '<a href="" class="fa fa-3x fa-arrow-circle-right next"></a>',
+		    $scrollRightButton = '<a href="" class="fa fa-3x fa-chevron-circle-right scroll-right"></a>',
 			
-			// Pause/Play Nav
-			$pausePlayWrapper = '<div class="timeline-navigation" id="pausePlay"></div>',
-			$pauseButton = '<a href="" class="fa fa-3x fa-pause-circle pause"></a>';
+		    // Pause/Play Nav
+		    $pausePlayWrapper = '<div class="timeline-navigation" id="pausePlay"></div>',
+		    $pauseButton = '<a href="" class="fa fa-3x fa-pause-circle pause"></a>';
 
 		//** Create the timeline HTML **//
 		this.$element.prepend($timelineWrapper)
@@ -221,29 +231,29 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		/* Function to create the event date display  
 		(instance, element, displayType, insertMethod (append, before, after [last 2 for addEvent method]), date to insert before/after [from addEvent method])*/
 		function eventDateDisplay(self, eventElement, display, insertMethod, arrangementDate) {
-				// Get date from data-date attribute
-			var	dataDate = eventElement.data('date');
-				// Check if element data-date format is DD/MM/YYYYTHH:MM by checking for 'T'
-				isDateTime = eventElement.is('[data-date*="T"]'),
-				// Check if element data-date format is HH:MM by checking for ':' but doesn't have 'T'
-				isTime = eventElement.not('[data-date*="T"]').is('[data-date*=":"]'),
-				// Display type checks
-				dateTimeDisplay = display == "dateTime",
-				dateDisplay = display == "date",
-				timeDisplay = display == "time",
-				dayMonthDisplay = display == "dayMonth",
-				monthYearDisplay = display == "monthYear",
-				yearDisplay = display == "year",
-				// Find .events for the date display
-				$eventDateDisplay = self.$element.find('.events'),
-				// Create an array of the months, with the index 0 = null, 
-				// so that we can get the month by its corresponding index number.
-				months = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-				monthName = months,
-				dateLink = '<a href="" data-date="'+ dataDate +'">',
-				// For use with the addEvent plublic method
-				// Finds the event with the specific date.
-				$arrangementEvent = $eventDateDisplay.find('a[data-date="'+ arrangementDate +'"]');
+			    // Get date from data-date attribute
+			var dataDate = eventElement.data('date'),
+			    // Check if element data-date format is DD/MM/YYYYTHH:MM by checking for 'T'
+			    isDateTime = eventElement.is('[data-date*="T"]'),
+			    // Check if element data-date format is HH:MM by checking for ':' but doesn't have 'T'
+			    isTime = eventElement.not('[data-date*="T"]').is('[data-date*=":"]'),
+			    // Display type checks
+			    dateTimeDisplay = display == "dateTime",
+			    dateDisplay = display == "date",
+			    timeDisplay = display == "time",
+			    dayMonthDisplay = display == "dayMonth",
+			    monthYearDisplay = display == "monthYear",
+			    yearDisplay = display == "year",
+			    // Find .events for the date display
+			    $eventDateDisplay = self.$element.find('.events'),
+			    // Create an array of the months, with the index 0 = null, 
+			    // so that we can get the month by its corresponding index number.
+			    months = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+			    monthName = months,
+			    dateLink = '<a href="" data-date="'+ dataDate +'">',
+			    // For use with the addEvent plublic method
+			    // Finds the event with the specific date.
+			    $arrangementEvent = $eventDateDisplay.find('a[data-date="'+ arrangementDate +'"]');
 					
 			// Function to add the number suffix st, nd, rd, th (eg: 1st, 2nd, 3rd, 4th)
 			function numSuffix(num) {
@@ -257,16 +267,16 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 			var dateExists = $eventDateDisplay.children('a').map(function() {
 				return $(this).data('date');
-			}).get();
+			    }).get();
 			
 			if(jQuery.inArray(dataDate, dateExists) == -1) {
 				// Date and Time format (DD/MM/YYYYTHH:MM)
 				if (isDateTime){
-					// Separate the date at point of T, to get individually date and time
+					    // Separate the date at point of T, to get individually date and time
 					var dateSplit = dataDate.split('T'),
-						// Date
-						date = dateSplit[0],
-						// Time
+					    // Date
+					    date = dateSplit[0],
+					    // Time
 						time = dateSplit[1],
 						// Separate the date at point of /, to get individual date parts
 						dateParts = date.split('/'),
@@ -841,8 +851,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// Set a global variable to equal the function.
 			this._setup.mousewheel = mousewheel;	
 			
-			// Function to load the Mousewheel plugin (name of the plugin, url, type, callback)
-			this._addFile('mousewheel', url, 'js', $.proxy(function() {
+			// Function to load the Mousewheel plugin (url, type, callback)
+			this._addFile(url, 'js', $.proxy(function() {
 				// Wait 300ms whilst the Mousewheel script loads
 				window.setTimeout($.proxy(function() {
 					this.$element.on('mousewheel.'+this._name, '.events-content', $.proxy(this._setup.mousewheel, this));					
@@ -874,8 +884,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// Set a global variable to equal the function.
 			this._setup.swipe = swipe;
 				
-			// Function to load the TouchSwipe plugin (name of the plugin, url, type, callback)
-			this._addFile('TouchSwipe', url, 'js', $.proxy(function() {
+			// Function to load the TouchSwipe plugin (url, type, callback)
+			this._addFile(url, 'js', $.proxy(function() {
 				// Wait 300ms whilst the TouchSwipe script loads
 				window.setTimeout($.proxy(function() {
 					
@@ -1305,10 +1315,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	/* How to tell if a DOM element is visible in the current viewport?
 	   http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport */
 	Timeline.prototype._elementInViewport = function (el) {
-		var top = el.offsetTop;
-		var left = el.offsetLeft;
-		var width = el.offsetWidth;
-		var height = el.offsetHeight;
+		var top = el.offsetTop,
+			left = el.offsetLeft,
+			width = el.offsetWidth,
+			height = el.offsetHeight;
 
 		while(el.offsetParent) {
 			el = el.offsetParent;
@@ -1399,97 +1409,99 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	} // End buttonDisable() function
 	
 	// Function to add required js and css files dynamically
-	// (name of the plugin, CDN URL of the plugin, file type JS or CSS, callback function)				 
-	Timeline.prototype._addFile = function (name, url, type, callback) {
-			// Set loadedFile variable as body data of the loadedfile array, to check against later
-		var loadedFile = $('body').data('plugin_'+ this._name +'_loadedFile'),
-			// Declare an empty variable
-			fileExists,
-			// Variables for script and style
-			js = type == 'js',
-			css = type == 'css';
-			
-		// If js, check if the lowercase form of the name is in a src attribute in a <script> tag
-		if(js) 
-			// Using fileExists = $('script[src*="'+name+'" i]'); would be more appropriate,
-			// but due to lack of browser support, it can't be used yet.
-			fileExists = $('link[href*="'+name+'"').filter(function() {
-			   return this.value.toLowerCase() == name;
-			});
+	// (CDN URL of the plugin, file type JS or CSS, callback function)				 
+	Timeline.prototype._addFile = function (url, type, callback) {
+		// Check if callback is a function, if it is then set a variable as the callback to be called.
+		if (typeof callback === "function") var callback = callback(this);
 		
-		// Else if css, check if the lowercase form of the name is in a href attribute in a <link> tag
-		else if (css) 
-			// Using fileExists = $('link[href*="'+name+'" i]'); would be more appropriate,
-			// but due to lack of browser support, it can't be used yet.
-			fileExists = $('link[href*="'+name+'"').filter(function() {
-			   return this.value.toLowerCase() == name;
-			});
-		
-		// If loadedFile is undefined/not set, create a new array for the loaded files.
-		if (loadedFile == undefined) loadedFile = new Array();
+		// If addRequiredFile is true...
+		if (this.settings.addRequiredFile == true) {
+			    // Set loadedFile variable as body data of the loadedfile array, to check against later
+			var loadedFile = $('body').data('plugin_'+ this._name +'_loadedFile'),
+			    // Declare an empty variable
+			    fileExists,
+			    // Variables for script and style
+			    js = type == 'js',
+			    css = type == 'css',
+			    // Get the name from the url
+			    strip = url.split('libs/'),
+			    strip = strip[1].split('/'),
+			    name = strip[0];
 
-		// If loadedFile array doesn't include the url AND
-		// the file doesn't exist in the document...
-		
-		// Using !loadedFile.includes(url) would be more ideal,
-		// but due to no support in IE11, we can't use it.
-		if (loadedFile.indexOf(url) == -1 && !fileExists.length) {
-			// File isn't loaded yet...				
-			// If adding js...
+			// If js, check if the name is in a src attribute in a <script> tag
+			if(js) fileExists = $('script[src*="'+name+'"');
+
+			// Else if css, check if the name is in a href attribute in a <link> tag
+			else if (css) fileExists = $('link[href*="'+name+'"');
+
+			// If loadedFile is undefined/not set, create a new array for the loaded files.
+			if (loadedFile == undefined) loadedFile = new Array();
+
+			// If loadedFile array doesn't include the url AND
+			// the file doesn't exist in the document...
+
+			// Using !loadedFile.includes(url) would be more ideal,
+			// but due to no support in IE11, we can't use it.
+			if (loadedFile.indexOf(url) == -1 && !fileExists.length) {
+				// File isn't loaded yet...				
+				// If adding js...
+				if(js) {
+					console.log(name + ' plugin isn\'t loaded.', this.$element);	
+					// Load the plugin dynamically via Ajax.
+					$.getScript(url)
+						.done(function(script, textStatus) {
+							// Then execute it via the callback option
+							callback;
+						})
+						.fail(function(jqxhr, settings, exception) {
+							console.error("Failed to get " + url + "\n" + jqxhr + "\n" + this.settings + "\n" + exception);
+						}); // End $.getScript function
+					console.log(name + ' was loaded dynamically.', this.$element);	
+				}
+				// Else if adding CSS...
+				else if (css) {
+					console.log(name + ' isn\'t loaded.');
+					// Add a the CSS file in a new <link> after the last <link> in the head.
+					$('<link>').attr({'href':url, 'rel':'stylesheet', 'type':"text/css"}).insertAfter(
+						$('head').find('link').last()
+					);
+					console.log(name + ' was loaded dynamically.');
+				}
+				// Push/add the url to the loadedFile array to check against.
+				loadedFile.push(url);
+			}
+			// Else if the file exists in the document AND
+			// the URL isn't in the loadedFile array... 
+
+			// Using !loadedFile.includes(url) would be more ideal,
+			// but due to no support in IE11, we can't use it.
+			else if (fileExists.length && loadedFile.indexOf(url) == -1) {
+				// The file is already loaded in the document via a <script> tag...
+				if(js) {
+					console.log(name+' has already been loaded by a <script> tag in the document, no need to load it again. Timeline instance:', this.$element);
+					// Execute the plugin via the callback option.
+					callback;
+				}
+				// Push/add the url to the loadedFile array to check against.
+				loadedFile.push(url);
+			}
+			// Else the plugin has already been loaded...
+			else {
+				if(js) {
+					console.log(name+' has already been loaded, no need to load it again. Timeline instance:', this.$element);
+					// Execute the plugin via the callback option.
+					callback;
+				}
+			}
+
 			if(js) {
-				console.log(name + ' plugin isn\'t loaded.', this.$element);	
-				// Load the plugin dynamically via Ajax.
-				$.getScript(url)
-					.done(function(script, textStatus) {
-						// Then execute it via the callback option
-						callback(this);
-					})
-					.fail(function(jqxhr, settings, exception) {
-						console.error("Failed to get " + url + "\n" + jqxhr + "\n" + this.settings + "\n" + exception);
-					}); // End $.getScript function
-				console.log(name + ' was loaded dynamically.', this.$element);	
+				console.log(name+" executed on timeline instance: ", this.$element);
 			}
-			// Else if adding CSS...
-			else if (css) {
-				console.log(name + ' isn\'t loaded.');
-				// Add a the CSS file in a new <link> after the last <link> in the head.
-				$('<link>').attr({'href':url, 'rel':'stylesheet', 'type':"text/css"}).insertAfter(
-					$('head').find('link').last()
-				);
-				console.log(name + ' was loaded dynamically.');
-			}
-			// Push/add the url to the loadedFile array to check against.
-			loadedFile.push(url);
-		}
-		// Else if the file exists in the document AND
-		// the URL isn't in the loadedFile array... 
-		
-		// Using !loadedFile.includes(url) would be more ideal,
-		// but due to no support in IE11, we can't use it.
-		else if (fileExists.length && loadedFile.indexOf(url) == -1) {
-			// The file is already loaded in the document via a <script> tag...
-			if(js) {
-				console.log(name+' has already been loaded by a <script> tag in the document, no need to load it again. Timeline instance:', this.$element);
-				// Execute the plugin via the callback option.
-				callback(this);
-			}
-			// Push/add the url to the loadedFile array to check against.
-			loadedFile.push(url);
-		}
-		// Else the plugin has already been loaded...
-		else {
-			if(js) {
-				console.log(name+' has already been loaded, no need to load it again. Timeline instance:', this.$element);
-				// Execute the plugin via the callback option.
-				callback(this);
-			}
-		}
-		
-		if(js) {
-			console.log(name+" executed on timeline instance: ", this.$element);
-		}
-		// Save the loadedFile array as data to the body to be able to reload it next time it's accessed.
-		$('body').data('plugin_'+ this._name +'_loadedFile', loadedFile);
+			// Save the loadedFile array as data to the body to be able to reload it next time it's accessed.
+			$('body').data('plugin_'+ this._name +'_loadedFile', loadedFile);
+		} // End if addRequiredFile statement.
+		// If addRequiredFile is false we just need to execute the plugin via the callback option.
+		else callback;
 	} // End addFile function
 
     // A really lightweight plugin wrapper around the constructor,
@@ -1499,12 +1511,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
     // e.g. $(element).defaultPluginName('functionName', arg1, arg2)
     $.fn[pluginName] = function ( options ) {
         var args = arguments,
-			windowWidth = $(window).width();
-			
-			
-		var dateExists = $(this).find('.events-content').find('li').map(function() {
-				return $(this).data('date');
-			}).get();
+	    windowWidth = $(window).width(),
+	    dateExists = $(this).find('.events-content').find('li').map(function() {
+		return $(this).data('date');
+	    }).get();
 
         // Is the first parameter an object (options), or was omitted,
         // instantiate a new instance of the plugin.
