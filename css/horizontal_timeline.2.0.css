@@ -12,7 +12,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 -------------------------------- */
 html, body {
 	/* Stop horizontal scrollbar from appearing/disappearing when the content slides across and changes. 
-	Also fixes the fixed flexbox navbar from moving along with the transforms.*/
+	Also fixes the fixed flexbox elements from moving along with the transforms.*/
 	height: auto;
 	overflow: auto;
 }
