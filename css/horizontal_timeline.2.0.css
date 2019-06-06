@@ -10,9 +10,11 @@ Licensed under the MIT license
 Docs at http://horizontal-timeline.ycodetech.co.uk
 
 -------------------------------- */
-body {
-	/* Stop horizontal scrollbar from appearing/disappearing when the content slides across and changes. */
-	overflow-x: hidden;
+html, body {
+	/* Stop horizontal scrollbar from appearing/disappearing when the content slides across and changes. 
+	Also fixes the fixed flexbox navbar from moving along with the transforms.*/
+	height: auto;
+	overflow: auto;
 }
 .horizontal-timeline {
 	opacity: 0;
