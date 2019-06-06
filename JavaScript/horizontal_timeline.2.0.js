@@ -1410,10 +1410,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	
 	// Function to add required js and css files dynamically
 	// (CDN URL of the plugin, file type JS or CSS, callback function)				 
-	Timeline.prototype._addFile = function (url, type, callback) {
-		// Check if callback is a function, if it is then set a variable as the callback to be called.
-		if (typeof callback === "function") var callback = callback(this);
-		
+	Timeline.prototype._addFile = function (url, type, callback) {		
 		// If addRequiredFile is true...
 		if (this.settings.addRequiredFile == true) {
 			    // Set loadedFile variable as body data of the loadedfile array, to check against later
@@ -1451,7 +1448,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					$.getScript(url)
 						.done(function(script, textStatus) {
 							// Then execute it via the callback option
-							callback;
+							// Check if callback is a function, if it is then set a variable as the callback to be called.
+							if (typeof callback === "function") callback(this);
 						})
 						.fail(function(jqxhr, settings, exception) {
 							console.error("Failed to get " + url + "\n" + jqxhr + "\n" + this.settings + "\n" + exception);
@@ -1480,7 +1478,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				if(js) {
 					console.log(name+' has already been loaded by a <script> tag in the document, no need to load it again. Timeline instance:', this.$element);
 					// Execute the plugin via the callback option.
-					callback;
+					// Check if callback is a function, if it is then set a variable as the callback to be called.
+					if (typeof callback === "function") callback(this);
 				}
 				// Push/add the url to the loadedFile array to check against.
 				loadedFile.push(url);
@@ -1490,7 +1489,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				if(js) {
 					console.log(name+' has already been loaded, no need to load it again. Timeline instance:', this.$element);
 					// Execute the plugin via the callback option.
-					callback;
+					// Check if callback is a function, if it is then set a variable as the callback to be called.
+					if (typeof callback === "function") callback(this);
 				}
 			}
 
@@ -1501,7 +1501,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			$('body').data('plugin_'+ this._name +'_loadedFile', loadedFile);
 		} // End if addRequiredFile statement.
 		// If addRequiredFile is false we just need to execute the plugin via the callback option.
-		else callback;
+		else {
+			// Check if callback is a function, if it is then set a variable as the callback to be called.
+			if (typeof callback === "function") callback(this);
+		}
 	} // End addFile function
 
     // A really lightweight plugin wrapper around the constructor,
