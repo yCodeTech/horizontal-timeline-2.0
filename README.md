@@ -113,4 +113,5 @@ $('#example').horizontalTimeline({
 
 - Add support for custom slide animations/transitions using Animate.css
 - Implement a namespaced object data attribute to accomodate the data-date and possibly the custom animations.
+- Add method to dynamically change existing dates and reposition them to reflect their new date order.
 - Add support for Right-to-Left.
