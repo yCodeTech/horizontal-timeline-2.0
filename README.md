@@ -22,6 +22,8 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added new refresh, destroy, addEvent, removeEvent methods.
    - Added a new option to disable the loading of the required files.
    - Added new options for the button icons.
+   - Added new options to disable the buttons.
+   - Added an option for custom date display text.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
@@ -95,6 +97,8 @@ $('#example').horizontalTimeline({
    useKeyboardKeys: false,
    addRequiredFile: true,
    useFontAwesomeIcons: true,
+   useNavBtns: true,
+   useScrollBtns: true,
 			
    iconBaseClass: "fas fa-3x",
    scrollLeft_iconClass: "fa-chevron-circle-left",
@@ -115,4 +119,3 @@ $('#example').horizontalTimeline({
 - Implement a namespaced object data attribute to accomodate the data-date and possibly the custom animations.
 - Add method to dynamically change existing dates and reposition them to reflect their new date order.
 - Add support for Right-to-Left.
-- Add support for disabling the nav buttons.
