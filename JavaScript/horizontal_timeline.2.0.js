@@ -48,6 +48,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		useKeyboardKeys: false,
 		addRequiredFile: true,
 		useFontAwesomeIcons: true,
+		useNavBtns: true,
+		useScrollBtns: true,
 			
 		iconBaseClass: "fas fa-3x",	
 		scrollLeft_iconClass: "fa-chevron-circle-left",
@@ -162,27 +164,61 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 		    // Left Nav
 		    $leftNav = '<div class="timeline-navigation" id="leftNav"></div>',
-		    $prevButton = '<a href="" class="fa fa-3x fa-arrow-circle-left prev inactive"></a>',
-		    $scrollLeftButton = '<a href="" class="fa fa-3x fa-chevron-circle-left scroll-left inactive"></a>',
+		    $scrollLeftButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.scrollLeft_iconClass +' scroll-left inactive"></a>',
+		    $prevButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.prev_iconClass +' prev inactive"></a>',
+		    
 			
 		    // Right Nav
 		    $rightNav = '<div class="timeline-navigation" id="rightNav"></div>',
-		    $nextButton = '<a href="" class="fa fa-3x fa-arrow-circle-right next"></a>',
-		    $scrollRightButton = '<a href="" class="fa fa-3x fa-chevron-circle-right scroll-right"></a>',
+		    $nextButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.next_iconClass +' next"></a>',
+		    $scrollRightButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.scrollRight_iconClass +' scroll-right"></a>',
 			
 		    // Pause/Play Nav
 		    $pausePlayWrapper = '<div class="timeline-navigation" id="pausePlay"></div>',
-		    $pauseButton = '<a href="" class="fa fa-3x fa-pause-circle pause"></a>';
+		    $pauseButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.pause_iconClass +' pause"></a>';
 
 		//** Create the timeline HTML **//
+		
+		// Create the timeline element.
 		this.$element.prepend($timelineWrapper)
-			.find('.timeline').append($timelineEventsWrapper).append($leftNav).append($rightNav)
-			.find('#leftNav').append($scrollLeftButton).append($prevButton).end()
-			.find("#rightNav").append($nextButton).append($scrollRightButton);
+		// Find the timeline element that was just created
+		var $timeline = this.$element.find('.timeline');
+		
+		// Nav buttons/Scroll buttons
+		
+		// If either of the nav (prev/next) or scroll (left/right) buttons are enabled...
+		if (this.settings.useNavBtns == true || this.settings.useScrollBtns == true) {
+			// Create the leftNav, then the timelineEventsWrapper, and then the rightNav
+			$timeline.append($leftNav).append($timelineEventsWrapper).append($rightNav);
+			
+			// If only useScrollBtns is true...
+			if (this.settings.useNavBtns == false && this.settings.useScrollBtns == true)
+				// Find the leftNav and add the scroll left button
+				// and then find the rightNav and add the scroll right button.
+				$timeline.find('#leftNav').append($scrollLeftButton).end()
+						 .find("#rightNav").append($scrollRightButton);
+						 
+			// If only the useNavBtns is true...	 
+			else if (this.settings.useNavBtns == true && this.settings.useScrollBtns == false)
+				// Find the leftNav and add the prev button
+				// and then find the rightNav and add the next button.
+				$timeline.find('#leftNav').append($prevButton).end()
+						 .find("#rightNav").append($nextButton);
+			
+			// If both useNavBtns AND useScrollBtns are true...			 
+			else if (this.settings.useNavBtns == true && this.settings.useScrollBtns == true)
+				// Find the leftNav and add the scroll left button and the prev button,
+				// and then find the rightNav and add the next button and the scroll right button.			
+				$timeline.find('#leftNav').append($scrollLeftButton).append($prevButton).end()
+						 .find("#rightNav").append($nextButton).append($scrollRightButton);
+		}
+		// Otherwise, both button sets are disabled and we just need to add the timelineEventsWrapper.
+		else $timeline.append($timelineEventsWrapper);
+		
 		// Autoplay buttons	
 		// If autoplay is true, create the pause button
 		if (this.settings.autoplay == true)	
-			this.$element.find('.timeline').append($pausePlayWrapper).find('#pausePlay').append($pauseButton);
+			$timeline.append($pausePlayWrapper).find('#pausePlay').append($pauseButton);
 			
 		//** Create the HTML for the event date display **//
 		
@@ -287,7 +323,21 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						yearPart = dateParts[2];
 					
 					/* Add the event date displays according to the display types */
-					if(dateTimeDisplay) {
+					
+					// Custom Date Display
+					// If element has a data-custom-display attribute...
+					if(eventElement.data('custom-display')) {
+						// Get the custom text from the data-attribute.
+						var customData = eventElement.data('customDisplay');
+
+						// Add in the custom Text depending on which insertMethod used.
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						// For use with the addEvent method... creates new timeline events and places them where specified.
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
+						else $arrangementEvent.before(dateLink + customData +'</a>');
+					}					
+					
+					else if(dateTimeDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + date +'<br>'+ time +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
 						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + date +'<br>'+ time +'</a>');
@@ -328,7 +378,21 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				else if (isTime) {
 					var time = dataDate;
 					/* Add the event date displays according to the display types */
-					if(dateTimeDisplay || timeDisplay) {
+					
+					// Custom Date Display
+					// If element has a data-custom-display attribute...
+					if(eventElement.data('custom-display')) {
+						// Get the custom text from the data-attribute.
+						var customData = eventElement.data('customDisplay');
+
+						// Add in the custom Text depending on which insertMethod used.
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						// For use with the addEvent method... creates new timeline events and places them where specified.
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
+						else $arrangementEvent.before(dateLink + customData +'</a>');
+					}					
+					
+					else if(dateTimeDisplay || timeDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + time +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.	
 						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + time +'</a>');	
@@ -347,25 +411,39 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						yearPart = dateParts[2];
 					
 					/* Add the event date displays according to the display types */
-					if(dateTimeDisplay || dateDisplay) {
+					
+					// Custom Date Display
+					// If element has a data-custom-display attribute...
+					if(eventElement.data('custom-display')) {
+						// Get the custom text from the data-attribute.
+						var customData = eventElement.data('customDisplay');
+
+						// Add in the custom Text depending on which insertMethod used.
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						// For use with the addEvent method... creates new timeline events and places them where specified.
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
+						else $arrangementEvent.before(dateLink + customData +'</a>');
+					}					
+					
+					else if(dateTimeDisplay || dateDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + date +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
 						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + date +'</a>');
 						else $arrangementEvent.before(dateLink + date +'</a>');
 					}
-					if(dayMonthDisplay) {
+					else if(dayMonthDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
 						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
 						else $arrangementEvent.before(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
 					}	
-					if(monthYearDisplay) {
+					else if(monthYearDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
 						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
 						else $arrangementEvent.before(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
 					}
-					if(yearDisplay) {
+					else if(yearDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + yearPart +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
 						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + yearPart +'</a>');
@@ -634,7 +712,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Find the pause play button wrapper.
 						$pausePlay = this.$element.find('#pausePlay'),
 						// Define the play button html
-						$playButton = '<a href="" class="fa fa-3x fa-play-circle play"></a>';
+						$playButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.play_iconClass +' play"></a>';
 						
 					// If the event type is click and pausebtnClicked is true (so the pause button was clicked)...
 					if (event.type == "click" && pausebtnClicked == true) {
@@ -1355,7 +1433,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	}
 		
 	// Function to add or remove disabled class to next button depending on whether the last item is selected or not	
-	Timeline.prototype._buttonDisable = function (timelineComponents, translateValue , totalTranslateValue){
+	Timeline.prototype._buttonDisable = function (timelineComponents, translateValue, totalTranslateValue){
 		var nextButton = timelineComponents['timelineNavigation'].find('.next'),
 			prevButton = timelineComponents['timelineNavigation'].find('.prev'),
 			
