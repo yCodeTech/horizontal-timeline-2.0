@@ -45,18 +45,24 @@ html, body {
 	position: relative;
 	height: 100px;
 	margin: 0 auto;
+	display: flex;
+	-ms-flex-wrap: wrap;
+    	flex-wrap: wrap;
 }
 .horizontal-timeline .events-wrapper {
 	position: relative;
-	height: 100%;
-	margin: 0 40px;
+	/* Fixed up a bug where if the date display was split into two lines 
+	half of the top was cut off (Changed the height to accomodate) */
+	height: 80px;
 	overflow: hidden;
+	-ms-flex: 1 1 auto!important;
+    	flex: 1 1 auto!important;
 }
 .horizontal-timeline .events {
 	position: absolute;
 	z-index: 1;
 	left: 0;
-	top: 49.5px; /* .5 stops the visual glitches where the black timeline is visible slightly just under the filling line. */
+	bottom: 13%;
 	height: 5px;
 	/* width will be set using JavaScript */
 	background: #000;
@@ -96,7 +102,7 @@ html, body {
 	text-decoration: none;
 	padding-bottom: 15px;
 	color: #000;
-	/* fix bug on Safari - text flickering while timeline translates */
+	/* Fix bug on Safari - text flickering while timeline translates */
 	-webkit-transform: translateZ(0);
 	-moz-transform: translateZ(0);
 	-ms-transform: translateZ(0);
@@ -130,23 +136,23 @@ html, body {
 }
 /* Navigation */
 .timeline-navigation {
-	position: absolute;
-	top: 52%;
+	position: relative;
+	top: 3px;
 	-webkit-transform: translateY(-50%);
 	-moz-transform: translateY(-50%);
 	-ms-transform: translateY(-50%);
 	-o-transform: translateY(-50%);
 	transform: translateY(-50%);
-	z-index: 1;
+	z-index: 2;
 }
 .timeline-navigation#leftNav {
-    	left: -6px;
+    	left: 1px;
 }
 .timeline-navigation#rightNav {
-	right: -6px;
+	right: 1px;
 }
 .timeline-navigation a {
-	display: block;
+	display: inline;
     	text-decoration: none;
     	color: #000;
 }
@@ -154,12 +160,7 @@ html, body {
 	color: #002bff;
 	border-color: #002bff;
 }
-/* Scroll-Left, Scroll-Right */
-.timeline-navigation a.scroll-left,
-.timeline-navigation a.scroll-right {
-	position: absolute;
-	top: 50px;
-}
+
 /* Inactive */
 .timeline-navigation a.inactive {
 	cursor: not-allowed;
@@ -168,8 +169,8 @@ html, body {
 }
 /* Autoplay Pause/Play button */
 .timeline-navigation#pausePlay {
-	position: relative;
-    	top: 0;
+	width: 100%;
+    	top: 10px;
     	text-align: center;
 }
 /* Event content */
@@ -349,5 +350,27 @@ html, body {
 	/* Never visible - this is used in jQuery to check the current MQ */
 	.horizontal-timeline::before {
 		content: 'tinyMobile';
+	}
+}
+@media only screen and (max-width: 1100px) {
+	.horizontal-timeline .timeline {
+		padding-bottom: 40px !important;
+	}
+	.timeline-navigation#leftNav {
+		-ms-flex-direction: column-reverse !important;
+		flex-direction: column-reverse !important;
+	}
+	.timeline-navigation#rightNav {
+		-ms-flex-direction: column !important;
+    	flex-direction: column !important;
+	}
+	.timeline-navigation#leftNav,
+	.timeline-navigation#rightNav {
+		display: -ms-flexbox !important;
+		display: flex !important;
+		top: -5px !important;
+	}
+	.timeline-navigation#pausePlay {
+		top: 20px !important;
 	}
 }
