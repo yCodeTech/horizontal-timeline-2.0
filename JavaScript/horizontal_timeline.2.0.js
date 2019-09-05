@@ -93,65 +93,69 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		this._addFile(url, 'css');
 		
 		this._create();
-		
-		timelineComponents = {};
-		this._timelineComponents(timelineComponents);
-		
-		this.init.addIdsAndClasses = addIdsAndClasses;
-		this.init.addIdsAndClasses();
-		
-		function addIdsAndClasses() {
-			//** Adding IDs and Classes **//
-			if (timelineComponents['eventsContentList'].length == 1) {
-				timelineComponents['eventsContentList'].first().attr('id', 'first');
-				timelineComponents['timelineEvents'].first().addClass("first");
+	    
+		// Wait about 300s to make sure the all elements are created properly.
+		// Otherwise the width of the timeline would report as bigger than it actually is.
+		window.setTimeout($.proxy(function(){
+			timelineComponents = {};
+			this._timelineComponents(timelineComponents);
+
+			this.init.addIdsAndClasses = addIdsAndClasses;
+			this.init.addIdsAndClasses();
+
+			function addIdsAndClasses() {
+				//** Adding IDs and Classes **//
+				if (timelineComponents['eventsContentList'].length == 1) {
+					timelineComponents['eventsContentList'].first().attr('id', 'first');
+					timelineComponents['timelineEvents'].first().addClass("first");
+				}
+				else {
+					// Adds id to the first and last li of the event-content list respectively.
+					timelineComponents['eventsContentList']
+						.first().attr('id', 'first').end()
+						.last().attr('id', 'last');
+
+					// Adds class to the first and last timeline event dates respectively.
+					timelineComponents['timelineEvents']
+						.first().addClass("first").end()
+						.last().addClass("last");
+				}
 			}
+			//** Select the correct event **//
+
+			// If any events-content has .selected class...
+			if (timelineComponents['eventsContentList'].hasClass('selected')) {
+				    // Get date from data-date attribute
+				var date = timelineComponents['eventsContentSelected'].data('date'),
+				    // Find the event date matching the data-date
+				    selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
+
+				// Add .selected class to the matched element
+				selectedDate.addClass('selected');
+				// Update all previous dates for styling.
+				this._updateOlderEvents(selectedDate);
+			}
+			// If no class found at all...
 			else {
-				// Adds id to the first and last li of the event-content list respectively.
-				timelineComponents['eventsContentList']
-					.first().attr('id', 'first').end()
-					.last().attr('id', 'last');
-		
-				// Adds class to the first and last timeline event dates respectively.
-				timelineComponents['timelineEvents']
-					.first().addClass("first").end()
-					.last().addClass("last");
+				// Add .selected class to the first events-content and first event date respectively.
+				timelineComponents['eventsContent']
+					.find('li#first').addClass('selected').end()
+					.siblings('.timeline').find('.events').find('a.first').addClass('selected');			
 			}
-		}
-		//** Select the correct event **//
-			
-		// If any events-content has .selected class...
-		if (timelineComponents['eventsContentList'].hasClass('selected')) {
-			    // Get date from data-date attribute
-			var date = timelineComponents['eventsContentSelected'].data('date'),
-			    // Find the event date matching the data-date
-			    selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
-				
-			// Add .selected class to the matched element
-			selectedDate.addClass('selected');
-			// Update all previous dates for styling.
-			this._updateOlderEvents(selectedDate);
-		}
-		// If no class found at all...
-		else {
-			// Add .selected class to the first events-content and first event date respectively.
-			timelineComponents['eventsContent']
-				.find('li#first').addClass('selected').end()
-				.siblings('.timeline').find('.events').find('a.first').addClass('selected');			
-		}
-		
-		
-		// Assign a left postion to the single events along the timeline
-		this._setDatePosition(timelineComponents);
-		// Assign a width to the timeline
-		var timelineTotalWidth = this._setTimelineWidth(timelineComponents);
-		// Set the filling line to the selected event
-		this._updateFilling(timelineComponents['eventsWrapper']
-			.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
-		// The timeline has been initialised - show it
-		this.$element.addClass('loaded');
-		
-		this._setup(self, timelineComponents, timelineTotalWidth);
+
+
+			// Assign a left postion to the single events along the timeline
+			this._setDatePosition(timelineComponents);
+			// Assign a width to the timeline
+			var timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+			// Set the filling line to the selected event
+			this._updateFilling(timelineComponents['eventsWrapper']
+				.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
+			// The timeline has been initialised - show it
+			this.$element.addClass('loaded');
+
+			this._setup(self, timelineComponents, timelineTotalWidth);
+		}, this), 300);	
     };	
 	/* Dynamically creates the timeline according to the amount of events. */
 	Timeline.prototype._create = function () {		
@@ -282,16 +286,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    yearDisplay = display == "year",
 			    // Find .events for the date display
 			    $eventDateDisplay = self.$element.find('.events'),
-			    // Create an array of the months, with the index 0 = null, 
-			    // so that we can get the month by its corresponding index number.
-			    months = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-			    monthName = months,
 			    dateLink = '<a href="" data-date="'+ dataDate +'">',
 			    // For use with the addEvent plublic method
 			    // Finds the event with the specific date.
 			    $arrangementEvent = $eventDateDisplay.find('a[data-date="'+ arrangementDate +'"]');
 					
 			// Function to add the number suffix st, nd, rd, th (eg: 1st, 2nd, 3rd, 4th)
+			// Part of answer on StackOverflow: https://stackoverflow.com/a/15397495/2358222
 			function numSuffix(num) {
 				if (num > 3 && num < 21) return 'th'; 
 				switch (num % 10) {
@@ -301,6 +302,16 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					default: return "th";
 				}
 			}
+			// Function to get the month name according to a number supplied.
+			// Answer on StackOverflow: https://stackoverflow.com/a/10996297/2358222
+			function getMonthName(num) {
+				// Create an array of the months, with the index 0 = null, 
+			    // so that we can get the month by its corresponding index number.
+				var monthNames = [null, "January", "February", "March", "April", "May", "June", 
+								   "July", "August", "September", "October", "November", "December" ];
+				return monthNames[num];
+			}
+			
 			var dateExists = $eventDateDisplay.children('a').map(function() {
 				return $(this).data('date');
 			    }).get();
@@ -356,16 +367,16 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						else $arrangementEvent.before(dateLink + time +'</a>');
 					}
 					else if(dayMonthDisplay) { 
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + dayPart + numSuffix(dayPart) + '<br>' + getMonthName(monthPart) +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
-						else $arrangementEvent.before(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + dayPart + numSuffix(dayPart) + '<br>' + getMonthName(monthPart) +'</a>');
+						else $arrangementEvent.before(dateLink + dayPart + numSuffix(dayPart) + '<br>' + getMonthName(monthPart) +'</a>');
 					}
 					else if(monthYearDisplay) {
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
-						else $arrangementEvent.before(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
+						else $arrangementEvent.before(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
 					}
 					else if(yearDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + yearPart +'</a>');
@@ -432,16 +443,16 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						else $arrangementEvent.before(dateLink + date +'</a>');
 					}
 					else if(dayMonthDisplay) {
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + dayPart + numSuffix(dayPart) + '<br>' + getMonthName(monthPart) +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
-						else $arrangementEvent.before(dateLink + dayPart + numSuffix(dayPart) + '<br>' + monthName[monthPart]+'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + dayPart + numSuffix(dayPart) + '<br>' + getMonthName(monthPart) +'</a>');
+						else $arrangementEvent.before(dateLink + dayPart + numSuffix(dayPart) + '<br>' + getMonthName(monthPart) +'</a>');
 					}	
 					else if(monthYearDisplay) {
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + getMonthName(monthPart)  + '<br>' + yearPart +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
-						else $arrangementEvent.before(dateLink + monthName[monthPart] + '<br>' + yearPart +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
+						else $arrangementEvent.before(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
 					}
 					else if(yearDisplay) {
 						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + yearPart +'</a>');
