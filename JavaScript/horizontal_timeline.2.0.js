@@ -1621,7 +1621,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
                     // pass options to our plugin constructor,
                     // and store the plugin instance
                     // in the elements jQuery data object.
-                    $.data(this, 'plugin_' + pluginName, {'originalEventsContent': $(this).find('.events-content').clone()[0], 'windowWidth': windowWidth, 'existingDates': dateExists, 'Timeline': new Timeline( this, options )});
+                    $.data(this, 'plugin_' + pluginName, 
+			   {'originalEventsContent': $(this).find('.events-content').clone()[0], 
+			    'windowWidth': windowWidth, 
+			    'existingDates': dateExists, 
+			    'Timeline': new Timeline(this, options)
+		    	   }
+		    );
                 }
             });
 
