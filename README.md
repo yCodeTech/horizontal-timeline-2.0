@@ -28,6 +28,8 @@ Version 2.0 adds functionality that has been previously requested for the origin
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
+Visit the [Changelog](https://github.com/yCodeTech/horizontal-timeline-2.0/blob/master/changelog.md) for details of fixes, changes and additions.
+
 ### Setup
 
 ```html
