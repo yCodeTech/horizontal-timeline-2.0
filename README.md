@@ -19,6 +19,7 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added new go-to timeline link with customisable scroll functionality. 
    - Added mouse-wheel support for scrolling the event content.
    - Added TouchSwipe functionality for touch devices.
+   - Added Keyboard arrow key support.
    - Added new refresh, destroy, addEvent, removeEvent methods.
    - Added a new option to disable the loading of the required files.
    - Added new options for the button icons.
