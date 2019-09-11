@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 
-- ## [v2.0.5-alpha.1](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.1) - 24/07/2019
+- ## 2.0.5 Prerelease 1 [[v2.0.5-alpha.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.1) - 24/07/2019
     ### Added
     - 2 new boolean options to disable the navigation buttons (as requested via email): useNavBtns and useScrollBtns.
     - An option to customise the date display (as requested via email) using a data-attribute.
@@ -14,12 +14,12 @@ All notable changes to this project will be documented in this file.
     ### Fixed
     - A bug where if the date was split into two lines, half of the top was cut off by the parent bounding box, the height was changed accordingly.
 
-- ## [v2.0.4.1](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.4.1) - 06/06/2019
+- ## [[v2.0.4.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.4.1) - 06/06/2019
     ### Fixed
     - A bug for the _addFile callback where it would fire way too early meaning that the plugins wouldn't work.
 
 
-- ## [v2.0.4](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.4) - 06/06/2019
+- ## [[v2.0.4]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.4) - 06/06/2019
     ### Added
     - An option to disable the loading of the required plugin files.
     - Several new button icon options, making it possible to change the icons of the buttons via classes.
@@ -33,19 +33,19 @@ All notable changes to this project will be documented in this file.
     - An issue with the _addFile function callback, where if there wasn't a callback defined for a CSS file, it would send out an error.
     - A bug with fixed positioned and flexbox enabled elements where they were changing positions when the events content translated.
 
-- ## [v2.0.3](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.3) - 12/04/2019
+- ## [[v2.0.3]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.3) - 12/04/2019
     ### Fixed
     - Browser inconsistencies due to the lack of support for various functions in the _addFile function.
 
-- ## [v2.0.2](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.2) - 05/03/2019
+- ## [[v2.0.2]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.2) - 05/03/2019
     ### Fixed
     - Bugs that were caused by typos.
 
-- ## [v2.0.1](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.1) - 07/02/2019
+- ## [[v2.0.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.1) - 07/02/2019
     ### Fixed
     - A case-sensitive problem for checking existing required js/css in the _addFile function.
 
-- ## [v2.0](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0) - 01/02/2019
+- ## Initial Release [[v2.0]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0) - 01/02/2019
     ### Added
     - Support for multiple timeline instances as a jQuery plugin.
     - Minimal first date interval.
