@@ -53,9 +53,8 @@ All notable changes to this project will be documented in this file.
     - Inactive button states.
     - Minimal HTML setup, meaning the plugin creates the timeline dynamically according to the total amount of event content.
     - 6 new ways to display the event dates: dateTime, date, time, dayMonth, monthYear, year.
-    - Autoplay feature with pause/play buttons and adjustable speed.
+    - Autoplay feature with a progress bar, pause/play buttons and adjustable speed.
     - On hover pause/play functionality for autoplay.
-    - A progress bar for autoplay.
     - Go-to timeline link with customisable scroll functionality.
     - Mouse-wheel support for scrolling the event content.
     - TouchSwipe functionality for touch devices.
