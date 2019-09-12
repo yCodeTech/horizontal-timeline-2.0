@@ -119,3 +119,4 @@ $('#example').horizontalTimeline({
 - Implement a namespaced object data attribute to accomodate the data-date and possibly the custom animations.
 - Add method to dynamically change existing dates and reposition them to reflect their new date order.
 - Add support for Right-to-Left.
+- Rename the disableButton to reflect the docs name of Inactive Button States.
