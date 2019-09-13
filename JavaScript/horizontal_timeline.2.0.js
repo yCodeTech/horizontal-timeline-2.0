@@ -86,12 +86,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		    contentList = this.$element.find('li');
 		if(contentList.length == 0) this.$element.css('opacity', 1).html('<h3>There are no events at this point in time.<br><br>Please add some content.</h3>');
 		
-		var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
-			
-		// Function to load the file
-		// (url, type)	
-		this._addFile(url, 'css');
-		
+	    	if (useFontAwesomeIcons == true) {
+			var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
+
+			// Function to load the file
+			// (url, type)	
+			this._addFile(url, 'css');
+    		}	
 		this._create();
 	    
 		// Wait about 300s to make sure the all elements are created properly.
