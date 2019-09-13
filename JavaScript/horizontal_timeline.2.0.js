@@ -1077,25 +1077,17 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 Timeline.prototype.refresh = function () {
 		this._timelineComponents(timelineComponents);
 		
+		// Removes first and last id attributes of the event-content list. 
 		timelineComponents['eventsContent']
-			// Removes first and last id attributes of the event-content list.
 			.find('#first').removeAttr('id').end()
 			.find('#last').removeAttr('id').end();
-			// Adds id to the first li of the event-content list.
-			//.find('li').first().attr('id', 'first').end()
-			// Adds id to the last li of the event-content list.
-			//.last().attr('id', 'last');
-			
+
+		// Removes first and last classes from the timeline event date	
 		timelineComponents['eventsWrapper']
-			// Removes first and last classes from the timeline event date
 			.find('.first').removeClass('first').end()
 			.find('.last').removeClass('last').end();
-			// Adds class to the first timeline event date.
-			//.find('a').first().addClass("first").end()
-			// Adds class to the last timeline event date.
-			//.last().addClass("last");
 			
-			
+		// Adds classes and IDs.	
 		this.init.addIdsAndClasses();	
 			
 		this._setDatePosition(timelineComponents);
