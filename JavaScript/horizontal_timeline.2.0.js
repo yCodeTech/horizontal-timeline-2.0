@@ -1271,7 +1271,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		this._setTransformValue(timelineComponents['eventsWrapper'], 'translateX', value+'px');
 
 		// Disable the buttons if necessary
-		this._buttonDisable(timelineComponents, value, totalTranslateValue);	
+		this._buttonStates(timelineComponents, value, totalTranslateValue);	
 	}
 	
 	Timeline.prototype._updateFilling = function (selectedEvent, filling, totalTranslateValue) {
@@ -1434,9 +1434,11 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// https://stackoverflow.com/a/14913306/2358222
 		return window.getComputedStyle(this.element,':before').content.replace(/'/g, "").replace(/"/g, "");
 	}
-		
-	// Function to add or remove disabled class to next button depending on whether the last item is selected or not	
-	Timeline.prototype._buttonDisable = function (timelineComponents, translateValue, totalTranslateValue){
+	
+	//** Button States **//
+	
+	// Function to add or remove inactive class to next button depending on whether the last item is selected or not	
+	Timeline.prototype._buttonStates = function (timelineComponents, translateValue, totalTranslateValue){
 		var nextButton = timelineComponents['timelineNavigation'].find('.next'),
 			prevButton = timelineComponents['timelineNavigation'].find('.prev'),
 			
@@ -1487,7 +1489,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		if (translateValue == totalTranslateValue) rightButton.addClass('inactive');
 		// If not, then enable the scroll right button
 		else rightButton.removeClass('inactive');
-	} // End buttonDisable() function
+	} // End buttonStates() function
 	
 	// Function to add required js and css files dynamically
 	// (CDN URL of the plugin, file type JS or CSS, callback function)				 
