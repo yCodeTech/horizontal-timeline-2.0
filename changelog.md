@@ -2,7 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-
+- ## 2.0.5 Prerelease 2 [[v2.0.5-alpha.2]]() - Upcoming
+     ### Added
+     - A proper getMonthName function to make it easier to the event creation.
+     ### Changed
+     - Renamed _buttonDisable to _buttonStates to reflect the docs naming. 
+     
+     ### Fixed
+     - The useFontAwesomeIcons option where it wouldn't do anything due to missing code.
+     - A bug that inconsistently and inaccurately calculates the width of the timeline on init, so the scrolling of the timeline was off slightly. (This was due to the function being called slightly before all elements had to chance to be created). Fixed with a 300s delay.
+     
+     ### Removed
+     - Removed some unnecessary commented out code in the Refresh method.
+     
 - ## 2.0.5 Prerelease 1 [[v2.0.5-alpha.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.1) - 24/07/2019
     ### Added
     - 2 new boolean options to disable the navigation buttons (as requested via email): useNavBtns and useScrollBtns.
