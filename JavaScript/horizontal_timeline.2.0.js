@@ -1438,7 +1438,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	
 	//** Button States **//
 	
-	// Function to add or remove inactive class to next button depending on whether the last item is selected or not	
+	// Function to add or remove inactive class.	
 	Timeline.prototype._buttonStates = function (timelineComponents, translateValue, totalTranslateValue){
 		var nextButton = timelineComponents['timelineNavigation'].find('.next'),
 			prevButton = timelineComponents['timelineNavigation'].find('.prev'),
