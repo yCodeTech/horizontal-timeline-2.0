@@ -15,6 +15,7 @@ html, body {
 	Also fixes the fixed flexbox elements from moving along with the transforms.*/
 	height: auto;
 	overflow: auto;
+	overflow-x: hidden;
 }
 .horizontal-timeline {
 	opacity: 0;
