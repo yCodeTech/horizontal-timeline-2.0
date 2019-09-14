@@ -218,8 +218,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						 .find("#rightNav").append($nextButton).append($scrollRightButton);
 		}
 		// Otherwise, both button sets are disabled and we just need to add the timelineEventsWrapper.
-		else $timeline.append($timelineEventsWrapper);
-		
+		else {
+			$timeline.append($timelineEventsWrapper);
+			// Add a 100% min-width to the events-wrapper if the buttons are disabled.
+			// Stops the timeline from disappearing due to apparent no width.
+			$timeline.find('.events-wrapper').css("min-width", "100%");
+		}
+			
 		// Autoplay buttons	
 		// If autoplay is true, create the pause button
 		if (this.settings.autoplay == true)	
