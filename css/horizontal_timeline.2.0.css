@@ -208,6 +208,9 @@ html, body {
 	border-radius: 20px;
 	opacity: 0;
 	
+	font-size: 16pt;
+	text-align: center;
+	
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
 	-khtml-user-select: none; /* Konqueror HTML */
