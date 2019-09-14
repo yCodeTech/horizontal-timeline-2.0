@@ -54,7 +54,6 @@ html, body {
 	/* Fixed up a bug where if the date display was split into two lines 
 	half of the top was cut off (Changed the height to accomodate) */
 	height: 80px;
-	min-width: 100%;
 	overflow: hidden;
 	-ms-flex: 1 1 auto!important;
     	flex: 1 1 auto!important;
