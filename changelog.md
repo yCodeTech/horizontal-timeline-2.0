@@ -11,7 +11,8 @@ All notable changes to this project will be documented in this file.
      ### Fixed
      - The useFontAwesomeIcons option where it wouldn't do anything due to missing code.
      - A bug that inconsistently and inaccurately calculates the width of the timeline on init, so the scrolling of the timeline was off slightly. (This was due to the function being called slightly before all elements had to chance to be created). Fixed with a 300s delay.
-     
+     - A bug that when no buttons are rendered/added, then the timeline appears not to have a width, (added min-width in CSS).     
+
      ### Removed
      - Removed some unnecessary commented out code in the Refresh method.
      
