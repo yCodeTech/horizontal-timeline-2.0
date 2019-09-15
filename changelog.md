@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
      ### Added
      - A proper getMonthName function to make it easier to the event creation.
      - Some CSS to style the text as the default in the event content.
+     - dateOrder option to reverse the order of the date display.
      
      ### Changed
      - Renamed _buttonDisable to _buttonStates to reflect the docs naming. 
