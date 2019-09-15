@@ -38,6 +38,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		minimalFirstDateInterval: true,
 			
 		dateDisplay: "dateTime", // dateTime, date, time, dayMonth, monthYear, year
+		dateOrder: "normal", // normal, reverse
 			
 		autoplay: false,
 		autoplaySpeed: 8, // Sec
@@ -138,10 +139,28 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 			// If no class found at all...
 			else {
-				// Add .selected class to the first events-content and first event date respectively.
-				timelineComponents['eventsContent']
-					.find('li#first').addClass('selected').end()
-					.siblings('.timeline').find('.events').find('a.first').addClass('selected');			
+				// If dateOrder is normal (Ascending)... start from the left.
+				if (this.settings.dateOrder == "normal") {
+					// Add .selected class to the first events-content and first event date respectively.
+					timelineComponents['eventsContent']
+						.find('li#first').addClass('selected').end()
+						.siblings('.timeline').find('.events').find('a.first').addClass('selected');	
+				}
+				// Else dateOrder is reverse (Descending)... start from the right.
+				else if (this.settings.dateOrder == "reverse") {
+					// Add .selected class to the last event.
+					timelineComponents['eventsWrapper'].find('a.last').addClass('selected');
+
+						// Find the selected event
+					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
+						// Get the selected event's date.
+						selectedDate = selectedEvent.data('date');
+					
+					// Find the selected event's content using the date and add selected class to the content.
+					timelineComponents['eventsContent'].find('li[data-date="'+selectedDate+'"]').addClass('selected');
+					
+					this._updateOlderEvents(selectedEvent);	
+				}
 			}
 
 
@@ -237,39 +256,50 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		this._create.date(this, 'append');
 		// (instance, insertMethod (append, before, after [last 2 for addEvent method]), date to insert before/after [from addEvent method])
 		function createDate(self, insertMethod, arrangementDate) {
+			
+			// If dateOrder is normal (starting from the left).
+			if (self.settings.dateOrder == "normal") {
+				// Find the event content.
+				var	$element = 	self.$element.children('.events-content').find('li');
+			}
+			// Else if dateOrder is reverse (starting from the right).  
+			else if (self.settings.dateOrder == "reverse") {
+				var $element = $(self.$element.children('.events-content').find('li').get().reverse());
+			}
+			
 			/* dateTime = the date and time */
 			if(self.settings.dateDisplay == "dateTime") {
-				self.$element.children('.events-content').find('li').each(function() {
+				$element.children('.events-content').find('li').each(function() {
 					self._create.eventDateDisplay(self, $(this), "dateTime", insertMethod, arrangementDate);
 				});
 			}
 			/* date = the date only */
 			else if (self.settings.dateDisplay == "date") {
-				self.$element.children('.events-content').find('li').each(function() {	
+				$element.children('.events-content').find('li').each(function() {	
 					self._create.eventDateDisplay(self, $(this), "date", insertMethod, arrangementDate);
 				});
 			}
 			/* time = the time only */
 			else if (self.settings.dateDisplay == "time") {
-				self.$element.children('.events-content').find('li').each(function() {	
+				$element.children('.events-content').find('li').each(function() {	
 					self._create.eventDateDisplay(self, $(this), "time", insertMethod, arrangementDate);
 				});
 			}
 			/* dayMonth = the day and monthName only */
 			else if (self.settings.dateDisplay == "dayMonth") {
-				self.$element.children('.events-content').find('li').each(function() {
+				$element.children('.events-content').find('li').each(function() {
 					self._create.eventDateDisplay(self, $(this), "dayMonth", insertMethod, arrangementDate);
 				});
 			}
 			/* monthYear = the monthName and year only */
 			else if (self.settings.dateDisplay == "monthYear") {
-				self.$element.children('.events-content').find('li').each(function() {
+				$element.children('.events-content').find('li').each(function() {
 					self._create.eventDateDisplay(self, $(this), "monthYear", insertMethod, arrangementDate);
 				});		
 			}			
 			/* year = the year only */
 			else if (self.settings.dateDisplay == "year") {
-				self.$element.children('.events-content').find('li').each(function() {
+				$element.children('.events-content').find('li').each(function() {
 					self._create.eventDateDisplay(self, $(this), "year", insertMethod, arrangementDate);
 				});
 			}
@@ -668,16 +698,25 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 								
 						//if percentTime is equal or greater than 100
 						if(percentTime >= 100){
-							// If the current index is equal to the total number of events 
-							if(current == this._setup.autoplay.countEvents()) {
+							// If dateOrder is normal AND the current index is equal to the total number of events 
+							// OR dateOrder is reverse AND current index is equal to 1 ...
+							if((this.settings.dateOrder == "normal" && current == this._setup.autoplay.countEvents()) || (this.settings.dateOrder == "reverse" && current == 1)) {
 								// Go back to the start of the cycle. 
 								this._showNewContent(timelineComponents, autoplayTimelineTotalWidth, 'start');
 								// Recalculate the current index to make sure it's reset back to 1 (the start).
 								current = timelineComponents['eventsWrapper'].find('.selected').index();	
 							}
 							else {
-							  // Go to next event content.
-							  this._showNewContent(timelineComponents, autoplayTimelineTotalWidth, 'next');
+								// If dateOrder is normal.
+								if (this.settings.dateOrder == "normal") {
+									// Go to next event content.
+									this._showNewContent(timelineComponents, autoplayTimelineTotalWidth, 'next');
+								}
+								// Else if dateOrder is reverse.
+								else if (this.settings.dateOrder == "reverse") {
+									// Go to next event content.
+									this._showNewContent(timelineComponents, autoplayTimelineTotalWidth, 'prev');
+								}
 							}
 							// Add 1 to the current index
 							current++;
@@ -1236,16 +1275,37 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	Timeline.prototype._showNewContent = function (timelineComponents, timelineTotalWidth, string) {
 		// Show prev/next content
 			// Find the .selected content
-		var visibleContent =  timelineComponents['eventsContent'].find('.selected'),
-			// Find the prev/next content
-			newContent = (string == 'next') ? visibleContent.next() : visibleContent.prev();
-		// If a prev/next content exists...
-		if (newContent.length > 0) {
+		var visibleContent =  timelineComponents['eventsContent'].find('.selected');
+		
+		// If dateOrder is normal...
+		if (this.settings.dateOrder == "normal")
+			// Find the prev/next content for detection later.
+			var newContent = (string == 'next') ? visibleContent.next() : visibleContent.prev();
+		// If dateOrder is reverse
+		else if (this.settings.dateOrder == "reverse") 
+			// Find the prev/next content in reverse fore detection later.
+			var newContent = (string == 'next') ?  visibleContent.prev() : visibleContent.next();
+
+		// If a prev/next content exists
+		// OR dateOrder is reverse AND string is start (for Autoplay)...
+		// This determines whether we can navigate prev or next. 
+		if (newContent.length > 0 || (this.settings.dateOrder == "reverse" && string == 'start')) {
 			// Find the .selected event
 			var selectedDate = timelineComponents['eventsWrapper'].find('.selected'),
 				newEvent;
 			// If start... (For Autoplay), find the first event	 
-			if(string == 'start') newEvent = timelineComponents['eventsWrapper'].find('.first');
+			if(string == 'start') {
+				// If the dateOrder is normal (starting from the left)...
+				if (this.settings.dateOrder == "normal") {
+					// Find the first event.
+					newEvent = timelineComponents['eventsWrapper'].find('.first');
+				}
+				// Else if the dateOrder is reverse (starting from the right)...
+				else if (this.settings.dateOrder == "reverse") {
+					// Find the last event.
+					newEvent = timelineComponents['eventsWrapper'].find('.last');
+				}
+			}
 			// If next, find the next event from the current selected event
 			else if (string == 'next') newEvent = selectedDate.next('a');
 			// If prev, find the prev event from the current selected event
