@@ -1,7 +1,7 @@
 /* -------------------------------- 
  
 Horizontal Timeline 2.0
-    by Studocwho @ yCodeTech
+by Studocwho @ yCodeTech
 	
 Original Horizontal Timeline by CodyHouse
 
@@ -51,12 +51,12 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		useFontAwesomeIcons: true,
 		useNavBtns: true,
 		useScrollBtns: true,
-			
-		iconBaseClass: "fas fa-3x",	
+
+		iconBaseClass: "fas fa-3x",
 		scrollLeft_iconClass: "fa-chevron-circle-left",
-		scrollRight_iconClass: "fa-chevron-circle-right",	
-		prev_iconClass: "fa-arrow-circle-left",
-		next_iconClass: "fa-arrow-circle-right",	
+		scrollRight_iconClass: "fa-chevron-circle-right",
+		prev_iconClass: "fa-arrow-circle-left", 
+		next_iconClass: "fa-arrow-circle-right", 
 		pause_iconClass: "fa-pause-circle",
 		play_iconClass: "fa-play-circle"
         };
@@ -74,9 +74,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 
         this._defaults = defaults;
         this._name = pluginName;
+	this.$element = $(element);
 		
-		this.$element = $(element),
-
         this.init();
     }
     Timeline.prototype.init = function () {
@@ -86,26 +85,25 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		var self = this, 
 		    contentList = this.$element.find('li');
 		if(contentList.length == 0) this.$element.css('opacity', 1).html('<h3>There are no events at this point in time.<br><br>Please add some content.</h3>');
-		
-	    	if (this.settings.useFontAwesomeIcons == true) {
+		if (this.settings.useFontAwesomeIcons == true) {
 			var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
-
+				
 			// Function to load the file
 			// (url, type)	
 			this._addFile(url, 'css');
-    		}	
+		}
 		this._create();
-	    
+		
 		// Wait about 300s to make sure the all elements are created properly.
 		// Otherwise the width of the timeline would report as bigger than it actually is.
 		window.setTimeout($.proxy(function(){
 			timelineComponents = {};
 			this._timelineComponents(timelineComponents);
-
+			
 			this.init.addIdsAndClasses = addIdsAndClasses;
-			this.init.addIdsAndClasses();
-
-			function addIdsAndClasses() {
+			this.init.addIdsAndClasses(this);
+			
+			function addIdsAndClasses(self) {
 				//** Adding IDs and Classes **//
 				if (timelineComponents['eventsContentList'].length == 1) {
 					timelineComponents['eventsContentList'].first().attr('id', 'first');
@@ -116,7 +114,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					timelineComponents['eventsContentList']
 						.first().attr('id', 'first').end()
 						.last().attr('id', 'last');
-
+			
 					// Adds class to the first and last timeline event dates respectively.
 					timelineComponents['timelineEvents']
 						.first().addClass("first").end()
@@ -124,27 +122,33 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 			}
 			//** Select the correct event **//
-
+				
 			// If any events-content has .selected class...
 			if (timelineComponents['eventsContentList'].hasClass('selected')) {
-				    // Get date from data-date attribute
+					// Get date from data-date attribute
 				var date = timelineComponents['eventsContentSelected'].data('date'),
-				    // Find the event date matching the data-date
-				    selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
-
+					// Find the event date matching the data-date
+					selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
+					
 				// Add .selected class to the matched element
 				selectedDate.addClass('selected');
 				// Update all previous dates for styling.
 				this._updateOlderEvents(selectedDate);
 			}
 			// If no class found at all...
-			else {
+			else {				
 				// If dateOrder is normal (Ascending)... start from the left.
 				if (this.settings.dateOrder == "normal") {
-					// Add .selected class to the first events-content and first event date respectively.
-					timelineComponents['eventsContent']
-						.find('li#first').addClass('selected').end()
-						.siblings('.timeline').find('.events').find('a.first').addClass('selected');	
+					// Add .selected class to the first event.
+					timelineComponents['eventsWrapper'].find('a.first').addClass('selected');
+
+						// Find the selected event
+					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
+						// Get the selected event's date.
+						selectedDate = selectedEvent.data('date');
+					
+					// Find the selected event's content using the date and add selected class to the content.
+					timelineComponents['eventsContent'].find('li[data-date="'+selectedDate+'"]').addClass('selected');			
 				}
 				// Else dateOrder is reverse (Descending)... start from the right.
 				else if (this.settings.dateOrder == "reverse") {
@@ -162,8 +166,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					this._updateOlderEvents(selectedEvent);	
 				}
 			}
-
-
+			
+			
 			// Assign a left postion to the single events along the timeline
 			this._setDatePosition(timelineComponents);
 			// Assign a width to the timeline
@@ -173,9 +177,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
 			// The timeline has been initialised - show it
 			this.$element.addClass('loaded');
-
+			
 			this._setup(self, timelineComponents, timelineTotalWidth);
-		}, this), 300);	
+		}, this), 300);
     };	
 	/* Dynamically creates the timeline according to the amount of events. */
 	Timeline.prototype._create = function () {		
@@ -204,7 +208,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		//** Create the timeline HTML **//
 		
 		// Create the timeline element.
-		this.$element.prepend($timelineWrapper)
+		this.$element.prepend($timelineWrapper);
 		// Find the timeline element that was just created
 		var $timeline = this.$element.find('.timeline');
 		
@@ -237,13 +241,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						 .find("#rightNav").append($nextButton).append($scrollRightButton);
 		}
 		// Otherwise, both button sets are disabled and we just need to add the timelineEventsWrapper.
-		else {
+		else { 
 			$timeline.append($timelineEventsWrapper);
 			// Add a 100% min-width to the events-wrapper if the buttons are disabled.
 			// Stops the timeline from disappearing due to apparent no width.
 			$timeline.find('.events-wrapper').css("min-width", "100%");
 		}
-			
+		
 		// Autoplay buttons	
 		// If autoplay is true, create the pause button
 		if (this.settings.autoplay == true)	
@@ -256,7 +260,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		this._create.date(this, 'append');
 		// (instance, insertMethod (append, before, after [last 2 for addEvent method]), date to insert before/after [from addEvent method])
 		function createDate(self, insertMethod, arrangementDate) {
-			
+						
 			// If dateOrder is normal (starting from the left).
 			if (self.settings.dateOrder == "normal") {
 				// Find the event content.
@@ -269,37 +273,37 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 			/* dateTime = the date and time */
 			if(self.settings.dateDisplay == "dateTime") {
-				$element.children('.events-content').find('li').each(function() {
+				$element.each(function() {
 					self._create.eventDateDisplay(self, $(this), "dateTime", insertMethod, arrangementDate);
 				});
 			}
 			/* date = the date only */
 			else if (self.settings.dateDisplay == "date") {
-				$element.children('.events-content').find('li').each(function() {	
+				$element.each(function() {	
 					self._create.eventDateDisplay(self, $(this), "date", insertMethod, arrangementDate);
 				});
 			}
 			/* time = the time only */
 			else if (self.settings.dateDisplay == "time") {
-				$element.children('.events-content').find('li').each(function() {	
+				$element.each(function() {	
 					self._create.eventDateDisplay(self, $(this), "time", insertMethod, arrangementDate);
 				});
 			}
 			/* dayMonth = the day and monthName only */
 			else if (self.settings.dateDisplay == "dayMonth") {
-				$element.children('.events-content').find('li').each(function() {
+				$element.each(function() {
 					self._create.eventDateDisplay(self, $(this), "dayMonth", insertMethod, arrangementDate);
 				});
 			}
 			/* monthYear = the monthName and year only */
 			else if (self.settings.dateDisplay == "monthYear") {
-				$element.children('.events-content').find('li').each(function() {
+				$element.each(function() {
 					self._create.eventDateDisplay(self, $(this), "monthYear", insertMethod, arrangementDate);
 				});		
 			}			
 			/* year = the year only */
 			else if (self.settings.dateDisplay == "year") {
-				$element.children('.events-content').find('li').each(function() {
+				$element.each(function() {
 					self._create.eventDateDisplay(self, $(this), "year", insertMethod, arrangementDate);
 				});
 			}
@@ -485,7 +489,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						else $arrangementEvent.before(dateLink + dayPart + numSuffix(dayPart) + '<br>' + getMonthName(monthPart) +'</a>');
 					}	
 					else if(monthYearDisplay) {
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + getMonthName(monthPart)  + '<br>' + yearPart +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
 						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
 						else $arrangementEvent.before(dateLink + getMonthName(monthPart) + '<br>' + yearPart +'</a>');
@@ -596,7 +600,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// Change the event content to match the selected event.
 				this._updateVisibleContent($this, timelineComponents['eventsContent']);
 				// Translate (scroll) the timeline left or right according to the position of the targeted event date
-				this._updateTimelinePosition($this, timelineComponents);
+				this._updateTimelinePosition($this, timelineComponents, timelineTotalWidth);
 			}, this));
 		
 		//** Autoplay **//
@@ -704,7 +708,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 								// Go back to the start of the cycle. 
 								this._showNewContent(timelineComponents, autoplayTimelineTotalWidth, 'start');
 								// Recalculate the current index to make sure it's reset back to 1 (the start).
-								current = timelineComponents['eventsWrapper'].find('.selected').index();	
+								current = timelineComponents['eventsWrapper'].find('.selected').index();									
 							}
 							else {
 								// If dateOrder is normal.
@@ -718,8 +722,6 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 									this._showNewContent(timelineComponents, autoplayTimelineTotalWidth, 'prev');
 								}
 							}
-							// Add 1 to the current index
-							current++;
 						}
 					} // End isPaused if statement
 				} // End Interval function
@@ -934,7 +936,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// Find the targeted event date using the date					
 					selectedDate = timelineComponents['eventsWrapper'].find(eventDate),
 					// Get the width value of the events (previously set)
-					timelineTotalWidth = timelineComponents['eventsWrapper'].width();
+					timelineTotalWidth = this._setTimelineWidth(timelineComponents);
 				// If a link is targetting the timeline it sits in (itself), then execute the function to translate the timeline	
 				if(targetSelf) translate_gotoTimeline(this);
 				// If not, then use a smooth scroll and then execute the function afterwards.
@@ -970,7 +972,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						pluginRef._updateVisibleContent(selectedDate, timelineComponents['eventsContent']);
 					}
 					// Translate (scroll) the timeline left or right according to the position of the targeted event date
-					pluginRef._updateTimelinePosition(selectedDate, timelineComponents);
+					pluginRef._updateTimelinePosition(selectedDate, timelineComponents, timelineTotalWidth);
 				} // End translate_gotoTimeline() translate function
 			} // End gotoTimeline function						
 		} // End if goToTimelineLink exists
@@ -1028,15 +1030,12 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Swipe right to go left (previous)
 						swipeRight:$.proxy(function(event, direction, distance, duration, fingerCount) {
 							// Show previous content on swipeRight
-							
-							this._setup.swipe(this, 'prev');
-							//this._showNewContent(timelineComponents, this._setTimelineWidth(timelineComponents), 'prev');	
+							this._setup.swipe(this, 'prev');							
 						}, this), 
 						// Swipe left to go right (next)
 						swipeLeft:$.proxy(function(event, direction, distance, duration, fingerCount) {	
 							// Show next content on swipeLeft
-							this._setup.swipe(this, 'next');
-															
+							this._setup.swipe(this, 'next');															
 						}, this),
 						// Swipe distance... 0 = any distance in px
 						threshold:75,
@@ -1122,18 +1121,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 Timeline.prototype.refresh = function () {
 		this._timelineComponents(timelineComponents);
 		
-		// Removes first and last id attributes of the event-content list. 
+		// Removes first and last id attributes of the event-content list.
 		timelineComponents['eventsContent']
 			.find('#first').removeAttr('id').end()
 			.find('#last').removeAttr('id').end();
-
+		
 		// Removes first and last classes from the timeline event date	
 		timelineComponents['eventsWrapper']
 			.find('.first').removeClass('first').end()
-			.find('.last').removeClass('last').end();
-			
+			.find('.last').removeClass('last').end();			
+		
 		// Adds classes and IDs.	
-		this.init.addIdsAndClasses();	
+		this.init.addIdsAndClasses(this);	
 			
 		this._setDatePosition(timelineComponents);
 		timelineTotalWidth = this._setTimelineWidth(timelineComponents);
@@ -1280,12 +1279,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// If dateOrder is normal...
 		if (this.settings.dateOrder == "normal")
 			// Find the prev/next content for detection later.
-			var newContent = (string == 'next') ? visibleContent.next() : visibleContent.prev();
+			var newContent = (string == 'next') ?  visibleContent.next() : visibleContent.prev();
+			
 		// If dateOrder is reverse
 		else if (this.settings.dateOrder == "reverse") 
 			// Find the prev/next content in reverse fore detection later.
 			var newContent = (string == 'next') ?  visibleContent.prev() : visibleContent.next();
-
+		
 		// If a prev/next content exists
 		// OR dateOrder is reverse AND string is start (for Autoplay)...
 		// This determines whether we can navigate prev or next. 
@@ -1293,8 +1293,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// Find the .selected event
 			var selectedDate = timelineComponents['eventsWrapper'].find('.selected'),
 				newEvent;
+				
 			// If start... (For Autoplay), find the first event	 
 			if(string == 'start') {
+				
 				// If the dateOrder is normal (starting from the left)...
 				if (this.settings.dateOrder == "normal") {
 					// Find the first event.
@@ -1307,25 +1309,28 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 			}
 			// If next, find the next event from the current selected event
-			else if (string == 'next') newEvent = selectedDate.next('a');
+			else if (string == 'next')
+				newEvent = selectedDate.next('a');
+				
 			// If prev, find the prev event from the current selected event
-			else if (string == 'prev') newEvent = selectedDate.prev('a');
+			else if (string == 'prev')
+				newEvent = selectedDate.prev('a');
+			
 			this._updateVisibleContent(newEvent, timelineComponents['eventsContent']);
 			newEvent.addClass('selected');
 			selectedDate.removeClass('selected');
 			this._updateFilling(newEvent, timelineComponents['fillingLine'], timelineTotalWidth);
 			this._updateOlderEvents(newEvent);			
-			this._updateTimelinePosition(newEvent, timelineComponents);
+			this._updateTimelinePosition(newEvent, timelineComponents, timelineTotalWidth);
 		}
 	}
 	
-	Timeline.prototype._updateTimelinePosition = function (event, timelineComponents) {
+	Timeline.prototype._updateTimelinePosition = function (event, timelineComponents, timelineTotalWidth) {
 			// Get the css left value of the targeted event date
 		var eventLeft = Number(event.css('left').replace('px', '')),
 			// Get the width value of the .events-wrapper
-			timelineWidth = timelineComponents['timelineWrapper'].width(),
-			// Get the width value of the events (previously set)
-			timelineTotalWidth = timelineComponents['eventsWrapper'].width();
+			timelineWidth = timelineComponents['timelineWrapper'].width();
+			
 		this._translateTimeline(timelineComponents, - eventLeft + timelineWidth/2, timelineWidth - timelineTotalWidth); 
 	}
 	
@@ -1367,7 +1372,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			timelineComponents['timelineEvents'].first().css({'left': '0px','padding-left': '10px'});
 			startingNum = 1;
 		}
-		// i start at 1, meaning starts at 2nd date.
+		// When i starts at 1, it means starts at 2nd date.
 		for (i = startingNum; i < timelineComponents['timelineEvents'].length; i++) {
 			distnew = distprev + dateIntervals;
 			timelineComponents['timelineEvents'].eq(i).css('left', distnew + 'px');
@@ -1391,7 +1396,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		if (totalWidth < wrapperWidth) totalWidth = wrapperWidth;
 	
 		timelineComponents['eventsWrapper'].css('width', totalWidth+'px');
-		this._updateTimelinePosition(timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents);
+		this._updateTimelinePosition(timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents, totalWidth);
 	
 		return totalWidth;
 	}
@@ -1500,10 +1505,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// https://stackoverflow.com/a/14913306/2358222
 		return window.getComputedStyle(this.element,':before').content.replace(/'/g, "").replace(/"/g, "");
 	}
-	
+		
 	//** Button States **//
-	
-	// Function to add or remove inactive class.	
+		
+	// Function to add or remove inactive class.
 	Timeline.prototype._buttonStates = function (timelineComponents, translateValue, totalTranslateValue){
 		var nextButton = timelineComponents['timelineNavigation'].find('.next'),
 			prevButton = timelineComponents['timelineNavigation'].find('.prev'),
@@ -1555,7 +1560,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		if (translateValue == totalTranslateValue) rightButton.addClass('inactive');
 		// If not, then enable the scroll right button
 		else rightButton.removeClass('inactive');
-	} // End buttonStates() function
+	} // End _buttonStates() function
 	
 	// Function to add required js and css files dynamically
 	// (CDN URL of the plugin, file type JS or CSS, callback function)				 
@@ -1663,10 +1668,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
     // e.g. $(element).defaultPluginName('functionName', arg1, arg2)
     $.fn[pluginName] = function ( options ) {
         var args = arguments,
-	    windowWidth = $(window).width(),
-	    dateExists = $(this).find('.events-content').find('li').map(function() {
-		return $(this).data('date');
-	    }).get();
+			windowWidth = $(window).width(),
+			dateExists = $(this).find('.events-content').find('li').map(function() {
+				return $(this).data('date');
+	    	}).get();
 
         // Is the first parameter an object (options), or was omitted,
         // instantiate a new instance of the plugin.
@@ -1681,13 +1686,12 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
                     // pass options to our plugin constructor,
                     // and store the plugin instance
                     // in the elements jQuery data object.
-                    $.data(this, 'plugin_' + pluginName, 
-			   {'originalEventsContent': $(this).find('.events-content').clone()[0], 
-			    'windowWidth': windowWidth, 
-			    'existingDates': dateExists, 
-			    'Timeline': new Timeline(this, options)
-		    	   }
-		    );
+                    $.data(this, 'plugin_' + pluginName, {
+			'originalEventsContent': $(this).find('.events-content').clone()[0], 
+			'windowWidth': windowWidth, 
+			'existingDates': dateExists, 
+			'Timeline': new Timeline(this, options)
+		    });
                 }
             });
 
