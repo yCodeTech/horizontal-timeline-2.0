@@ -44,7 +44,7 @@ html, body {
 /* Timeline */
 .horizontal-timeline .timeline {
 	position: relative;
-	height: 100px;
+	height: auto;
 	margin: 0 auto;
 	display: flex;
 	-ms-flex-wrap: wrap;
@@ -139,11 +139,11 @@ html, body {
 .timeline-navigation {
 	position: relative;
 	top: 3px;
-	-webkit-transform: translateY(-50%);
-	-moz-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	-o-transform: translateY(-50%);
-	transform: translateY(-50%);
+	-webkit-transform: translateY(50%);
+	-moz-transform: translateY(50%);
+	-ms-transform: translateY(50%);
+	-o-transform: translateY(50%);
+	transform: translateY(50%);
 	z-index: 2;
 }
 .timeline-navigation#leftNav {
@@ -171,7 +171,7 @@ html, body {
 /* Autoplay Pause/Play button */
 .timeline-navigation#pausePlay {
 	width: 100%;
-    	top: 10px;
+    	top: -10px;
     	text-align: center;
 }
 /* Event content */
