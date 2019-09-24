@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
      - A bug that inconsistently and inaccurately calculates the width of the timeline on init, so the scrolling of the timeline was off slightly. (This was due to the function being called slightly before all elements had to chance to be created). Fixed with a 300s delay.
      - A bug that when the buttons are disiabled, the timeline appears to not to have a width and disappeared.
      - A persistant bug that shows the horizontal (x) scrollbar when translating the event content, added a line in the CSS.
+     - A bug that broke multiple timelines by using the nav buttons that stored the wrong timeline instance when TouchSwipe was used. 
 
      ### Removed
      - Removed some unnecessary commented out code in the Refresh method.
