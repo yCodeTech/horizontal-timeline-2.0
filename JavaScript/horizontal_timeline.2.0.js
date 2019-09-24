@@ -571,6 +571,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				event.preventDefault();
 				var $this = $(event.target);
 				
+				this._timelineComponents(timelineComponents);
 				timelineTotalWidth = this._setTimelineWidth(timelineComponents);
 				// If next button clicked, shows next content
 				if($this.is('.next')) this._showNewContent(timelineComponents, timelineTotalWidth, 'next');
@@ -587,6 +588,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				event.preventDefault();
 				var $this = $(event.target);
 				
+				this._timelineComponents(timelineComponents);
 				// Remove selected class from all dates.
 				this.$element.find('.events').find('a').removeClass('selected');
 				// Add class to the event date clicked.
