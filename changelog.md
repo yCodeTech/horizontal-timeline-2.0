@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-- ## 2.0.5 Prerelease 2 [[v2.0.5-alpha.2]]() - Upcoming
+- ## 2.0.5 Prerelease 2 [[v2.0.5-alpha.2]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.2) - 27/09/2019
      ### Added
      - A proper getMonthName function to make it easier to the event creation.
      - Some CSS to style the text as the default in the event content.
