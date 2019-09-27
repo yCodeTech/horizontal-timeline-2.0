@@ -13,12 +13,12 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added new inactive button states.
    - Minimal HTML setup, meaning the plugin creates the timeline dynamically according to the total amount of event content.
    - Event dates can now be displayed in various ways: dateTime, date, time, dayMonth, monthYear, year.
-   - Added new autoplay feature with pause/play buttons and adjustable speed.
+   - Added new autoplay feature with a progress bar, pause/play buttons and adjustable speed.
    - Added on hover pause/play functionality for autoplay.
-   - Added a progress bar for autoplay.
    - Added new go-to timeline link with customisable scroll functionality. 
    - Added mouse-wheel support for scrolling the event content.
    - Added TouchSwipe functionality for touch devices.
+   - Added Keyboard arrow key support.
    - Added new refresh, destroy, addEvent, removeEvent methods.
    - Added a new option to disable the loading of the required files.
    - Added new options for the button icons.
@@ -27,6 +27,8 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added an option, dateOrder, allowing the use of reversing the date display.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
+
+Visit the [Changelog](https://github.com/yCodeTech/horizontal-timeline-2.0/blob/master/changelog.md) for details of fixes, changes and additions.
 
 ### Setup
 
@@ -113,13 +115,3 @@ $('#example').horizontalTimeline({
 ```
 
 [Check out the docs](http://horizontal-timeline.ycodetech.co.uk/).
-
-
-##### To do:
-
-- Add support for custom slide animations/transitions using Animate.css
-- Implement a namespaced object data attribute to accomodate the data-date and possibly the custom animations.
-- Add method to dynamically change existing dates and reposition them to reflect their new date order.
-- ~~Add support for Right-to-Left.~~ (In the form of `dateOrder: reverse`.)
-- ~~Rename the disableButton to reflect the docs name of Inactive Button States.~~
-- Rework Autoplay to allow multiple autoplaying timelines per page.
