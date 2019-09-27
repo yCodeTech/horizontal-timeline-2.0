@@ -24,6 +24,7 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added new options for the button icons.
    - Added new options to disable the buttons.
    - Added an option for custom date display text.
+   - Added an option, dateOrder, allowing the use of reversing the date display.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
@@ -89,6 +90,7 @@ $('#example').horizontalTimeline({
    minimalFirstDateInterval: true,
 
    dateDisplay: "dateTime",  // dateTime, date, time, dayMonth, monthYear, year
+   dateOrder: "normal", // normal, reverse
 
    autoplay: false,
    autoplaySpeed: 8,  // Sec

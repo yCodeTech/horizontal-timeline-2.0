@@ -10,11 +10,10 @@ Licensed under the MIT license
 Docs at http://horizontal-timeline.ycodetech.co.uk
 
 -------------------------------- */
-html, body {
-	/* Stop horizontal scrollbar from appearing/disappearing when the content slides across and changes. 
-	Also fixes the fixed flexbox elements from moving along with the transforms.*/
-	height: auto;
-	overflow: auto;
+html, 
+body {
+	/* Stop horizontal scrollbar from appearing/disappearing when the content slides across and changes.*/
+	overflow-x: hidden;
 }
 .horizontal-timeline {
 	opacity: 0;
@@ -43,7 +42,7 @@ html, body {
 /* Timeline */
 .horizontal-timeline .timeline {
 	position: relative;
-	height: 100px;
+	height: auto;
 	margin: 0 auto;
 	display: flex;
 	-ms-flex-wrap: wrap;
@@ -138,11 +137,11 @@ html, body {
 .timeline-navigation {
 	position: relative;
 	top: 3px;
-	-webkit-transform: translateY(-50%);
-	-moz-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	-o-transform: translateY(-50%);
-	transform: translateY(-50%);
+	-webkit-transform: translateY(50%);
+	-moz-transform: translateY(50%);
+	-ms-transform: translateY(50%);
+	-o-transform: translateY(50%);
+	transform: translateY(50%);
 	z-index: 2;
 }
 .timeline-navigation#leftNav {
@@ -170,7 +169,7 @@ html, body {
 /* Autoplay Pause/Play button */
 .timeline-navigation#pausePlay {
 	width: 100%;
-    	top: 10px;
+    	top: -10px;
     	text-align: center;
 }
 /* Event content */
@@ -206,6 +205,9 @@ html, body {
 	background: #ccc;
 	border-radius: 20px;
 	opacity: 0;
+	
+	font-size: 16pt;
+	text-align: center;
 	
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
