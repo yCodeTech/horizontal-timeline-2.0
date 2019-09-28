@@ -1584,13 +1584,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    name = strip[0];
 
 			// If js, check if the name is in a src attribute in a <script> tag
-			if(js) fileExists = $('script[src*="'+name+'"');
+			if(js) fileExists = $('script[src*="'+name+'"]');
 
 			// Else if css, check if the name is in a href attribute in a <link> tag
-			else if (css) fileExists = $('link[href*="'+name+'"');
+			else if (css) fileExists = $('link[href*="'+name+'"]');
 
 			// If loadedFile is undefined/not set, create a new array for the loaded files.
-			if (loadedFile == undefined) loadedFile = new Array();
+			if (typeof loadedFile === 'undefined' || loadedFile === null) loadedFile = new Array();
 
 			// If loadedFile array doesn't include the url AND
 			// the file doesn't exist in the document...
