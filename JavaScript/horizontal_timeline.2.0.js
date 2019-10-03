@@ -860,18 +860,20 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					$this = $(event.target),
 					// Get the go-to href value of the button as the selector
 					href = $this.attr('href'),
-					// Reference the jQuery object selector only once
-					$target = $(href),
 					// A check to see if href only contains a # (by itself)...
 					targetSelf = href == "#"; 
+				
 				// We are using a lonely # to determine if a link is targetting the timeline it sits in (itself)
 				if(targetSelf) {
 					// We are targeting the timeline the link is in.
-						// Get the ID of the outer wrapper of the timeline, from which the link sits in
-					var gotoself = '#' + $this.parents('.horizontal-timeline').attr('id');
-					// Set the target variable as this timeline.
-					$target = $(gotoself);
+					    // Get the ID of the outer wrapper of the timeline, from which the link sits in
+					var gotoself = '#' + $this.parents('.horizontal-timeline').attr('id'),
+					    // Set the target variable as this timeline.
+					    $target = $(gotoself);
 				}
+				// Otherwise we're targetting another timeline.
+				else var $target = $(href); // Reference the jQuery object selector only once
+				
 				// Cache timeline components 
 				// Find the .events-wrapper from the href selector
 				timelineComponents['timelineWrapper'] = $target.find('.events-wrapper');
