@@ -335,13 +335,17 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    yearDisplay = display == "year",
 			    // Find .events for the date display
 			    $eventDateDisplay = self.$element.find('.events'),
-			    dateLink = '<a href="" data-date="'+ dataDate +'">',
-			    // For use with the addEvent plublic method
+			    dateLink = '<a href="" data-date="'+ dataDate +'">';
+			
+			// For use with the addEvent plublic method.
+			// If arrangmentDate isn't undefined or null...
+			if(typeof arrangementDate !== 'undefined' || arrangementDate !== null) { 
 			    // Finds the event with the specific date.
 			    $arrangementEvent = $eventDateDisplay.find("a").filter(function() {
 				var data = self._timelineData($(this), "date");
 				if (data == arrangementDate) return $(this);
 			    });
+			}
 					
 			// Function to add the number suffix st, nd, rd, th (eg: 1st, 2nd, 3rd, 4th)
 			// Part of answer on StackOverflow: https://stackoverflow.com/a/15397495/2358222
