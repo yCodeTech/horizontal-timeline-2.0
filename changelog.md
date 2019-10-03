@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
      ### Fixed
      - A bug in Safari made by a typo in a attribute contains selector.
      - A bug in Safari that couldn't recognise a check for undefined.
+     - A bug for the Go-To Timeline Link relating to an error in jQuery about an unrecognised expression in a selector - a lonely '#' ($('#')).
 
      ### Removed    
 
