@@ -125,10 +125,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				
 			// If any events-content has .selected class...
 			if (timelineComponents['eventsContentList'].hasClass('selected')) {
-					// Get date from data-date attribute
-				var date = timelineComponents['eventsContentSelected'].data('date'),
-					// Find the event date matching the data-date
-					selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
+				    // Get date from data-attribute
+				var date = this._timelineData(timelineComponents['eventsContentSelected'], "date"),
+				    // Find the event date matching the date
+				    selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+					var data = this._timelineData($(element), "date");
+					if (data == date) return $(element);
+				    }, this));
 					
 				// Add .selected class to the matched element
 				selectedDate.addClass('selected');
@@ -142,26 +145,32 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// Add .selected class to the first event.
 					timelineComponents['eventsWrapper'].find('a.first').addClass('selected');
 
-						// Find the selected event
+				  	    // Find the selected event
 					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
-						// Get the selected event's date.
-						selectedDate = selectedEvent.data('date');
+					    // Get the selected event's date.
+					    selectedDate = this._timelineData(selectedEvent, "date");
 					
 					// Find the selected event's content using the date and add selected class to the content.
-					timelineComponents['eventsContent'].find('li[data-date="'+selectedDate+'"]').addClass('selected');			
+					timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == selectedDate) $(element).addClass('selected');
+					}, this));			
 				}
 				// Else dateOrder is reverse (Descending)... start from the right.
 				else if (this.settings.dateOrder == "reverse") {
 					// Add .selected class to the last event.
 					timelineComponents['eventsWrapper'].find('a.last').addClass('selected');
 
-						// Find the selected event
+					    // Find the selected event
 					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
-						// Get the selected event's date.
-						selectedDate = selectedEvent.data('date');
+					    // Get the selected event's date.
+					    selectedDate = this._timelineData(selectedEvent, "date");
 					
 					// Find the selected event's content using the date and add selected class to the content.
-					timelineComponents['eventsContent'].find('li[data-date="'+selectedDate+'"]').addClass('selected');
+					timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == selectedDate) $(element).addClass('selected');
+					}, this));
 					
 					this._updateOlderEvents(selectedEvent);	
 				}
@@ -311,12 +320,12 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		/* Function to create the event date display  
 		(instance, element, displayType, insertMethod (append, before, after [last 2 for addEvent method]), date to insert before/after [from addEvent method])*/
 		function eventDateDisplay(self, eventElement, display, insertMethod, arrangementDate) {
-			    // Get date from data-date attribute
-			var dataDate = eventElement.data('date'),
+			    // Get date from data-attribute
+			var dataDate = self._timelineData(eventElement, "date"),
 			    // Check if element data-date format is DD/MM/YYYYTHH:MM by checking for 'T'
-			    isDateTime = eventElement.is('[data-date*="T"]'),
+			    isDateTime = dataDate.includes("T"),
 			    // Check if element data-date format is HH:MM by checking for ':' but doesn't have 'T'
-			    isTime = eventElement.not('[data-date*="T"]').is('[data-date*=":"]'),
+			    isTime = !isDateTime && dataDate.includes(":"),
 			    // Display type checks
 			    dateTimeDisplay = display == "dateTime",
 			    dateDisplay = display == "date",
@@ -329,7 +338,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    dateLink = '<a href="" data-date="'+ dataDate +'">',
 			    // For use with the addEvent plublic method
 			    // Finds the event with the specific date.
-			    $arrangementEvent = $eventDateDisplay.find('a[data-date="'+ arrangementDate +'"]');
+			    $arrangementEvent = $eventDateDisplay.find("a").filter(function() {
+				var data = self._timelineData($(this), "date");
+				if (data == arrangementDate) return $(this);
+			    });
 					
 			// Function to add the number suffix st, nd, rd, th (eg: 1st, 2nd, 3rd, 4th)
 			// Part of answer on StackOverflow: https://stackoverflow.com/a/15397495/2358222
@@ -353,7 +365,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 			
 			var dateExists = $eventDateDisplay.children('a').map(function() {
-				return $(this).data('date');
+				var data = $(this).data('horizontal-timeline');
+				
+				return data.date;
 			    }).get();
 			
 			if(jQuery.inArray(dataDate, dateExists) == -1) {
@@ -376,16 +390,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					/* Add the event date displays according to the display types */
 					
 					// Custom Date Display
-					// If element has a data-custom-display attribute...
-					if(eventElement.data('custom-display')) {
-						// Get the custom text from the data-attribute.
-						var customData = eventElement.data('customDisplay');
+					
+					// Get the custom text from the data-attribute object.
+					var customDisplay = self._timelineData(eventElement, "customDisplay");
+					
+					// If customDisplay is defined in the data-attribute object...
+					if(typeof customDisplay !== 'undefined') { 
 
 						// Add in the custom Text depending on which insertMethod used.
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customDisplay +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
-						else $arrangementEvent.before(dateLink + customData +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customDisplay +'</a>');
+						else $arrangementEvent.before(dateLink + customDisplay +'</a>');
 					}					
 					
 					else if(dateTimeDisplay) {
@@ -431,16 +447,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					/* Add the event date displays according to the display types */
 					
 					// Custom Date Display
-					// If element has a data-custom-display attribute...
-					if(eventElement.data('custom-display')) {
-						// Get the custom text from the data-attribute.
-						var customData = eventElement.data('customDisplay');
+					
+					// Get the custom text from the data-attribute object.
+					var customDisplay = self._timelineData(eventElement, "customDisplay");
+					
+					// If customDisplay is defined in the data-attribute object...
+					if(typeof customDisplay !== 'undefined') { 
 
 						// Add in the custom Text depending on which insertMethod used.
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customDisplay +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
-						else $arrangementEvent.before(dateLink + customData +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customDisplay +'</a>');
+						else $arrangementEvent.before(dateLink + customDisplay +'</a>');
 					}					
 					
 					else if(dateTimeDisplay || timeDisplay) {
@@ -464,16 +482,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					/* Add the event date displays according to the display types */
 					
 					// Custom Date Display
-					// If element has a data-custom-display attribute...
-					if(eventElement.data('custom-display')) {
-						// Get the custom text from the data-attribute.
-						var customData = eventElement.data('customDisplay');
+					
+					// Get the custom text from the data-attribute object.
+					var customDisplay = self._timelineData(eventElement, "customDisplay");
+					
+					// If customDisplay is defined in the data-attribute object...
+					if(typeof customDisplay !== 'undefined') { 
 
 						// Add in the custom Text depending on which insertMethod used.
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customDisplay +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
-						else $arrangementEvent.before(dateLink + customData +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customDisplay +'</a>');
+						else $arrangementEvent.before(dateLink + customDisplay +'</a>');
 					}					
 					
 					else if(dateTimeDisplay || dateDisplay) {
@@ -933,12 +953,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					else easing = scrollDefaults.easing;
 				}		
 
-					// Attribute selector to find the event using the date 
-				var	eventDate = 'a[data-date="'+ date +'"]',
 					// Find all event dates.
-					prevDates = timelineComponents['eventsWrapper'].find('a'),
+				var	prevDates = timelineComponents['eventsWrapper'].find('a'),
 					// Find the targeted event date using the date					
-					selectedDate = timelineComponents['eventsWrapper'].find(eventDate),
+					selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == date) return $(element);
+					}, this)),
+				    
 					// Get the width value of the events (previously set)
 					timelineTotalWidth = this._setTimelineWidth(timelineComponents);
 				// If a link is targetting the timeline it sits in (itself), then execute the function to translate the timeline	
@@ -1117,7 +1139,15 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 		} // End useKeyboardKeys this.settings		
 	} // End _setup() function.
-   
+   	
+	/* Get data from the data-attribute object */
+	Timeline.prototype._timelineData = function (element, type) {
+		var data = element.data('horizontal-timeline');
+		
+		if(type == "date") return data.date;
+		else if(type == "customDisplay") return data.customDisplay;
+	}
+	
 	/* Refresh public method 
 	 *  - refreshes the timeline externally after initialisation.
 	 *  Use it like: $('#example').horizontalTimeline('refresh');
@@ -1187,17 +1217,21 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 */
 	Timeline.prototype.addEvent = function (html, insertMethod, arrangementDate) {
 		this._timelineComponents(timelineComponents);
-			// Make an data-date attribute selector with the arrangementDate
-		var dataDate = '[data-date="'+ arrangementDate +'"]',
-			newDate = html.split("data-date")[1].split('"'),
+		
+			// Get the new date from the HTML.
+		var	newDate = html.split("date")[1].split('"')[2],
 			// Select the specified event content
-			$eventContent = timelineComponents['eventsContent'].find('li'+dataDate),
+			$eventContent = timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == arrangementDate) return $(element);
+			}, this)),
 			// Find the selected event. 
 			$selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
+		    	// Get the existing dates array.
 			existingDates = this.$element.data('plugin_'+ this._name)['existingDates'];
 			
-		if(jQuery.inArray(newDate[1], existingDates) == -1) {	
-			existingDates.push(newDate[1]);
+		if(jQuery.inArray(newDate, existingDates) == -1) {	
+			existingDates.push(newDate);
 			// If the insertMethod = before, then insert the new content before the specified date.	
 			if (insertMethod == 'before') $eventContent.before(html);
 			// Else the insertMethod = after, insert the new content after the specified date.
@@ -1220,13 +1254,23 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 */
 	Timeline.prototype.removeEvent = function (date) {
 		this._timelineComponents(timelineComponents);
-			// Make an data-date attribute selector with the date
-		var dataDate = '[data-date="'+ date +'"]',
+		
 			// Select the specified timeline event
-			$event = timelineComponents['eventsWrapper'].find('a'+dataDate),
+		var     $event = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == date) return $(element);
+			}, this)),	
 			// Select the specified event content
-			$eventContent = timelineComponents['eventsContent'].find('li'+dataDate),
-			$newEvent;
+			$eventContent = timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == date) return $(element);
+			}, this)),
+			$newEvent,
+		    	// Get the existing dates array.
+			existingDates = this.$element.data('plugin_'+ this._name)['existingDates'],
+			// Find the index of the date in the array.
+			index = existingDates.indexOf(date);
+		
 		// If there's more than 1 timeline events (We can't remove the very last event)...	
 		if (timelineComponents['timelineEvents'].length > 1) {
 			// If the specified event is selected...
@@ -1257,6 +1301,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			$event.remove();
 			// Remove the event content.
 			$eventContent.remove();
+			
+			// If the existing date exists...
+			if (index > -1) {
+				// Remove the existing date from the array.
+				existingDates.splice(index, 1);
+			}
+			
 			// Call the refresh function to fresh the timeline accordingly.	
 			this.refresh();
 		}
@@ -1408,9 +1459,12 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	}
 	
 	Timeline.prototype._updateVisibleContent = function (event, eventsContent) {
-		var eventDate = event.data('date'),
+		var eventDate = this._timelineData(event, "date");
 			visibleContent = eventsContent.find('.selected'),
-			selectedContent = eventsContent.find('[data-date="'+ eventDate +'"]'),
+			selectedContent = eventsContent.find("li").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == eventDate) return $(element);
+			}, this)),
 			selectedContentHeight = selectedContent.outerHeight();
 
 		if (selectedContent.index() > visibleContent.index()) {
@@ -1673,11 +1727,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
     // with an underscore) to be called via the jQuery plugin,
     // e.g. $(element).defaultPluginName('functionName', arg1, arg2)
     $.fn[pluginName] = function ( options ) {
-        var args = arguments,
+        var args = 	arguments,
 			windowWidth = $(window).width(),
 			dateExists = $(this).find('.events-content').find('li').map(function() {
-				return $(this).data('date');
-	    	}).get();
+				var data = $(this).data('horizontal-timeline');
+				
+				return data.date;
+	    		}).get();
 
         // Is the first parameter an object (options), or was omitted,
         // instantiate a new instance of the plugin.
