@@ -1660,7 +1660,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// File isn't loaded yet...				
 				// If adding js...
 				if(js) {
-					console.log(name + ' plugin isn\'t loaded.', this.$element);	
+					console.groupCollapsed(name + ' on ' + this.$element.attr('id') + " timeline");
+					console.log('The plugin isn\'t loaded.');
+					
 					// Load the plugin dynamically via Ajax.
 					$.getScript(url)
 						.done(function(script, textStatus) {
@@ -1671,16 +1673,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						.fail(function(jqxhr, settings, exception) {
 							console.error("Failed to get " + url + "\n" + jqxhr + "\n" + this.settings + "\n" + exception);
 						}); // End $.getScript function
-					console.log(name + ' was loaded dynamically.', this.$element);	
+					
+					console.log('It was loaded dynamically.');	
 				}
 				// Else if adding CSS...
 				else if (css) {
-					console.log(name + ' isn\'t loaded.');
+					console.groupCollapsed(name);
+					console.log('The plugin isn\'t loaded.');
+					
 					// Add a the CSS file in a new <link> after the last <link> in the head.
 					$('<link>').attr({'href':url, 'rel':'stylesheet', 'type':"text/css"}).insertAfter(
 						$('head').find('link').last()
 					);
-					console.log(name + ' was loaded dynamically.');
+					console.log('It was loaded dynamically.');
 				}
 				// Push/add the url to the loadedFile array to check against.
 				loadedFile.push(url);
@@ -1693,7 +1698,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			else if (fileExists.length && loadedFile.indexOf(url) == -1) {
 				// The file is already loaded in the document via a <script> tag...
 				if(js) {
-					console.log(name+' has already been loaded by a <script> tag in the document, no need to load it again. Timeline instance:', this.$element);
+					console.groupCollapsed(name + ' on ' + this.$element.attr('id') + " timeline");
+					console.log('The plugin has already been loaded in the document via a <script> tag, no need to load it again.');
+					
 					// Execute the plugin via the callback option.
 					// Check if callback is a function, if it is then set a variable as the callback to be called.
 					if (typeof callback === "function") callback(this);
@@ -1704,7 +1711,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// Else the plugin has already been loaded...
 			else {
 				if(js) {
-					console.log(name+' has already been loaded, no need to load it again. Timeline instance:', this.$element);
+					console.groupCollapsed(name + ' on ' + this.$element.attr('id') + " timeline");
+					console.log('The plugin has already been loaded, no need to load it again.');
+					
 					// Execute the plugin via the callback option.
 					// Check if callback is a function, if it is then set a variable as the callback to be called.
 					if (typeof callback === "function") callback(this);
@@ -1712,8 +1721,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 
 			if(js) {
-				console.log(name+" executed on timeline instance: ", this.$element);
+				console.log('Executed on:', this.$element);
 			}
+			console.groupEnd();
+			
 			// Save the loadedFile array as data to the body to be able to reload it next time it's accessed.
 			$('body').data('plugin_'+ this._name +'_loadedFile', loadedFile);
 		} // End if addRequiredFile statement.
