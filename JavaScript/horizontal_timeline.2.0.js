@@ -322,9 +322,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		function eventDateDisplay(self, eventElement, display, insertMethod, arrangementDate) {
 			    // Get date from data-attribute
 			var dataDate = self._timelineData(eventElement, "date"),
-			    // Check if element data-date format is DD/MM/YYYYTHH:MM by checking for 'T'
+			    // Check if element date format is DD/MM/YYYYTHH:MM by checking for 'T'
 			    isDateTime = dataDate.includes("T"),
-			    // Check if element data-date format is HH:MM by checking for ':' but doesn't have 'T'
+			    // Check if element date format is HH:MM by checking for ':' but doesn't have 'T'
 			    isTime = !isDateTime && dataDate.includes(":"),
 			    // Display type checks
 			    dateTimeDisplay = display == "dateTime",
@@ -1253,7 +1253,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	
 	/* RemoveEvent public method 
 	 * - removes the specified event from the timeline externally after initialisation.
-	 * Removes the event and the event content from the timeline using the unique date used in data-date.
+	 * Removes the event and the event content from the timeline using the unique date used in data-attribute.
 	 * Use it like: $('#example').horizontalTimeline('removeEvent', '01/01/2001'); 
 	 */
 	Timeline.prototype.removeEvent = function (date) {
