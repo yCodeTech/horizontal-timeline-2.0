@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
      
      ### Changed
      - A lot of the data attribute code to implement the single attribute.
+     - The console logs in the addFile function to group the logs and reduce the clutter.
      
      ### Fixed
      - A bug in Safari made by a typo in a attribute contains selector.
