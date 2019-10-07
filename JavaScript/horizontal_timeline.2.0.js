@@ -180,7 +180,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// Assign a left postion to the single events along the timeline
 			this._setDatePosition(timelineComponents);
 			// Assign a width to the timeline
-			var timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+			timelineTotalWidth = this._setTimelineWidth(timelineComponents);
 			// Set the filling line to the selected event
 			this._updateFilling(timelineComponents['eventsWrapper']
 				.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
@@ -335,7 +335,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    yearDisplay = display == "year",
 			    // Find .events for the date display
 			    $eventDateDisplay = self.$element.find('.events'),
-			    dateLink = '<a href="" data-date="'+ dataDate +'">';
+			    dateLink = '<a href="" data-horizontal-timeline=\'{"date": "'+ dataDate +'"}\'>';
 			
 			// For use with the addEvent plublic method.
 			// If arrangmentDate isn't undefined or null...
@@ -1368,12 +1368,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 			}
 			// If next, find the next event from the current selected event
-			else if (string == 'next')
-				newEvent = selectedDate.next('a');
+			else if (string == 'next') newEvent = selectedDate.next('a');
 				
 			// If prev, find the prev event from the current selected event
-			else if (string == 'prev')
-				newEvent = selectedDate.prev('a');
+			else if (string == 'prev') newEvent = selectedDate.prev('a');
 			
 			this._updateVisibleContent(newEvent, timelineComponents['eventsContent']);
 			newEvent.addClass('selected');
@@ -1490,7 +1488,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					  
 		eventsContent.height(selectedContentHeight+'px');			  
 					  
-		if (this.settings.autoplay == true && !this.$element.data('plugin_'+ this._name)['mouseEvent']) this._setup.autoplay.moved(this);
+		if (this.settings.autoplay == true && !this.$element.data('plugin_'+ this._name)['mouseEvent']) 
+			this._setup.autoplay.moved(this);
 	}
 	
 	Timeline.prototype._updateOlderEvents = function (event) {
