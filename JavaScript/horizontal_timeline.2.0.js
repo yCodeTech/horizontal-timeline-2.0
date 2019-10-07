@@ -339,7 +339,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 			// For use with the addEvent plublic method.
 			// If arrangmentDate isn't undefined or null...
-			if(typeof arrangementDate !== 'undefined' || arrangementDate !== null) { 
+			if(typeof arrangementDate != 'undefined' || arrangementDate != null) { 
 			    // Finds the event with the specific date.
 			    $arrangementEvent = $eventDateDisplay.find("a").filter(function() {
 				var data = self._timelineData($(this), "date");
