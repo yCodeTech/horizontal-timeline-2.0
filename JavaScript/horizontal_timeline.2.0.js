@@ -369,9 +369,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 			
 			var dateExists = $eventDateDisplay.children('a').map(function() {
-				var data = $(this).data('horizontal-timeline');
-				
-				return data.date;
+				if ($(this).data('horizontal-timeline')) {
+					var data = $(this).data('horizontal-timeline');
+
+					return data.date;
+				}
+				// data-date deprecated as of v2.0.5.alpha.3 
+				// and will be removed in a later major version.
+				else {
+					var dataDate = $(this).data('date');
+
+					return dataDate;
+				}
 			    }).get();
 			
 			if(jQuery.inArray(dataDate, dateExists) == -1) {
@@ -1146,10 +1155,21 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
    	
 	/* Get data from the data-attribute object */
 	Timeline.prototype._timelineData = function (element, type) {
-		var data = element.data('horizontal-timeline');
+		if (element.data('horizontal-timeline')) {
+			var data = element.data('horizontal-timeline');
 		
-		if(type == "date") return data.date;
-		else if(type == "customDisplay") return data.customDisplay;
+			if(type == "date") return data.date;
+			else if(type == "customDisplay") return data.customDisplay;
+		}
+		// data-date and data-custom-display deprecated as of v2.0.5.alpha.3 
+		// and will be removed in a later major version.
+		else {
+			var dataDate = element.data('date'),
+				dataCustomDisplay = element.data('custom-display');
+		
+			if(type == "date") return dataDate;
+			else if(type == "customDisplay") return dataCustomDisplay;
+		}
 	}
 	
 	/* Refresh public method 
@@ -1744,9 +1764,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
         var args = 	arguments,
 			windowWidth = $(window).width(),
 			dateExists = $(this).find('.events-content').find('li').map(function() {
-				var data = $(this).data('horizontal-timeline');
+				if ($(this).data('horizontal-timeline')) {
+					var data = $(this).data('horizontal-timeline');
 				
-				return data.date;
+					return data.date;
+				}
+				// data-date deprecated as of v2.0.5.alpha.3 
+				// and will be removed in a later major version.
+				else {
+					var dataDate = $(this).data('date');
+				
+					return dataDate;
+				}
 	    		}).get();
 
         // Is the first parameter an object (options), or was omitted,
