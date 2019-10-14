@@ -4,10 +4,10 @@ All notable changes to this project will be documented in this file.
 
 - ## 2.0.5 Prerelease 3 [[v2.0.5-alpha.3]]() - Upcoming
      ### Added
-     - A new way to use data-attributes on the HTML. Introducting a singular data-attribute (data-horizontal-timeline) that houses all the previously-used data-date and data-custom-display.
+     - A combined singular data-attribute, `data-horizontal-timeline`, that houses the previously-used data-date and data-custom-display.
      
      ### Changed
-     - A lot of the data attribute code to implement the single attribute.
+     - A lot of the data attribute code to implement the combined single attribute.
      - The console logs in the addFile function to group the logs and reduce the clutter.
      
      ### Fixed
@@ -15,8 +15,8 @@ All notable changes to this project will be documented in this file.
      - A bug in Safari that couldn't recognise a check for undefined.
      - A bug for the Go-To Timeline Link relating to an error in jQuery about an unrecognised expression in a selector - a lonely '#' ($('#')).
 
-     ### Removed 
-     - Removed the use of multiple data-attributes such the date and custom-display.
+     ### Deprecated 
+     - The use of multiple data attributes, data-date and data-custom-display.
 
 - ## 2.0.5 Prerelease 2 [[v2.0.5-alpha.2]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.2) - 27/09/2019
      ### Added
