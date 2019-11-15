@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 - ## 2.0.5 Prerelease 3 [[v2.0.5-alpha.3]]() - Upcoming
      ### Added
      - A combined singular data-attribute, `data-horizontal-timeline`, that houses the previously-used data-date and data-custom-display.
+     - 3 new options to customise the slide animations using classes.
      
      ### Changed
      - A lot of the data attribute code to implement the combined single attribute.
