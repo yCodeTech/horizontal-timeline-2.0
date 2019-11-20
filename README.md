@@ -6,29 +6,21 @@ Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a JavaScri
 
 Version 2.0 adds functionality that has been previously requested for the original version, and more:
    - Transformed into a jQuery plugin, with support for multiple timeline instances utilising ID's.
-   - Uniform event date intervals replaces the scattered style.
-   - Added new minimal first date interval.
-   - Renamed prev/next buttons to scroll-left/scroll-right to reflect their functionality.
-   - Added new prev/next buttons to change the event content.
-   - Added new inactive button states.
-   - Minimal HTML setup, meaning the plugin creates the timeline dynamically according to the total amount of event content.
-   - Event dates can now be displayed in various ways: dateTime, date, time, dayMonth, monthYear, year.
-   - Added new autoplay feature with a progress bar, pause/play buttons and adjustable speed.
-   - Added on hover pause/play functionality for autoplay.
-   - Added new go-to timeline link with customisable scroll functionality. 
-   - Added mouse-wheel support for scrolling the event content.
-   - Added TouchSwipe functionality for touch devices.
-   - Added Keyboard arrow key support.
+   - Uniform event date intervals replaces the scattered distanced style, with an option for a minimal first date interval.
+   - Renamed prev/next buttons to scroll-left/scroll-right to reflect their functionality, added the real prev/next buttons to change the event content, added an option to disable the buttons altogether, and implemented new inactive button states.
+   - Setup is now easier with minimal HTML, that allows the timeline to be created dynamically according to the total amount of event content, which has a natural support for ordering and reversing.
+   - Event dates can now be displayed in various types: dateTime, date, time, dayMonth, monthYear, year, with completely customisable display text, and a new option for advanced reversing of the order and selection of the events.
+   - Added new autoplay feature with a progress bar, pause/play buttons, adjustable speed and on-hover pause functionality.
+   - Added new go-to timeline link with customisable scroll functionality.
+   - Added support for mouse-wheel scrolling, touch and swipe for touch devices, and keyboard arrow keys, with the option to disable the loading of the required plugin files.
    - Added new refresh, destroy, addEvent, removeEvent methods.
-   - Added a new option to disable the loading of the required files.
-   - Added new options for the button icons.
-   - Added new options to disable the buttons.
-   - Added an option for custom date display text.
-   - Added an option, dateOrder, allowing the use of reversing the date display.
+   - Added new options to change the button icons and to disable the use of the Font Awesome icon library.
+   - **Deprecated** the use of multiple data attributes, _data-date_ and _data-custom-display_, in favour of the all new combined singular data attribute, _data-horizontal-timeline_, that utilises an object to house all previously-used data.
+   - Added new animation options to customise the event content animation.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
-Visit the [Changelog](https://github.com/yCodeTech/horizontal-timeline-2.0/blob/master/changelog.md) for details of fixes, changes and additions.
+Visit the [Changelog](https://github.com/yCodeTech/horizontal-timeline-2.0/blob/master/changelog.md) for details of fixes, changes, additions and removals.
 
 ### Setup
 
@@ -59,10 +51,10 @@ Unlike the original, 2.0 dynamically creates the timeline according to the amoun
 <div class="horizontal-timeline" id="example">
    <div class="events-content">
       <ol>
-         <li class="selected" data-date="16/01/2014">
+         <li class="selected" data-horizontal-timeline='{"date": "16/01/2014", "customDisplay": "Custom Text"}'>
             // Event description here
          </li>
-         <li data-date="23/05/2015">
+         <li data-horizontal-timeline='{"date": "23/05/2015"}'>
             // Event description here
          </li>
          …etc.
@@ -104,14 +96,31 @@ $('#example').horizontalTimeline({
    useNavBtns: true,
    useScrollBtns: true,
 			
-   iconBaseClass: "fas fa-3x",
+   iconBaseClass: "fas fa-3x", // Space separated class names
    scrollLeft_iconClass: "fa-chevron-circle-left",
    scrollRight_iconClass: "fa-chevron-circle-right",
    prev_iconClass: "fa-arrow-circle-left",
    next_iconClass: "fa-arrow-circle-right",
    pause_iconClass: "fa-pause-circle",
-   play_iconClass: "fa-play-circle"
+   play_iconClass: "fa-play-circle",
+   
+   animation_baseClass: "animationSpeed", // Space separated class names
+   enter_animationClass: {
+      "left": "enter-left",
+      "right": "enter-right"
+   },
+   exit_animationClass: {
+      "left": "exit-left",
+      "right": "exit-right"
+   },
 });
 ```
 
 [Check out the docs](http://horizontal-timeline.ycodetech.co.uk/).
+
+## Known Issues
+
+- Autoplay can't be set on multiple timelines, meaning the maximum per page is 1.
+- The event content animation can become stuck between classes and glitch out.
+
+These issues are hopefully going to be fixed in the future. If you want to help me out and fix any of these issues yourself, please do so and make a pull request for me to review and merge it with the plugin. All help will be appreciated.
