@@ -715,8 +715,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				};
 				// Interval function.
 				function interval() {
-					// If isPaused = false, start the autoplay cycle, otherwise pause the cycle.
-					if(isPaused === false){
+					// If isPaused = false AND is in the viewport, start the autoplay cycle, otherwise pause the cycle.
+					if(isPaused === false && this._elementInViewport(this.element)){
 						// Set percentTime using the speed from the settings.
 						// Check media queries...
 						var checkMQ = this._checkMQ();
