@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
      - A lot of the data attribute code to implement the combined single attribute.
      - The console logs in the `addFile` function to group the logs and reduce the clutter.
      - Renamed the default CSS animation exiting class from the prefix `leave-` to `exit-`
+     - Autoplay will now stop playing if not in the viewport.
      
      ### Fixed
      - A bug in Safari made by a typo in a attribute contains selector.
