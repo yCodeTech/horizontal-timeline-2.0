@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
      - The console logs in the `addFile` function to group the logs and reduce the clutter.
      - Renamed the default CSS animation exiting class from the prefix `leave-` to `exit-`
      - Autoplay will now stop playing if not in the viewport.
+     - When autoplay is in the paused state and the content changes, upon playing again, the progress bar will reset to the start.
      
      ### Fixed
      - A bug in Safari made by a typo in a attribute contains selector.
