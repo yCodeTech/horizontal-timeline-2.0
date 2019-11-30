@@ -109,7 +109,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// Wait about 300s to make sure the all elements are created properly.
 		// Otherwise the width of the timeline would report as bigger than it actually is.
 		window.setTimeout($.proxy(function(){
-			timelineComponents = {};
+			var timelineTotalWidth,
+			    timelineComponents = {};
+			
 			this._timelineComponents(timelineComponents);
 			
 			this.init.addIdsAndClasses = addIdsAndClasses;
@@ -697,7 +699,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				var isPaused, 
 				    tick,
 				    percentTime,
-				    current, 
+				    current,
+				    autoplayTimelineTotalWidth,
 				    // Get the speed from the settings.
 				    speed = Number(self.settings.autoplaySpeed),
 				    // Get the button wrapper.
