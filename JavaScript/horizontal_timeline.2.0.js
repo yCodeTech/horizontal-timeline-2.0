@@ -1543,7 +1543,6 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			.one(animationEvent, function(){
 				// Remove all enter and exit classes from all the event content.
 				eventsContent.find('li').removeClass(allClasses);
-				selectedContent.removeClass('enter-left enter-right');
 			})
 			// And then remove the selected class.
 			.removeClass('selected');
