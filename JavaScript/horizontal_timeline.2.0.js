@@ -1506,14 +1506,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    // Set the selected and the enter right classes.
 			var classEntering = 'selected '+ enterObj.right,
 			    // Set the exit left class.
-			    classLeaving = exitObj.left;
+			    classExiting = exitObj.left;
 		} 
 		// Else, we have selecting an event to the left.
 		else {
 			    // Set the selected and the enter left classes.
 			var classEntering = 'selected ' + enterObj.left,
 			    // Set the exit right class.
-			    classLeaving = exitObj.right;
+			    classExiting = exitObj.right;
 		}	
 		
 		/* Add/remove classes to animate them in and out using CSS3. */
