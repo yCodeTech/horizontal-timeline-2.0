@@ -17,6 +17,7 @@ body {
 }
 .horizontal-timeline {
 	opacity: 0;
+	width: 100%;
 	margin: 2em auto;
 	-webkit-transition: opacity 0.2s;
 	-moz-transition: opacity 0.2s;
@@ -51,7 +52,7 @@ body {
 .horizontal-timeline .events-wrapper {
 	position: relative;
 	/* Fixed up a bug where if the date display was split into two lines 
-	half of the top was cut off (Changed the height to accomodate) */
+	half of the top was cut off (Changed the height to accommodate) */
 	height: 80px;
 	overflow: hidden;
 	-ms-flex: 1 1 auto!important;
@@ -107,6 +108,7 @@ body {
 	-ms-transform: translateZ(0);
 	-o-transform: translateZ(0);
 	transform: translateZ(0);
+	user-select: none;
 }
 /* Dots for the event dates on the timeline */
 .horizontal-timeline .events a::after {
@@ -191,7 +193,8 @@ body {
 	padding: 0 20px;
 }
 .horizontal-timeline .events-content .progressBar {
-  	width: 0;
+  	width: 0%;
+  	max-width: 100%;
   	height: inherit;
   	background: #002bff;
 }
@@ -216,13 +219,9 @@ body {
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 	
-	-webkit-animation-duration: 0.4s;
-	-moz-animation-duration: 0.4s;
-	animation-duration: 0.4s;
-	
-	-webkit-transition: opacity 0.4s 0.2s;
-	-moz-transition: opacity 0.4s 0.2s;
-	transition: opacity 0.4s 0.2s;
+	-webkit-transition: opacity 1s;
+	-moz-transition: opacity 1s;
+	transition: opacity 1s;
 }
 /* The selected events content */
 .horizontal-timeline .events-content li.selected {
@@ -232,22 +231,28 @@ body {
 }
 /* Event content animations */
 .horizontal-timeline .events-content li.enter-right, 
-.horizontal-timeline .events-content li.leave-right {
+.horizontal-timeline .events-content li.exit-right {
 	-webkit-animation-name: timeline-enter-right;
 	-moz-animation-name: timeline-enter-right;
 	animation-name: timeline-enter-right;
 }
 .horizontal-timeline .events-content li.enter-left, 
-.horizontal-timeline .events-content li.leave-left {
+.horizontal-timeline .events-content li.exit-left {
 	-webkit-animation-name: timeline-enter-left;
 	-moz-animation-name: timeline-enter-left;
 	animation-name: timeline-enter-left;
 }
-.horizontal-timeline .events-content li.leave-right, 
-.horizontal-timeline .events-content li.leave-left {
+.horizontal-timeline .events-content li.exit-right, 
+.horizontal-timeline .events-content li.exit-left {
 	-webkit-animation-direction: reverse;
 	-moz-animation-direction: reverse;
 	animation-direction: reverse;
+}
+/* Speed */
+.horizontal-timeline .events-content li.animationSpeed {
+	-webkit-animation-duration: 0.4s;
+	-moz-animation-duration: 0.4s;
+	animation-duration: 0.4s;
 }
 @-webkit-keyframes timeline-enter-right {
 	0% {
