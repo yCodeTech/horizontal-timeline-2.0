@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
      ### Added
      - A combined singular data attribute, `data-horizontal-timeline`, that houses the previously-used `data-date` and `data-custom-display`.
      - `animation_baseClass`, `enter_animationClass` and `exit_animationClass` options to customise the event content animations.
+     - A CSS rule for the default animation speed.
      
      ### Changed
      - A lot of the data attribute code to implement the combined single attribute.
@@ -13,6 +14,7 @@ All notable changes to this project will be documented in this file.
      - Renamed the default CSS animation exiting class from the prefix `leave-` to `exit-`
      - Autoplay will now stop playing if not in the viewport.
      - When autoplay is in the paused state and the content changes, upon playing again, the progress bar will reset to the start.
+     - Various CSS.
      
      ### Fixed
      - A bug in Safari made by a typo in a attribute contains selector.
