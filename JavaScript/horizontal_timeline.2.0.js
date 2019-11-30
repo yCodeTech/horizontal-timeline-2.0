@@ -2,6 +2,8 @@
  
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
+
+Version: 2.0.5-alpha.3
 	
 Original Horizontal Timeline by CodyHouse
 
@@ -52,13 +54,23 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		useNavBtns: true,
 		useScrollBtns: true,
 
-		iconBaseClass: "fas fa-3x",
+		iconBaseClass: "fas fa-3x", // Space separated class names
 		scrollLeft_iconClass: "fa-chevron-circle-left",
 		scrollRight_iconClass: "fa-chevron-circle-right",
 		prev_iconClass: "fa-arrow-circle-left", 
 		next_iconClass: "fa-arrow-circle-right", 
 		pause_iconClass: "fa-pause-circle",
-		play_iconClass: "fa-play-circle"
+		play_iconClass: "fa-play-circle",
+		
+		animation_baseClass: "animationSpeed", // Space separated class names
+		enter_animationClass: {
+			"left": "enter-left",
+			"right": "enter-right"
+		},
+		exit_animationClass: {
+			"left": "exit-left",
+			"right": "exit-right"
+		},
         };
 
     // The actual plugin constructor
@@ -111,7 +123,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 				else {
 					// Adds id to the first and last li of the event-content list respectively.
-					timelineComponents['eventsContentList']
+					timelineComponents['eventsContentList'].addClass(self.settings.animation_baseClass)
 						.first().attr('id', 'first').end()
 						.last().attr('id', 'last');
 			
@@ -652,7 +664,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			this._setup.autoplay = autoplay;	
 			
 			// Call the autoplay function.
-			this._setup.autoplay(this, timelineComponents);
+			this._setup.autoplay(this);
 			
 			// On click
 			this.$element
@@ -678,36 +690,51 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 			
 			/* Autoplay function */
-			function autoplay(self, timelineComponents) {
+			function autoplay(self) {
 				// NOTE: if autoplay cycle is paused, clicking any timeline button 
 				// will not reset the autoplay cycle to play.
 				
+				var isPaused, 
+				    tick,
+				    percentTime,
+				    current, 
+				    // Get the speed from the settings.
+				    speed = Number(self.settings.autoplaySpeed),
+				    // Get the button wrapper.
+				    $pausePlay = self.$element.find('#pausePlay'),
+				    autoplayObj = {
+					"isPaused": false,
+					"mouseEvent": false
+				    };
+				
+				self.$element.data('plugin_'+ self._name)['autoplay'] = autoplayObj;
+				
+				self._timelineComponents(timelineComponents);
+				
 				// Set a global variable to equal the function.	
-				self._setup.autoplay.countEvents = countEvents;	
+				self._setup.autoplay.countEvents = countEvents;
+				self._setup.autoplay.start = start;
+				self._setup.autoplay.pause = pause;
+				self._setup.autoplay.resume = resume;
+				self._setup.autoplay.moved = moved;
+				self._setup.autoplay.changeButtons = changeButtons;
+				self._setup.autoplay.refresh = refresh;
+				self._setup.autoplay.destroy = destroy;
+				
+				// Call the start function
+				self._setup.autoplay.start(self);	
+				
 				// Count events function	
 				function countEvents() {
 					// Get the total number of events to check against
 					return timelineComponents['timelineEvents'].length;
 				}
-				var isPaused, 
-					tick,
-					percentTime,
-					// Define an empty variable
-					current, 
-					// Get the speed from the settings.
-					speed = Number(self.settings.autoplaySpeed),
-					// Get the button wrapper.
-					$pausePlay = self.$element.find('#pausePlay');
-					
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.start = start;		
-				// Call the start function
-				self._setup.autoplay.start(self);
 				// Start function
 				function start(self) {
 					// Reset timer
 					percentTime = 0;
-					isPaused = false;
+					
+					self._timelineComponents(timelineComponents);
 					// Get the timeline width	
 					autoplayTimelineTotalWidth = self._setTimelineWidth(timelineComponents);
 					// Run interval every 0.01 second
@@ -715,6 +742,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				};
 				// Interval function.
 				function interval() {
+					isPaused = self.$element.data('plugin_'+ self._name)['autoplay']['isPaused']; 
+					this._timelineComponents(timelineComponents);
+					
 					// If isPaused = false AND is in the viewport, start the autoplay cycle, otherwise pause the cycle.
 					if(isPaused === false && this._elementInViewport(this.element)){
 						// Set percentTime using the speed from the settings.
@@ -726,7 +756,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Everything else set the correct speed.
 						else percentTime += 1 / speed;
 						// Set the progress bar width 
-						$('.progressBar').css({
+						this.$element.find('.progressBar').css({
 							width: percentTime+"%"
 						});
 						// Recalculate the index of the current event, each time.
@@ -761,58 +791,40 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					} // End isPaused if statement
 				} // End Interval function
 				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.pause = pause;
-				
 				// Pause function
 				function pause() {
-					isPaused = true;
-				}
-				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.resume = resume;
-				
+					self.$element.data('plugin_'+ self._name)['autoplay']['isPaused'] = true;
+				}				
 				// Resume function
 				function resume() {
-					isPaused = false;	
-				};
-				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.moved = moved;
-				
+					self.$element.data('plugin_'+ self._name)['autoplay']['isPaused'] = false;	
+				}
 				// Moved function, when an event content has changed via autoplay or by manual navigation.
 				function moved(self) {
-					// If the pauseplay button doesn't have a clicked class
-					if(!$pausePlay.hasClass('clicked')) {
-						// Clear interval
-						clearInterval(tick);
-						// Restart the cycle.
-						start(self);
-					}
-				}
-				
-				// Set a global variable to equal the function.		
-				self._setup.autoplay.changeButtons = changeButtons;
-				 
+					// Clear interval
+					self._setup.autoplay.destroy();
+					// Restart the cycle.
+					self._setup.autoplay.start(self);
+				}				 
 				// Change Buttons function
 				function changeButtons(event) {
 					// Get the event data
 					var data = event.data,
-						// Set variables using the corresponding data array selectors.
-						pausebtnClicked = data[0],
-						$pauseButton = data[1],
-						state = data[2],
-						// Find the pause play button wrapper.
-						$pausePlay = this.$element.find('#pausePlay'),
-						// Define the play button html
-						$playButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.play_iconClass +' play"></a>';
+					    // Set variables using the corresponding data array selectors.
+					    pausebtnClicked = data[0],
+					    $pauseButton = data[1],
+					    state = data[2],
+					    // Find the pause play button wrapper.
+					    $pausePlay = this.$element.find('#pausePlay'),
+					    // Define the play button html
+					    $playButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.play_iconClass +' play"></a>';
 						
 					// If the event type is click and pausebtnClicked is true (so the pause button was clicked)...
 					if (event.type == "click" && pausebtnClicked == true) {
 						// Add class to parent to check against it later to stop on hover from reactivating the play cycle.	
 						$pausePlay.addClass('clicked');
 						// Set a mouseEvent data to click on the element to check against later.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = 'click';
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = 'click';
 						// Change the button to the play button.
 						$pausePlay.html($playButton);
 						// Call the pause function to pause autoplay
@@ -824,7 +836,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Remove class from the parent
 						$pausePlay.removeClass('clicked');
 						// Set the mouseEvent data to false on the element.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = false;
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = false;
 						// Change the button to the pause button.
 						$pausePlay.html($pauseButton);
 						// Call the resume function to resume the autoplay cycle.
@@ -834,7 +846,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// If the event type is mouseenter (so it's paused) and the pause play button wrapper doesn't have the clicked class (paused via the pause button)...
 					if(event.type == "mouseenter" && !$pausePlay.hasClass('clicked')) {
 						// Set a mouseEvent data to hover on the element to check against later.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = 'hover';
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = 'hover';
 						// Change the button to the play button.
 						$pausePlay.html($playButton);
 						// Call the pause function to pause autoplay
@@ -845,26 +857,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// To stop autoplay resuming the cycle on mouseleave if it's already paused via the pause button.
 					else if(event.type == "mouseleave" && !$pausePlay.hasClass('clicked')) {
 						// Set the mouseEvent data to false on the element.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = false;
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = false;
 						// Change the button to the pause button.
 						$pausePlay.html($pauseButton);
 						// Call the resume function to resume the autoplay cycle.
 						this._setup.autoplay.resume();
 						console.log('Autoplay is '+state+'.');
 					}
-				} // End changeButtons function			
-				 
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.refresh = refresh;
-				
+				} // End changeButtons function	
+				// Refresh function
 				function refresh(self) {
 					self._timelineComponents(timelineComponents);
 					autoplayTimelineTotalWidth = self._setTimelineWidth(timelineComponents);
-				}
-				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.destroy = destroy;
-				
+				}				
 				// Destroy function, to destroy the autoplay interval.
 				function destroy() {
 					clearInterval(tick);
@@ -1482,34 +1487,71 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	
 	Timeline.prototype._updateVisibleContent = function (event, eventsContent) {
 		var eventDate = this._timelineData(event, "date");
-			visibleContent = eventsContent.find('.selected'),
-			selectedContent = eventsContent.find("li").filter($.proxy(function(index, element) {
-				var data = this._timelineData($(element), "date");
-				if (data == eventDate) return $(element);
-			}, this)),
-			selectedContentHeight = selectedContent.outerHeight();
-
-		if (selectedContent.index() > visibleContent.index()) {
-			var classEntering = 'selected enter-right',
-				classLeaving = 'leave-left';
+		    visibleContent = eventsContent.find('.selected'),
+		    // Function to find the new content...    
+	     	    newContent = eventsContent.find("li").filter($.proxy(function(index, element) {
+			var data = this._timelineData($(element), "date");
+			if (data == eventDate) return $(element);
+		     }, this)),
+			    
+		     newContentHeight = newContent.outerHeight(),
+			    
+		     enterObj = this.settings.enter_animationClass,
+		     exitObj = this.settings.exit_animationClass,
+		     allClasses = exitObj.right + ' ' + exitObj.left + ' ' + enterObj.left + ' ' + enterObj.right; 
+		
+		// If newContent index is more than the visibleContent index,
+		// then we have selected an event to the right.
+		if (newContent.index() > visibleContent.index()) {
+			    // Set the selected and the enter right classes.
+			var classEntering = 'selected '+ enterObj.right,
+			    // Set the exit left class.
+			    classLeaving = exitObj.left;
 		} 
+		// Else, we have selecting an event to the left.
 		else {
-			var classEntering = 'selected enter-left',
-				classLeaving = 'leave-right';
+			    // Set the selected and the enter left classes.
+			var classEntering = 'selected ' + enterObj.left,
+			    // Set the exit right class.
+			    classLeaving = exitObj.right;
 		}	
 		
-		// Add/remove classes to css animate them in and out.
-		selectedContent.addClass(classEntering);
-		visibleContent.addClass(classLeaving)
-					  .one('webkitAnimationEnd.'+this._name+' oanimationend.'+this._name+' msAnimationEnd.'+this._name+' animationend.'+this._name, function(){
-							visibleContent.removeClass('leave-right leave-left');
-							selectedContent.removeClass('enter-left enter-right');
-					  }).removeClass('selected');
+		/* Add/remove classes to animate them in and out using CSS3. */
+		
+		function whichAnimationEvent(){
+			var t,
+			    el = document.createElement("fakeelement"),
+			    animations = {
+				"animation": "animationend",
+				"OAnimation": "oAnimationEnd",
+				"MozAnimation": "animationend",
+				"WebkitAnimation": "webkitAnimationEnd"
+			    };
+
+			for (t in animations){
+				if (el.style[t] !== undefined) return animations[t];
+			}
+		}
+		
+		var animationEvent = whichAnimationEvent();
+		
+		// Add the enter class to the newContent.
+		newContent.addClass(classEntering);
+		// Add the exit class to the visibleContent and on animation end...
+		visibleContent
+			.addClass(classExiting)
+			.one(animationEvent, function(){
+				// Remove all enter and exit classes from all the event content.
+				eventsContent.find('li').removeClass(allClasses);
+				selectedContent.removeClass('enter-left enter-right');
+			})
+			// And then remove the selected class.
+			.removeClass('selected');
+		
+		// Update the height.
+		eventsContent.height(newContentHeight+'px');			  
 					  
-		eventsContent.height(selectedContentHeight+'px');			  
-					  
-		if (this.settings.autoplay == true && !this.$element.data('plugin_'+ this._name)['mouseEvent']) 
-			this._setup.autoplay.moved(this);
+		if (this.settings.autoplay == true) this._setup.autoplay.moved(this);
 	}
 	
 	Timeline.prototype._updateOlderEvents = function (event) {
