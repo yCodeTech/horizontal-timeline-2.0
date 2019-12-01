@@ -890,7 +890,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// If go-to selector exists... 
 		if(goToTimelineLink.length > 0) { 
 			// On click
-			goToTimelineLink.on('click.'+this._name, $.proxy(gotoTimeline, this));
+			goToTimelineLink.on('click.'+this._name, gotoTimeline);
 				
 			function gotoTimeline(event) {
 				// Prevent default click
@@ -915,21 +915,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// Otherwise we're targetting another timeline.
 				else var $target = $(href); // Reference the jQuery object selector only once
 				
-				// Cache timeline components 
-				// Find the .events-wrapper from the href selector
-				timelineComponents['timelineWrapper'] = $target.find('.events-wrapper');
-				// Find the .events
-				timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
-				// Find the .filling-line
-				timelineComponents['fillingLine'] = timelineComponents['eventsWrapper'].children('.filling-line');
-				// Find the event dates
-				timelineComponents['timelineEvents'] = timelineComponents['eventsWrapper'].find('a');
-				// Find the .timeline-navigation from the href selector
-				timelineComponents['timelineNavigation'] = $target.find('.timeline-navigation');
-				// Find the .events-content from the href selector
-				timelineComponents['eventsContent'] = $target.children('.events-content');
-				// Find the events content li
-				timelineComponents['eventsContentList'] = timelineComponents['eventsContent'].find('li');
+				// Get the correct plugin instance from the target data.
+				var instanceRef = $target.data('plugin_horizontalTimeline').Timeline;
+				
+				instanceRef._timelineComponents(timelineComponents);
 						
 					// Get the data-gototimeline options object
 				var datagoto = $this.data('gototimeline'),
@@ -977,15 +966,15 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// Find all event dates.
 				var	prevDates = timelineComponents['eventsWrapper'].find('a'),
 					// Find the targeted event date using the date					
-					selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
-						var data = this._timelineData($(element), "date");
+					selectedDate = timelineComponents['eventsWrapper'].find("a").filter(function(index, element) {
+						var data = instanceRef._timelineData($(element), "date");
 						if (data == date) return $(element);
-					}, this)),
+					}),
 				    
 					// Get the width value of the events (previously set)
-					timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+					timelineTotalWidth = instanceRef._setTimelineWidth(timelineComponents);
 				// If a link is targetting the timeline it sits in (itself), then execute the function to translate the timeline	
-				if(targetSelf) translate_gotoTimeline(this);
+				if(targetSelf) translate_gotoTimeline(instanceRef);
 				// If not, then use a smooth scroll and then execute the function afterwards.
 				else {
 					//** SmoothScroll functions **//
@@ -997,14 +986,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						}, 
 						speed, 
 						easing, 
-						$.proxy(function() {
+						function() {
 							// Once scrolling/animating the document is complete, update the target timeline.
-							translate_gotoTimeline(this);
-						}, this)
+							translate_gotoTimeline(instanceRef);
+						}
 					); // End .animate function
 				}
 				// Function to translate the timeline to the specific date.
-				function translate_gotoTimeline(pluginRef) {
+				function translate_gotoTimeline(instanceRef) {
 					// Check if the targeted event hasn't already been selected, if not continue the code.						
 					if (!selectedDate.hasClass('selected')) {
 						// Remove all selected classes from dates
@@ -1012,14 +1001,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Add a selected class to the date we are targeting
 						selectedDate.addClass('selected');
 						// Update other dates as an older event for styling
-						pluginRef._updateOlderEvents(selectedDate);
+						instanceRef._updateOlderEvents(selectedDate);
 						// Update the filling line upto the selected date
-						pluginRef._updateFilling(selectedDate, timelineComponents['fillingLine'], timelineTotalWidth);
+						instanceRef._updateFilling(selectedDate, timelineComponents['fillingLine'], timelineTotalWidth);
 						// Update the visible content of the selected event
-						pluginRef._updateVisibleContent(selectedDate, timelineComponents['eventsContent']);
+						instanceRef._updateVisibleContent(selectedDate, timelineComponents['eventsContent']);
 					}
 					// Translate (scroll) the timeline left or right according to the position of the targeted event date
-					pluginRef._updateTimelinePosition(selectedDate, timelineComponents, timelineTotalWidth);
+					instanceRef._updateTimelinePosition(selectedDate, timelineComponents, timelineTotalWidth);
 				} // End translate_gotoTimeline() translate function
 			} // End gotoTimeline function						
 		} // End if goToTimelineLink exists
