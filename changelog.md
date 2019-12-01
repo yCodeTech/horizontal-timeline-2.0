@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
      - A bug in Safari made by a typo in a attribute contains selector.
      - A bug in Safari that couldn't recognise a check for undefined.
      - A bug for the Go-To Timeline Link relating to an error in jQuery about an unrecognised expression in a selector - a lonely '#' (`$('#')`).
+     - A bug with the go-to-timeline link, where it wouldn't get the correct timeline instance for the target timeline, thereby using the last timeline's settings, which could be bad news for multiple timelines.
 
      ### Deprecated 
      - The use of multiple data attributes, `data-date` and `data-custom-display`.
