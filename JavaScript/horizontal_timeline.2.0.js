@@ -119,6 +119,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 			function addIdsAndClasses(self) {
 				//** Adding IDs and Classes **//
+				self._timelineComponents(timelineComponents);
+				
 				if (timelineComponents['eventsContentList'].length == 1) {
 					timelineComponents['eventsContentList'].first().attr('id', 'first');
 					timelineComponents['timelineEvents'].first().addClass("first");
@@ -1174,6 +1176,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 *  Use it like: $('#example').horizontalTimeline('refresh');
 	 */
 	 Timeline.prototype.refresh = function () {
+		var timelineComponents = {};
+		 
 		this._timelineComponents(timelineComponents);
 		
 		// Removes first and last id attributes of the event-content list.
@@ -1237,6 +1241,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 * (new event content html, insertion method (before or after), an existing unique date to position the new content around.)
 	 */
 	Timeline.prototype.addEvent = function (html, insertMethod, arrangementDate) {
+		var timelineComponents = {};
+		
 		this._timelineComponents(timelineComponents);
 		
 			// Get the new date from the HTML.
@@ -1274,6 +1280,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 * Use it like: $('#example').horizontalTimeline('removeEvent', '01/01/2001'); 
 	 */
 	Timeline.prototype.removeEvent = function (date) {
+		var timelineComponents = {};
+		
 		this._timelineComponents(timelineComponents);
 		
 			// Select the specified timeline event
