@@ -3,7 +3,7 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5-alpha.3
+Version: 2.0.5-alpha.3.1
 	
 Original Horizontal Timeline by CodyHouse
 
