@@ -15,10 +15,12 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added support for mouse-wheel scrolling, touch and swipe for touch devices, and keyboard arrow keys, with the option to disable the loading of the required plugin files.
    - Added new refresh, destroy, addEvent, removeEvent methods.
    - Added new options to change the button icons and to disable the use of the Font Awesome icon library.
+   - **Deprecated** the use of multiple data attributes, _data-date_ and _data-custom-display_, in favour of the all new combined singular data attribute, _data-horizontal-timeline_, that utilises an object to house all previously-used data.
+   - Added new animation options to customise the event content animation.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
-Visit the [Changelog](https://github.com/yCodeTech/horizontal-timeline-2.0/blob/master/changelog.md) for details of fixes, changes and additions.
+Visit the [Changelog](https://github.com/yCodeTech/horizontal-timeline-2.0/blob/master/changelog.md) for details of fixes, changes, additions and removals.
 
 ### Setup
 
@@ -49,10 +51,10 @@ Unlike the original, 2.0 dynamically creates the timeline according to the amoun
 <div class="horizontal-timeline" id="example">
    <div class="events-content">
       <ol>
-         <li class="selected" data-date="16/01/2014">
+         <li class="selected" data-horizontal-timeline='{"date": "16/01/2014", "customDisplay": "Custom Text"}'>
             // Event description here
          </li>
-         <li data-date="23/05/2015">
+         <li data-horizontal-timeline='{"date": "23/05/2015"}'>
             // Event description here
          </li>
          …etc.
@@ -100,13 +102,24 @@ $('#example').horizontalTimeline({
    prev_iconClass: "fa-arrow-circle-left",
    next_iconClass: "fa-arrow-circle-right",
    pause_iconClass: "fa-pause-circle",
-   play_iconClass: "fa-play-circle"
+   play_iconClass: "fa-play-circle",
+   
+   animation_baseClass: "animationSpeed", // Space separated class names
+   enter_animationClass: {
+      "left": "enter-left",
+      "right": "enter-right"
+   },
+   exit_animationClass: {
+      "left": "exit-left",
+      "right": "exit-right"
+   },
 });
 ```
 
 [Check out the docs](http://horizontal-timeline.ycodetech.co.uk/).
 
 ## Known Issues
+
 - Autoplay can't be set on multiple timelines, meaning the maximum per page is 1.
 - The event content animation can become stuck between classes and glitch out.
 

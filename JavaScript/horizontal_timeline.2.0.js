@@ -2,6 +2,8 @@
  
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
+
+Version: 2.0.5-alpha.3
 	
 Original Horizontal Timeline by CodyHouse
 
@@ -52,13 +54,23 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		useNavBtns: true,
 		useScrollBtns: true,
 
-		iconBaseClass: "fas fa-3x",
+		iconBaseClass: "fas fa-3x", // Space separated class names
 		scrollLeft_iconClass: "fa-chevron-circle-left",
 		scrollRight_iconClass: "fa-chevron-circle-right",
 		prev_iconClass: "fa-arrow-circle-left", 
 		next_iconClass: "fa-arrow-circle-right", 
 		pause_iconClass: "fa-pause-circle",
-		play_iconClass: "fa-play-circle"
+		play_iconClass: "fa-play-circle",
+		
+		animation_baseClass: "animationSpeed", // Space separated class names
+		enter_animationClass: {
+			"left": "enter-left",
+			"right": "enter-right"
+		},
+		exit_animationClass: {
+			"left": "exit-left",
+			"right": "exit-right"
+		},
         };
 
     // The actual plugin constructor
@@ -97,7 +109,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// Wait about 300s to make sure the all elements are created properly.
 		// Otherwise the width of the timeline would report as bigger than it actually is.
 		window.setTimeout($.proxy(function(){
-			timelineComponents = {};
+			var timelineTotalWidth,
+			    timelineComponents = {};
+			
 			this._timelineComponents(timelineComponents);
 			
 			this.init.addIdsAndClasses = addIdsAndClasses;
@@ -111,7 +125,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 				else {
 					// Adds id to the first and last li of the event-content list respectively.
-					timelineComponents['eventsContentList']
+					timelineComponents['eventsContentList'].addClass(self.settings.animation_baseClass)
 						.first().attr('id', 'first').end()
 						.last().attr('id', 'last');
 			
@@ -125,10 +139,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				
 			// If any events-content has .selected class...
 			if (timelineComponents['eventsContentList'].hasClass('selected')) {
-					// Get date from data-date attribute
-				var date = timelineComponents['eventsContentSelected'].data('date'),
-					// Find the event date matching the data-date
-					selectedDate = timelineComponents['eventsWrapper'].find('a[data-date="'+date+'"]');
+				    // Get date from data-attribute
+				var date = this._timelineData(timelineComponents['eventsContentSelected'], "date"),
+				    // Find the event date matching the date
+				    selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+					var data = this._timelineData($(element), "date");
+					if (data == date) return $(element);
+				    }, this));
 					
 				// Add .selected class to the matched element
 				selectedDate.addClass('selected');
@@ -142,26 +159,32 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// Add .selected class to the first event.
 					timelineComponents['eventsWrapper'].find('a.first').addClass('selected');
 
-						// Find the selected event
+				  	    // Find the selected event
 					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
-						// Get the selected event's date.
-						selectedDate = selectedEvent.data('date');
+					    // Get the selected event's date.
+					    selectedDate = this._timelineData(selectedEvent, "date");
 					
 					// Find the selected event's content using the date and add selected class to the content.
-					timelineComponents['eventsContent'].find('li[data-date="'+selectedDate+'"]').addClass('selected');			
+					timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == selectedDate) $(element).addClass('selected');
+					}, this));			
 				}
 				// Else dateOrder is reverse (Descending)... start from the right.
 				else if (this.settings.dateOrder == "reverse") {
 					// Add .selected class to the last event.
 					timelineComponents['eventsWrapper'].find('a.last').addClass('selected');
 
-						// Find the selected event
+					    // Find the selected event
 					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
-						// Get the selected event's date.
-						selectedDate = selectedEvent.data('date');
+					    // Get the selected event's date.
+					    selectedDate = this._timelineData(selectedEvent, "date");
 					
 					// Find the selected event's content using the date and add selected class to the content.
-					timelineComponents['eventsContent'].find('li[data-date="'+selectedDate+'"]').addClass('selected');
+					timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == selectedDate) $(element).addClass('selected');
+					}, this));
 					
 					this._updateOlderEvents(selectedEvent);	
 				}
@@ -171,7 +194,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// Assign a left postion to the single events along the timeline
 			this._setDatePosition(timelineComponents);
 			// Assign a width to the timeline
-			var timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+			timelineTotalWidth = this._setTimelineWidth(timelineComponents);
 			// Set the filling line to the selected event
 			this._updateFilling(timelineComponents['eventsWrapper']
 				.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
@@ -311,12 +334,12 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		/* Function to create the event date display  
 		(instance, element, displayType, insertMethod (append, before, after [last 2 for addEvent method]), date to insert before/after [from addEvent method])*/
 		function eventDateDisplay(self, eventElement, display, insertMethod, arrangementDate) {
-			    // Get date from data-date attribute
-			var dataDate = eventElement.data('date'),
-			    // Check if element data-date format is DD/MM/YYYYTHH:MM by checking for 'T'
-			    isDateTime = eventElement.is('[data-date*="T"]'),
-			    // Check if element data-date format is HH:MM by checking for ':' but doesn't have 'T'
-			    isTime = eventElement.not('[data-date*="T"]').is('[data-date*=":"]'),
+			    // Get date from data-attribute
+			var dataDate = self._timelineData(eventElement, "date"),
+			    // Check if element date format is DD/MM/YYYYTHH:MM by checking for 'T'
+			    isDateTime = dataDate.includes("T"),
+			    // Check if element date format is HH:MM by checking for ':' but doesn't have 'T'
+			    isTime = !isDateTime && dataDate.includes(":"),
 			    // Display type checks
 			    dateTimeDisplay = display == "dateTime",
 			    dateDisplay = display == "date",
@@ -326,10 +349,17 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    yearDisplay = display == "year",
 			    // Find .events for the date display
 			    $eventDateDisplay = self.$element.find('.events'),
-			    dateLink = '<a href="" data-date="'+ dataDate +'">',
-			    // For use with the addEvent plublic method
+			    dateLink = '<a href="" data-horizontal-timeline=\'{"date": "'+ dataDate +'"}\'>';
+			
+			// For use with the addEvent plublic method.
+			// If arrangmentDate isn't undefined or null...
+			if(typeof arrangementDate != 'undefined' || arrangementDate != null) { 
 			    // Finds the event with the specific date.
-			    $arrangementEvent = $eventDateDisplay.find('a[data-date="'+ arrangementDate +'"]');
+			    $arrangementEvent = $eventDateDisplay.find("a").filter(function() {
+				var data = self._timelineData($(this), "date");
+				if (data == arrangementDate) return $(this);
+			    });
+			}
 					
 			// Function to add the number suffix st, nd, rd, th (eg: 1st, 2nd, 3rd, 4th)
 			// Part of answer on StackOverflow: https://stackoverflow.com/a/15397495/2358222
@@ -353,7 +383,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 			
 			var dateExists = $eventDateDisplay.children('a').map(function() {
-				return $(this).data('date');
+				if ($(this).data('horizontal-timeline')) {
+					var data = $(this).data('horizontal-timeline');
+
+					return data.date;
+				}
+				// data-date deprecated as of v2.0.5.alpha.3 
+				// and will be removed in a later major version.
+				else {
+					var dataDate = $(this).data('date');
+
+					return dataDate;
+				}
 			    }).get();
 			
 			if(jQuery.inArray(dataDate, dateExists) == -1) {
@@ -376,16 +417,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					/* Add the event date displays according to the display types */
 					
 					// Custom Date Display
-					// If element has a data-custom-display attribute...
-					if(eventElement.data('custom-display')) {
-						// Get the custom text from the data-attribute.
-						var customData = eventElement.data('customDisplay');
+					
+					// Get the custom text from the data-attribute object.
+					var customDisplay = self._timelineData(eventElement, "customDisplay");
+					
+					// If customDisplay is defined in the data-attribute object...
+					if(typeof customDisplay !== 'undefined') { 
 
 						// Add in the custom Text depending on which insertMethod used.
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customDisplay +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
-						else $arrangementEvent.before(dateLink + customData +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customDisplay +'</a>');
+						else $arrangementEvent.before(dateLink + customDisplay +'</a>');
 					}					
 					
 					else if(dateTimeDisplay) {
@@ -431,16 +474,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					/* Add the event date displays according to the display types */
 					
 					// Custom Date Display
-					// If element has a data-custom-display attribute...
-					if(eventElement.data('custom-display')) {
-						// Get the custom text from the data-attribute.
-						var customData = eventElement.data('customDisplay');
+					
+					// Get the custom text from the data-attribute object.
+					var customDisplay = self._timelineData(eventElement, "customDisplay");
+					
+					// If customDisplay is defined in the data-attribute object...
+					if(typeof customDisplay !== 'undefined') { 
 
 						// Add in the custom Text depending on which insertMethod used.
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customDisplay +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
-						else $arrangementEvent.before(dateLink + customData +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customDisplay +'</a>');
+						else $arrangementEvent.before(dateLink + customDisplay +'</a>');
 					}					
 					
 					else if(dateTimeDisplay || timeDisplay) {
@@ -464,16 +509,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					/* Add the event date displays according to the display types */
 					
 					// Custom Date Display
-					// If element has a data-custom-display attribute...
-					if(eventElement.data('custom-display')) {
-						// Get the custom text from the data-attribute.
-						var customData = eventElement.data('customDisplay');
+					
+					// Get the custom text from the data-attribute object.
+					var customDisplay = self._timelineData(eventElement, "customDisplay");
+					
+					// If customDisplay is defined in the data-attribute object...
+					if(typeof customDisplay !== 'undefined') { 
 
 						// Add in the custom Text depending on which insertMethod used.
-						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customData +'</a>');
+						if (insertMethod == 'append') $eventDateDisplay.append(dateLink + customDisplay +'</a>');
 						// For use with the addEvent method... creates new timeline events and places them where specified.
-						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customData +'</a>');
-						else $arrangementEvent.before(dateLink + customData +'</a>');
+						else if (insertMethod == 'after') $arrangementEvent.after(dateLink + customDisplay +'</a>');
+						else $arrangementEvent.before(dateLink + customDisplay +'</a>');
 					}					
 					
 					else if(dateTimeDisplay || dateDisplay) {
@@ -619,7 +666,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			this._setup.autoplay = autoplay;	
 			
 			// Call the autoplay function.
-			this._setup.autoplay(this, timelineComponents);
+			this._setup.autoplay(this);
 			
 			// On click
 			this.$element
@@ -645,36 +692,52 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 			
 			/* Autoplay function */
-			function autoplay(self, timelineComponents) {
+			function autoplay(self) {
 				// NOTE: if autoplay cycle is paused, clicking any timeline button 
 				// will not reset the autoplay cycle to play.
 				
+				var isPaused, 
+				    tick,
+				    percentTime,
+				    current,
+				    autoplayTimelineTotalWidth,
+				    // Get the speed from the settings.
+				    speed = Number(self.settings.autoplaySpeed),
+				    // Get the button wrapper.
+				    $pausePlay = self.$element.find('#pausePlay'),
+				    autoplayObj = {
+					"isPaused": false,
+					"mouseEvent": false
+				    };
+				
+				self.$element.data('plugin_'+ self._name)['autoplay'] = autoplayObj;
+				
+				self._timelineComponents(timelineComponents);
+				
 				// Set a global variable to equal the function.	
-				self._setup.autoplay.countEvents = countEvents;	
+				self._setup.autoplay.countEvents = countEvents;
+				self._setup.autoplay.start = start;
+				self._setup.autoplay.pause = pause;
+				self._setup.autoplay.resume = resume;
+				self._setup.autoplay.moved = moved;
+				self._setup.autoplay.changeButtons = changeButtons;
+				self._setup.autoplay.refresh = refresh;
+				self._setup.autoplay.destroy = destroy;
+				
+				// Call the start function
+				self._setup.autoplay.start(self);	
+				
 				// Count events function	
 				function countEvents() {
 					// Get the total number of events to check against
 					return timelineComponents['timelineEvents'].length;
 				}
-				var isPaused, 
-					tick,
-					percentTime,
-					// Define an empty variable
-					current, 
-					// Get the speed from the settings.
-					speed = Number(self.settings.autoplaySpeed),
-					// Get the button wrapper.
-					$pausePlay = self.$element.find('#pausePlay');
-					
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.start = start;		
-				// Call the start function
-				self._setup.autoplay.start(self);
 				// Start function
 				function start(self) {
 					// Reset timer
 					percentTime = 0;
-					isPaused = false;
+					
+					self._timelineComponents(timelineComponents);
 					// Get the timeline width	
 					autoplayTimelineTotalWidth = self._setTimelineWidth(timelineComponents);
 					// Run interval every 0.01 second
@@ -682,8 +745,11 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				};
 				// Interval function.
 				function interval() {
-					// If isPaused = false, start the autoplay cycle, otherwise pause the cycle.
-					if(isPaused === false){
+					isPaused = self.$element.data('plugin_'+ self._name)['autoplay']['isPaused']; 
+					this._timelineComponents(timelineComponents);
+					
+					// If isPaused = false AND is in the viewport, start the autoplay cycle, otherwise pause the cycle.
+					if(isPaused === false && this._elementInViewport(this.element)){
 						// Set percentTime using the speed from the settings.
 						// Check media queries...
 						var checkMQ = this._checkMQ();
@@ -693,7 +759,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Everything else set the correct speed.
 						else percentTime += 1 / speed;
 						// Set the progress bar width 
-						$('.progressBar').css({
+						this.$element.find('.progressBar').css({
 							width: percentTime+"%"
 						});
 						// Recalculate the index of the current event, each time.
@@ -728,58 +794,40 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					} // End isPaused if statement
 				} // End Interval function
 				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.pause = pause;
-				
 				// Pause function
 				function pause() {
-					isPaused = true;
-				}
-				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.resume = resume;
-				
+					self.$element.data('plugin_'+ self._name)['autoplay']['isPaused'] = true;
+				}				
 				// Resume function
 				function resume() {
-					isPaused = false;	
-				};
-				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.moved = moved;
-				
+					self.$element.data('plugin_'+ self._name)['autoplay']['isPaused'] = false;	
+				}
 				// Moved function, when an event content has changed via autoplay or by manual navigation.
 				function moved(self) {
-					// If the pauseplay button doesn't have a clicked class
-					if(!$pausePlay.hasClass('clicked')) {
-						// Clear interval
-						clearInterval(tick);
-						// Restart the cycle.
-						start(self);
-					}
-				}
-				
-				// Set a global variable to equal the function.		
-				self._setup.autoplay.changeButtons = changeButtons;
-				 
+					// Clear interval
+					self._setup.autoplay.destroy();
+					// Restart the cycle.
+					self._setup.autoplay.start(self);
+				}				 
 				// Change Buttons function
 				function changeButtons(event) {
 					// Get the event data
 					var data = event.data,
-						// Set variables using the corresponding data array selectors.
-						pausebtnClicked = data[0],
-						$pauseButton = data[1],
-						state = data[2],
-						// Find the pause play button wrapper.
-						$pausePlay = this.$element.find('#pausePlay'),
-						// Define the play button html
-						$playButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.play_iconClass +' play"></a>';
+					    // Set variables using the corresponding data array selectors.
+					    pausebtnClicked = data[0],
+					    $pauseButton = data[1],
+					    state = data[2],
+					    // Find the pause play button wrapper.
+					    $pausePlay = this.$element.find('#pausePlay'),
+					    // Define the play button html
+					    $playButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.play_iconClass +' play"></a>';
 						
 					// If the event type is click and pausebtnClicked is true (so the pause button was clicked)...
 					if (event.type == "click" && pausebtnClicked == true) {
 						// Add class to parent to check against it later to stop on hover from reactivating the play cycle.	
 						$pausePlay.addClass('clicked');
 						// Set a mouseEvent data to click on the element to check against later.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = 'click';
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = 'click';
 						// Change the button to the play button.
 						$pausePlay.html($playButton);
 						// Call the pause function to pause autoplay
@@ -791,7 +839,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Remove class from the parent
 						$pausePlay.removeClass('clicked');
 						// Set the mouseEvent data to false on the element.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = false;
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = false;
 						// Change the button to the pause button.
 						$pausePlay.html($pauseButton);
 						// Call the resume function to resume the autoplay cycle.
@@ -801,7 +849,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// If the event type is mouseenter (so it's paused) and the pause play button wrapper doesn't have the clicked class (paused via the pause button)...
 					if(event.type == "mouseenter" && !$pausePlay.hasClass('clicked')) {
 						// Set a mouseEvent data to hover on the element to check against later.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = 'hover';
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = 'hover';
 						// Change the button to the play button.
 						$pausePlay.html($playButton);
 						// Call the pause function to pause autoplay
@@ -812,26 +860,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// To stop autoplay resuming the cycle on mouseleave if it's already paused via the pause button.
 					else if(event.type == "mouseleave" && !$pausePlay.hasClass('clicked')) {
 						// Set the mouseEvent data to false on the element.
-						this.$element.data('plugin_'+ this._name)['mouseEvent'] = false;
+						this.$element.data('plugin_'+ this._name)['autoplay']['mouseEvent'] = false;
 						// Change the button to the pause button.
 						$pausePlay.html($pauseButton);
 						// Call the resume function to resume the autoplay cycle.
 						this._setup.autoplay.resume();
 						console.log('Autoplay is '+state+'.');
 					}
-				} // End changeButtons function			
-				 
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.refresh = refresh;
-				
+				} // End changeButtons function	
+				// Refresh function
 				function refresh(self) {
 					self._timelineComponents(timelineComponents);
 					autoplayTimelineTotalWidth = self._setTimelineWidth(timelineComponents);
-				}
-				
-				// Set a global variable to equal the function.	
-				self._setup.autoplay.destroy = destroy;
-				
+				}				
 				// Destroy function, to destroy the autoplay interval.
 				function destroy() {
 					clearInterval(tick);
@@ -849,7 +890,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// If go-to selector exists... 
 		if(goToTimelineLink.length > 0) { 
 			// On click
-			goToTimelineLink.on('click.'+this._name, $.proxy(gotoTimeline, this));
+			goToTimelineLink.on('click.'+this._name, gotoTimeline);
 				
 			function gotoTimeline(event) {
 				// Prevent default click
@@ -860,33 +901,24 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					$this = $(event.target),
 					// Get the go-to href value of the button as the selector
 					href = $this.attr('href'),
-					// Reference the jQuery object selector only once
-					$target = $(href),
 					// A check to see if href only contains a # (by itself)...
 					targetSelf = href == "#"; 
+				
 				// We are using a lonely # to determine if a link is targetting the timeline it sits in (itself)
 				if(targetSelf) {
 					// We are targeting the timeline the link is in.
-						// Get the ID of the outer wrapper of the timeline, from which the link sits in
-					var gotoself = '#' + $this.parents('.horizontal-timeline').attr('id');
-					// Set the target variable as this timeline.
-					$target = $(gotoself);
+					    // Get the ID of the outer wrapper of the timeline, from which the link sits in
+					var gotoself = '#' + $this.parents('.horizontal-timeline').attr('id'),
+					    // Set the target variable as this timeline.
+					    $target = $(gotoself);
 				}
-				// Cache timeline components 
-				// Find the .events-wrapper from the href selector
-				timelineComponents['timelineWrapper'] = $target.find('.events-wrapper');
-				// Find the .events
-				timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
-				// Find the .filling-line
-				timelineComponents['fillingLine'] = timelineComponents['eventsWrapper'].children('.filling-line');
-				// Find the event dates
-				timelineComponents['timelineEvents'] = timelineComponents['eventsWrapper'].find('a');
-				// Find the .timeline-navigation from the href selector
-				timelineComponents['timelineNavigation'] = $target.find('.timeline-navigation');
-				// Find the .events-content from the href selector
-				timelineComponents['eventsContent'] = $target.children('.events-content');
-				// Find the events content li
-				timelineComponents['eventsContentList'] = timelineComponents['eventsContent'].find('li');
+				// Otherwise we're targetting another timeline.
+				else var $target = $(href); // Reference the jQuery object selector only once
+				
+				// Get the correct plugin instance from the target data.
+				var instanceRef = $target.data('plugin_horizontalTimeline').Timeline;
+				
+				instanceRef._timelineComponents(timelineComponents);
 						
 					// Get the data-gototimeline options object
 				var datagoto = $this.data('gototimeline'),
@@ -931,16 +963,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					else easing = scrollDefaults.easing;
 				}		
 
-					// Attribute selector to find the event using the date 
-				var	eventDate = 'a[data-date="'+ date +'"]',
 					// Find all event dates.
-					prevDates = timelineComponents['eventsWrapper'].find('a'),
+				var	prevDates = timelineComponents['eventsWrapper'].find('a'),
 					// Find the targeted event date using the date					
-					selectedDate = timelineComponents['eventsWrapper'].find(eventDate),
+					selectedDate = timelineComponents['eventsWrapper'].find("a").filter(function(index, element) {
+						var data = instanceRef._timelineData($(element), "date");
+						if (data == date) return $(element);
+					}),
+				    
 					// Get the width value of the events (previously set)
-					timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+					timelineTotalWidth = instanceRef._setTimelineWidth(timelineComponents);
 				// If a link is targetting the timeline it sits in (itself), then execute the function to translate the timeline	
-				if(targetSelf) translate_gotoTimeline(this);
+				if(targetSelf) translate_gotoTimeline(instanceRef);
 				// If not, then use a smooth scroll and then execute the function afterwards.
 				else {
 					//** SmoothScroll functions **//
@@ -952,14 +986,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						}, 
 						speed, 
 						easing, 
-						$.proxy(function() {
+						function() {
 							// Once scrolling/animating the document is complete, update the target timeline.
-							translate_gotoTimeline(this);
-						}, this)
+							translate_gotoTimeline(instanceRef);
+						}
 					); // End .animate function
 				}
 				// Function to translate the timeline to the specific date.
-				function translate_gotoTimeline(pluginRef) {
+				function translate_gotoTimeline(instanceRef) {
 					// Check if the targeted event hasn't already been selected, if not continue the code.						
 					if (!selectedDate.hasClass('selected')) {
 						// Remove all selected classes from dates
@@ -967,14 +1001,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						// Add a selected class to the date we are targeting
 						selectedDate.addClass('selected');
 						// Update other dates as an older event for styling
-						pluginRef._updateOlderEvents(selectedDate);
+						instanceRef._updateOlderEvents(selectedDate);
 						// Update the filling line upto the selected date
-						pluginRef._updateFilling(selectedDate, timelineComponents['fillingLine'], timelineTotalWidth);
+						instanceRef._updateFilling(selectedDate, timelineComponents['fillingLine'], timelineTotalWidth);
 						// Update the visible content of the selected event
-						pluginRef._updateVisibleContent(selectedDate, timelineComponents['eventsContent']);
+						instanceRef._updateVisibleContent(selectedDate, timelineComponents['eventsContent']);
 					}
 					// Translate (scroll) the timeline left or right according to the position of the targeted event date
-					pluginRef._updateTimelinePosition(selectedDate, timelineComponents, timelineTotalWidth);
+					instanceRef._updateTimelinePosition(selectedDate, timelineComponents, timelineTotalWidth);
 				} // End translate_gotoTimeline() translate function
 			} // End gotoTimeline function						
 		} // End if goToTimelineLink exists
@@ -1115,7 +1149,26 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 		} // End useKeyboardKeys this.settings		
 	} // End _setup() function.
-   
+   	
+	/* Get data from the data-attribute object */
+	Timeline.prototype._timelineData = function (element, type) {
+		if (element.data('horizontal-timeline')) {
+			var data = element.data('horizontal-timeline');
+		
+			if(type == "date") return data.date;
+			else if(type == "customDisplay") return data.customDisplay;
+		}
+		// data-date and data-custom-display deprecated as of v2.0.5.alpha.3 
+		// and will be removed in a later major version.
+		else {
+			var dataDate = element.data('date'),
+				dataCustomDisplay = element.data('custom-display');
+		
+			if(type == "date") return dataDate;
+			else if(type == "customDisplay") return dataCustomDisplay;
+		}
+	}
+	
 	/* Refresh public method 
 	 *  - refreshes the timeline externally after initialisation.
 	 *  Use it like: $('#example').horizontalTimeline('refresh');
@@ -1185,17 +1238,21 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	 */
 	Timeline.prototype.addEvent = function (html, insertMethod, arrangementDate) {
 		this._timelineComponents(timelineComponents);
-			// Make an data-date attribute selector with the arrangementDate
-		var dataDate = '[data-date="'+ arrangementDate +'"]',
-			newDate = html.split("data-date")[1].split('"'),
+		
+			// Get the new date from the HTML.
+		var	newDate = html.split("date")[1].split('"')[2],
 			// Select the specified event content
-			$eventContent = timelineComponents['eventsContent'].find('li'+dataDate),
+			$eventContent = timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == arrangementDate) return $(element);
+			}, this)),
 			// Find the selected event. 
 			$selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
+		    	// Get the existing dates array.
 			existingDates = this.$element.data('plugin_'+ this._name)['existingDates'];
 			
-		if(jQuery.inArray(newDate[1], existingDates) == -1) {	
-			existingDates.push(newDate[1]);
+		if(jQuery.inArray(newDate, existingDates) == -1) {	
+			existingDates.push(newDate);
 			// If the insertMethod = before, then insert the new content before the specified date.	
 			if (insertMethod == 'before') $eventContent.before(html);
 			// Else the insertMethod = after, insert the new content after the specified date.
@@ -1213,18 +1270,28 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	
 	/* RemoveEvent public method 
 	 * - removes the specified event from the timeline externally after initialisation.
-	 * Removes the event and the event content from the timeline using the unique date used in data-date.
+	 * Removes the event and the event content from the timeline using the unique date used in data-attribute.
 	 * Use it like: $('#example').horizontalTimeline('removeEvent', '01/01/2001'); 
 	 */
 	Timeline.prototype.removeEvent = function (date) {
 		this._timelineComponents(timelineComponents);
-			// Make an data-date attribute selector with the date
-		var dataDate = '[data-date="'+ date +'"]',
+		
 			// Select the specified timeline event
-			$event = timelineComponents['eventsWrapper'].find('a'+dataDate),
+		var     $event = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == date) return $(element);
+			}, this)),	
 			// Select the specified event content
-			$eventContent = timelineComponents['eventsContent'].find('li'+dataDate),
-			$newEvent;
+			$eventContent = timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == date) return $(element);
+			}, this)),
+			$newEvent,
+		    	// Get the existing dates array.
+			existingDates = this.$element.data('plugin_'+ this._name)['existingDates'],
+			// Find the index of the date in the array.
+			index = existingDates.indexOf(date);
+		
 		// If there's more than 1 timeline events (We can't remove the very last event)...	
 		if (timelineComponents['timelineEvents'].length > 1) {
 			// If the specified event is selected...
@@ -1255,6 +1322,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			$event.remove();
 			// Remove the event content.
 			$eventContent.remove();
+			
+			// If the existing date exists...
+			if (index > -1) {
+				// Remove the existing date from the array.
+				existingDates.splice(index, 1);
+			}
+			
 			// Call the refresh function to fresh the timeline accordingly.	
 			this.refresh();
 		}
@@ -1311,12 +1385,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 			}
 			// If next, find the next event from the current selected event
-			else if (string == 'next')
-				newEvent = selectedDate.next('a');
+			else if (string == 'next') newEvent = selectedDate.next('a');
 				
 			// If prev, find the prev event from the current selected event
-			else if (string == 'prev')
-				newEvent = selectedDate.prev('a');
+			else if (string == 'prev') newEvent = selectedDate.prev('a');
 			
 			this._updateVisibleContent(newEvent, timelineComponents['eventsContent']);
 			newEvent.addClass('selected');
@@ -1406,31 +1478,71 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	}
 	
 	Timeline.prototype._updateVisibleContent = function (event, eventsContent) {
-		var eventDate = event.data('date'),
-			visibleContent = eventsContent.find('.selected'),
-			selectedContent = eventsContent.find('[data-date="'+ eventDate +'"]'),
-			selectedContentHeight = selectedContent.outerHeight();
-
-		if (selectedContent.index() > visibleContent.index()) {
-			var classEntering = 'selected enter-right',
-				classLeaving = 'leave-left';
+		var eventDate = this._timelineData(event, "date");
+		    visibleContent = eventsContent.find('.selected'),
+		    // Function to find the new content...    
+	     	    newContent = eventsContent.find("li").filter($.proxy(function(index, element) {
+			var data = this._timelineData($(element), "date");
+			if (data == eventDate) return $(element);
+		     }, this)),
+			    
+		     newContentHeight = newContent.outerHeight(),
+			    
+		     enterObj = this.settings.enter_animationClass,
+		     exitObj = this.settings.exit_animationClass,
+		     allClasses = exitObj.right + ' ' + exitObj.left + ' ' + enterObj.left + ' ' + enterObj.right; 
+		
+		// If newContent index is more than the visibleContent index,
+		// then we have selected an event to the right.
+		if (newContent.index() > visibleContent.index()) {
+			    // Set the selected and the enter right classes.
+			var classEntering = 'selected '+ enterObj.right,
+			    // Set the exit left class.
+			    classExiting = exitObj.left;
 		} 
+		// Else, we have selecting an event to the left.
 		else {
-			var classEntering = 'selected enter-left',
-				classLeaving = 'leave-right';
+			    // Set the selected and the enter left classes.
+			var classEntering = 'selected ' + enterObj.left,
+			    // Set the exit right class.
+			    classExiting = exitObj.right;
 		}	
 		
-		// Add/remove classes to css animate them in and out.
-		selectedContent.addClass(classEntering);
-		visibleContent.addClass(classLeaving)
-					  .one('webkitAnimationEnd.'+this._name+' oanimationend.'+this._name+' msAnimationEnd.'+this._name+' animationend.'+this._name, function(){
-							visibleContent.removeClass('leave-right leave-left');
-							selectedContent.removeClass('enter-left enter-right');
-					  }).removeClass('selected');
+		/* Add/remove classes to animate them in and out using CSS3. */
+		
+		function whichAnimationEvent(){
+			var t,
+			    el = document.createElement("fakeelement"),
+			    animations = {
+				"animation": "animationend",
+				"OAnimation": "oAnimationEnd",
+				"MozAnimation": "animationend",
+				"WebkitAnimation": "webkitAnimationEnd"
+			    };
+
+			for (t in animations){
+				if (el.style[t] !== undefined) return animations[t];
+			}
+		}
+		
+		var animationEvent = whichAnimationEvent();
+		
+		// Add the enter class to the newContent.
+		newContent.addClass(classEntering);
+		// Add the exit class to the visibleContent and on animation end...
+		visibleContent
+			.addClass(classExiting)
+			.one(animationEvent, function(){
+				// Remove all enter and exit classes from all the event content.
+				eventsContent.find('li').removeClass(allClasses);
+			})
+			// And then remove the selected class.
+			.removeClass('selected');
+		
+		// Update the height.
+		eventsContent.height(newContentHeight+'px');			  
 					  
-		eventsContent.height(selectedContentHeight+'px');			  
-					  
-		if (this.settings.autoplay == true && !this.$element.data('plugin_'+ this._name)['mouseEvent']) this._setup.autoplay.moved(this);
+		if (this.settings.autoplay == true) this._setup.autoplay.moved(this);
 	}
 	
 	Timeline.prototype._updateOlderEvents = function (event) {
@@ -1601,7 +1713,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// File isn't loaded yet...				
 				// If adding js...
 				if(js) {
-					console.log(name + ' plugin isn\'t loaded.', this.$element);	
+					console.groupCollapsed(name + ' on ' + this.$element.attr('id') + " timeline");
+					console.log('The plugin isn\'t loaded.');
+					
 					// Load the plugin dynamically via Ajax.
 					$.getScript(url)
 						.done(function(script, textStatus) {
@@ -1612,16 +1726,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						.fail(function(jqxhr, settings, exception) {
 							console.error("Failed to get " + url + "\n" + jqxhr + "\n" + this.settings + "\n" + exception);
 						}); // End $.getScript function
-					console.log(name + ' was loaded dynamically.', this.$element);	
+					
+					console.log('It was loaded dynamically.');	
 				}
 				// Else if adding CSS...
 				else if (css) {
-					console.log(name + ' isn\'t loaded.');
+					console.groupCollapsed(name);
+					console.log('The plugin isn\'t loaded.');
+					
 					// Add a the CSS file in a new <link> after the last <link> in the head.
 					$('<link>').attr({'href':url, 'rel':'stylesheet', 'type':"text/css"}).insertAfter(
 						$('head').find('link').last()
 					);
-					console.log(name + ' was loaded dynamically.');
+					console.log('It was loaded dynamically.');
 				}
 				// Push/add the url to the loadedFile array to check against.
 				loadedFile.push(url);
@@ -1634,7 +1751,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			else if (fileExists.length && loadedFile.indexOf(url) == -1) {
 				// The file is already loaded in the document via a <script> tag...
 				if(js) {
-					console.log(name+' has already been loaded by a <script> tag in the document, no need to load it again. Timeline instance:', this.$element);
+					console.groupCollapsed(name + ' on ' + this.$element.attr('id') + " timeline");
+					console.log('The plugin has already been loaded in the document via a <script> tag, no need to load it again.');
+					
 					// Execute the plugin via the callback option.
 					// Check if callback is a function, if it is then set a variable as the callback to be called.
 					if (typeof callback === "function") callback(this);
@@ -1645,7 +1764,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// Else the plugin has already been loaded...
 			else {
 				if(js) {
-					console.log(name+' has already been loaded, no need to load it again. Timeline instance:', this.$element);
+					console.groupCollapsed(name + ' on ' + this.$element.attr('id') + " timeline");
+					console.log('The plugin has already been loaded, no need to load it again.');
+					
 					// Execute the plugin via the callback option.
 					// Check if callback is a function, if it is then set a variable as the callback to be called.
 					if (typeof callback === "function") callback(this);
@@ -1653,8 +1774,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 
 			if(js) {
-				console.log(name+" executed on timeline instance: ", this.$element);
+				console.log('Executed on:', this.$element);
 			}
+			console.groupEnd();
+			
 			// Save the loadedFile array as data to the body to be able to reload it next time it's accessed.
 			$('body').data('plugin_'+ this._name +'_loadedFile', loadedFile);
 		} // End if addRequiredFile statement.
@@ -1671,11 +1794,22 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
     // with an underscore) to be called via the jQuery plugin,
     // e.g. $(element).defaultPluginName('functionName', arg1, arg2)
     $.fn[pluginName] = function ( options ) {
-        var args = arguments,
+        var args = 	arguments,
 			windowWidth = $(window).width(),
 			dateExists = $(this).find('.events-content').find('li').map(function() {
-				return $(this).data('date');
-	    	}).get();
+				if ($(this).data('horizontal-timeline')) {
+					var data = $(this).data('horizontal-timeline');
+				
+					return data.date;
+				}
+				// data-date deprecated as of v2.0.5.alpha.3 
+				// and will be removed in a later major version.
+				else {
+					var dataDate = $(this).data('date');
+				
+					return dataDate;
+				}
+	    		}).get();
 
         // Is the first parameter an object (options), or was omitted,
         // instantiate a new instance of the plugin.
