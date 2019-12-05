@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-- ## 2.0.5 Prerelease 3 [[v2.0.5-alpha.3]]() - Upcoming
+- ## 2.0.5 Prerelease 3 [[v2.0.5-alpha.3]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.3) - 05/12/2019
      ### Added
      - A combined singular data attribute, `data-horizontal-timeline`, that houses the previously-used `data-date` and `data-custom-display`.
      - `animation_baseClass`, `enter_animationClass` and `exit_animationClass` options to customise the event content animations.
