@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-- ## 2.0.5 [[v2.0.5](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - 14/02/2020
+- ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - 14/02/2020
      ### Added
      - 3 new attachable namespaced events: eventAdded, eventRemoved, eventChanged (the latter requested via email).
 
