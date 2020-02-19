@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 - ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - Coming Soon
      ### Added
-     - 3 new attachable namespaced events: eventAdded, eventRemoved, eventChanged (the latter requested via email).
+     - 3 new attachable namespaced events: `eventAdded`, `eventRemoved`, `eventChanged` (the latter requested via email and an issue).
+     - A new `goTo` public method, using the pre-exisiting go-to link functions.
+     
+     ### Changed
+     - Go-to link functions to use the new `goTo` public method
 
 - ## 2.0.5 Prerelease 3.1 [[v2.0.5-alpha.3.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.3.1) and 3.1.1 [[v2.0.5-alpha.3.1.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.3.1.1) - 05/12/2019
      ### Fixed
