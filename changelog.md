@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
      - 3 new attachable namespaced DOM events: `eventAdded`, `eventRemoved`, `eventChanged` (the latter requested via email and an issue).
      - A new `goTo` public method, using the pre-exisiting go-to link functions.
      - A new attachable namespaced DOM event `goToTimeline` to the goTo method (fires before it goes to timeline/date).
+     - A fail safe into the goTo method so that we can not go to a non-existant event.
      
      ### Changed
      - Go-to link functions to use the new `goTo` public method
