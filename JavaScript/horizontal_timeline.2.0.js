@@ -1321,42 +1321,51 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// Only used if the public method is used. (the go-to links passes the instanceRef as an argument.)
 		if (typeof instanceRef == 'undefined') instanceRef = this;
 		
-		/* Custom namespaced event: goToTimeline with the data passed to the event as the goToDate and the timelineSelector (jQuery object).
-		* (Has to be triggered on the body because of the go-to-timeline links in the DOM.)
-		*/
-		$('body').trigger({
-			type: "goToTimeline."+this._name,
-			goToDate: date,
-			timelineSelector: instanceRef.$element
-		});
+		// Get the existing dates array.
+		var existingDates = this.$element.data('plugin_'+ this._name)['existingDates'];
 
-		// Find all event dates.
-		var	prevDates = timelineComponents['eventsWrapper'].find('a'),
-			// Find the targeted event date using the date					
-			selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
-				var data = this._timelineData($(element), "date");
-				if (data == date) return $(element);
-			}, this)),
-			// Get the width value of the events (previously set)
-			timelineTotalWidth = this._setTimelineWidth(timelineComponents);
-			
-			//** SmoothScroll functions **//
-			if (smoothScroll == true) {
-				// Smoothly scroll the document to the target
-				$('html, body').stop().animate(
-					{
-						'scrollTop': instanceRef.$element.offset().top - offset
-					}, 
-					speed, 
-					easing, 
-					function() {
-						// Once scrolling/animating the document is complete, update the target timeline.
-						goto(instanceRef);
-					}
-				); // End .animate function
+		// If date exists in the timeline, we can then go to it.
+		if(jQuery.inArray(date, existingDates) > -1) {
+		
+			/* Custom namespaced event: goToTimeline with the data passed to the event as the goToDate and the timelineSelector (jQuery object).
+			* (Has to be triggered on the body because of the go-to-timeline links in the DOM.)
+			*/
+			$('body').trigger({
+				type: "goToTimeline."+this._name,
+				goToDate: date,
+				timelineSelector: instanceRef.$element
+			});
+
+			// Find all event dates.
+			var	prevDates = timelineComponents['eventsWrapper'].find('a'),
+				// Find the targeted event date using the date					
+				selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+					var data = this._timelineData($(element), "date");
+					if (data == date) return $(element);
+				}, this)),
+				// Get the width value of the events (previously set)
+				timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+
+				//** SmoothScroll functions **//
+				if (smoothScroll == true) {
+					// Smoothly scroll the document to the target
+					$('html, body').stop().animate(
+						{
+							'scrollTop': instanceRef.$element.offset().top - offset
+						}, 
+						speed, 
+						easing, 
+						function() {
+							// Once scrolling/animating the document is complete, update the target timeline.
+							goto(instanceRef);
+						}
+					); // End .animate function
+				}
+				else goto(instanceRef);
 			}
-			else goto(instanceRef);
-			
+			// The date is not in the timeline, so we can not go to it.
+			else return console.warn('The date '+ date +' is not in the Timeline, so we can not go to it.');
+		
 			function goto(instanceRef) {
 				// Check if the targeted event hasn't already been selected, if not continue the code.						
 				if (!selectedDate.hasClass('selected')) {
