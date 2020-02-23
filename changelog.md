@@ -4,11 +4,21 @@ All notable changes to this project will be documented in this file.
 
 - ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - Coming Soon
      ### Added
-     - 3 new attachable namespaced events: `eventAdded`, `eventRemoved`, `eventChanged` (the latter requested via email and an issue).
+     - 3 new attachable namespaced DOM events: `eventAdded`, `eventRemoved`, `eventChanged` (the latter requested via email and an issue).
      - A new `goTo` public method, using the pre-exisiting go-to link functions.
+     - A new attachable namespaced DOM event `goToTimeline` to the goTo method (fires before it goes to timeline/date).
      
      ### Changed
      - Go-to link functions to use the new `goTo` public method
+     - The way the `goTo` method handles the optional smooth scroll settings using an object to set the defaults as the function arguments.
+     In line with this, the method call in the go-to-timeline link function has been updated.
+     
+     ### Fixed
+     - A bug with the go-to-timeline link function where it would fire on all plugin instances. Fixed by adding a `stopImmediatePropagation()` to the function to concentrate only on the one instance.
+     - Several typos in the comments.
+     
+     ### Removed
+     - Some unnecessary code in the go-to-timeline link function.
 
 - ## 2.0.5 Prerelease 3.1 [[v2.0.5-alpha.3.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.3.1) and 3.1.1 [[v2.0.5-alpha.3.1.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5-alpha.3.1.1) - 05/12/2019
      ### Fixed
