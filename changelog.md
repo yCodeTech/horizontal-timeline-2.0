@@ -17,7 +17,8 @@ All notable changes to this project will be documented in this file.
      ### Fixed
      - A bug with the go-to-timeline link function where it would fire on all plugin instances. Fixed by adding a `stopImmediatePropagation()` to the function to concentrate only on the one instance.
      - Several typos in the comments.
-     - The goTo method options object quotation to reflect the actual usage without quotes.
+     - The goTo method options object quotation to reflect the actual usage without quotes 
+     - The goTo method speed and offset options to be real numbers instead of strings.
      
      ### Removed
      - Some unnecessary code in the go-to-timeline link function.
