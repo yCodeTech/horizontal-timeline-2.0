@@ -1322,8 +1322,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		if (typeof instanceRef == 'undefined') instanceRef = this;
 		
 		// Get the existing dates array.
-		var existingDates = this.$element.data('plugin_'+ this._name)['existingDates'];
-
+		var existingDates = this.$element.data('plugin_'+ this._name)['existingDates'],
+		    speed = Number(speed),
+		    offset = Number(offset);
+		
 		// If date exists in the timeline, we can then go to it.
 		if(jQuery.inArray(date, existingDates) > -1) {
 		
