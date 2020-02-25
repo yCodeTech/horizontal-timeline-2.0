@@ -943,19 +943,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// so we need to check for their existance
 					
 					// If speed option exists, set the speed from the data object
-					if (typeof dataScrollSpeed !== 'undefined') speed = dataScrollSpeed;
+					if (typeof dataScrollSpeed !== 'undefined') scrollSpeed = dataScrollSpeed;
 
 					// If offset option exists set offset from the data object
-					if (typeof dataScrollOffset !== 'undefined') offset = dataScrollOffset;
+					if (typeof dataScrollOffset !== 'undefined') scrollOffset = dataScrollOffset;
 
 					// If easing option exists set easing from the data object
-					if (typeof dataScrollEasing !== 'undefined') easing = dataScrollEasing;
+					if (typeof dataScrollEasing !== 'undefined') scrollEasing = dataScrollEasing;
 				}		
 				
 				// If a link is targetting the timeline it sits in (itself), then execute the public method interally to goTo the date.	
 				if(targetSelf) instanceRef.goTo(date, instanceRef);
 				// If not, then use a smooth scroll and then execute the public method interally afterwards.
-				else instanceRef.goTo(date, {"smoothScroll": true, "speed": speed, "offset": offset, "easing":easing}, instanceRef);				
+				else instanceRef.goTo(date, {smoothScroll: true, speed: scrollSpeed, offset: scrollOffset, easing: scrollEasing}, instanceRef);				
 			} // End gotoTimeline function						
 		} // End if goToTimelineLink exists
 		
