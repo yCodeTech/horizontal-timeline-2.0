@@ -3,8 +3,8 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5-alpha.3.1
-	
+Version: 2.0.5
+
 Original Horizontal Timeline by CodyHouse
 
 Licensed under the MIT license	
@@ -353,8 +353,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			    $eventDateDisplay = self.$element.find('.events'),
 			    dateLink = '<a href="" data-horizontal-timeline=\'{"date": "'+ dataDate +'"}\'>';
 			
-			// For use with the addEvent plublic method.
-			// If arrangmentDate isn't undefined or null...
+			// For use with the addEvent public method.
+			// If arrangementDate isn't undefined or null...
 			if(typeof arrangementDate != 'undefined' || arrangementDate != null) { 
 			    // Finds the event with the specific date.
 			    $arrangementEvent = $eventDateDisplay.find("a").filter(function() {
@@ -897,10 +897,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			function gotoTimeline(event) {
 				// Prevent default click
 				event.preventDefault();
-					// Set an empty object
-				var timelineComponents = {},
+				// Prevent every instance of the plugin from firing the function, and concentrate on just the one.
+				event.stopImmediatePropagation();
 					// Reference the button 
-					$this = $(event.target),
+				var	$this = $(event.target),
 					// Get the go-to href value of the button as the selector
 					href = $this.attr('href'),
 					// A check to see if href only contains a # (by itself)...
@@ -919,8 +919,6 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				
 				// Get the correct plugin instance from the target data.
 				var instanceRef = $target.data('plugin_horizontalTimeline').Timeline;
-				
-				instanceRef._timelineComponents(timelineComponents);
 						
 					// Get the data-gototimeline options object
 				var datagoto = $this.data('gototimeline'),
@@ -934,15 +932,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					dataDate = datagoto.date,
 					dataScrollSpeed = datagoto.scrollspeed,
 					dataScrollOffset = datagoto.scrolloffset,
-					dataScrollEasing = datagoto.scrolleasing,
-					
-					// Set the scroll defaults
-					scrollDefaults = {
-						"speed": 500, 
-						"offset": 0, 
-						"easing": "linear"
-					};
-				
+					dataScrollEasing = datagoto.scrolleasing;
+
 				// If the data-gototimeline attribute exists...
 				if (typeof datagoto !== 'undefined') {
 					// Set the date from the data object
@@ -952,66 +943,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// so we need to check for their existance
 					
 					// If speed option exists, set the speed from the data object
-					if (typeof dataScrollSpeed !== 'undefined') speed = dataScrollSpeed;
-					// If not then set the speed to the default
-					else speed = scrollDefaults.speed;
-					// If offset option exists set offset from the data object
-					if (typeof dataScrollOffset !== 'undefined') offset = dataScrollOffset;
-					// If not then set the offset to the default
-					else offset = scrollDefaults.offset;
-					// If easing option exists set easing from the data object
-					if (typeof dataScrollEasing !== 'undefined') easing = dataScrollEasing;
-					// If not then set the easing to the default
-					else easing = scrollDefaults.easing;
-				}		
+					if (typeof dataScrollSpeed !== 'undefined') scrollSpeed = dataScrollSpeed;
 
-					// Find all event dates.
-				var	prevDates = timelineComponents['eventsWrapper'].find('a'),
-					// Find the targeted event date using the date					
-					selectedDate = timelineComponents['eventsWrapper'].find("a").filter(function(index, element) {
-						var data = instanceRef._timelineData($(element), "date");
-						if (data == date) return $(element);
-					}),
-				    
-					// Get the width value of the events (previously set)
-					timelineTotalWidth = instanceRef._setTimelineWidth(timelineComponents);
-				// If a link is targetting the timeline it sits in (itself), then execute the function to translate the timeline	
-				if(targetSelf) translate_gotoTimeline(instanceRef);
-				// If not, then use a smooth scroll and then execute the function afterwards.
-				else {
-					//** SmoothScroll functions **//
-					
-					// Smoothly scroll the document to the target
-					$('html, body').stop().animate(
-						{
-							'scrollTop': $target.offset().top - offset
-						}, 
-						speed, 
-						easing, 
-						function() {
-							// Once scrolling/animating the document is complete, update the target timeline.
-							translate_gotoTimeline(instanceRef);
-						}
-					); // End .animate function
-				}
-				// Function to translate the timeline to the specific date.
-				function translate_gotoTimeline(instanceRef) {
-					// Check if the targeted event hasn't already been selected, if not continue the code.						
-					if (!selectedDate.hasClass('selected')) {
-						// Remove all selected classes from dates
-						prevDates.removeClass('selected');
-						// Add a selected class to the date we are targeting
-						selectedDate.addClass('selected');
-						// Update other dates as an older event for styling
-						instanceRef._updateOlderEvents(selectedDate);
-						// Update the filling line upto the selected date
-						instanceRef._updateFilling(selectedDate, timelineComponents['fillingLine'], timelineTotalWidth);
-						// Update the visible content of the selected event
-						instanceRef._updateVisibleContent(selectedDate, timelineComponents['eventsContent']);
-					}
-					// Translate (scroll) the timeline left or right according to the position of the targeted event date
-					instanceRef._updateTimelinePosition(selectedDate, timelineComponents, timelineTotalWidth);
-				} // End translate_gotoTimeline() translate function
+					// If offset option exists set offset from the data object
+					if (typeof dataScrollOffset !== 'undefined') scrollOffset = dataScrollOffset;
+
+					// If easing option exists set easing from the data object
+					if (typeof dataScrollEasing !== 'undefined') scrollEasing = dataScrollEasing;
+				}		
+				
+				// If a link is targetting the timeline it sits in (itself), then execute the public method interally to goTo the date.	
+				if(targetSelf) instanceRef.goTo(date, instanceRef);
+				// If not, then use a smooth scroll and then execute the public method interally afterwards.
+				else instanceRef.goTo(date, {smoothScroll: true, speed: scrollSpeed, offset: scrollOffset, easing: scrollEasing}, instanceRef);				
 			} // End gotoTimeline function						
 		} // End if goToTimelineLink exists
 		
@@ -1265,13 +1209,21 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			else if (insertMethod == 'after') $eventContent.after(html);
 			
 			// Call the create.date function passing the insertMethod and arrangementDate arguments.
-			// This creates the new timeline events before or after [inserMethod] specified date [arrangementDate].
+			// This creates the new timeline events before or after [insertMethod] specified date [arrangementDate].
 			this._create.date(this, insertMethod, arrangementDate);
 			// Update the olderEvents.
 			this._updateOlderEvents($selectedEvent);
 			// Call the refresh function to fresh the timeline accordingly.	
 			this.refresh();
+			
+			/* Custom namespaced event: eventAdded with the data passed to the event as the newEventDate and newEventContent. */
+			this.$element.trigger({
+				type: "eventAdded."+this._name,
+				newEventDate: newDate,
+				newEventContent: html
+			});
 		}
+		
 	}
 	
 	/* RemoveEvent public method 
@@ -1339,13 +1291,102 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			
 			// Call the refresh function to fresh the timeline accordingly.	
 			this.refresh();
+			
+			/* Custom namespaced event: eventRemoved with the data passed to the event as the removedDate. */
+			this.$element.trigger({
+				type: "eventRemoved."+this._name,
+				removedDate: date,
+				removedContent: $eventContent[0].outerHTML
+			});
 		}
 		// If the specified event is the only event, do nothing, since there should always be at least 1 event.
 		else {
 			console.warn('Timeline must always have at least 1 event after initialisation, therefore it can\'t be removed. Please use the Destroy method instead.');
 		}
 	} // End removeEvent() function
-				
+	
+	/* goTo public method 
+	 * - go to an event in the timeline externally after initialisation.
+	 * Changes and goes to the specified event in the timeline.
+	 * Use it like: $('#example').horizontalTimeline('goTo', '01/01/2001', {"smoothScroll": true, "speed": 500, "offset": 0, "easing": "linear"});
+	 * ([an existing unique date to go to], {[enable smoothScroll], [scrollSpeed], [scrollOffset], [scrollEasing]})
+	 * The go-to-timeline links uses this method.
+	 */
+	// The object that equals itself as the function arguments, sets the defaults for the smoothScroll function. 0+ options can be overridden.
+	Timeline.prototype.goTo = function (date, {smoothScroll = false, speed = 500, offset = 0, easing = "linear"} = {}, instanceRef) {		
+		var timelineComponents = {};
+		this._timelineComponents(timelineComponents);
+
+		// If the variable instanceRef is undefined, set it to this instance.
+		// Only used if the public method is used. (the go-to links passes the instanceRef as an argument.)
+		if (typeof instanceRef == 'undefined') instanceRef = this;
+		
+		// Get the existing dates array.
+		var existingDates = this.$element.data('plugin_'+ this._name)['existingDates'],
+		    speed = Number(speed),
+		    offset = Number(offset);
+		
+		// If date exists in the timeline, we can then go to it.
+		if(jQuery.inArray(date, existingDates) > -1) {
+		
+			/* Custom namespaced event: goToTimeline with the data passed to the event as the goToDate and the timelineSelector (jQuery object).
+			* (Has to be triggered on the body because of the go-to-timeline links in the DOM.)
+			*/
+			$('body').trigger({
+				type: "goToTimeline."+this._name,
+				goToDate: date,
+				timelineSelector: instanceRef.$element
+			});
+
+			// Find all event dates.
+			var	prevDates = timelineComponents['eventsWrapper'].find('a'),
+				// Find the targeted event date using the date					
+				selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+					var data = this._timelineData($(element), "date");
+					if (data == date) return $(element);
+				}, this)),
+				// Get the width value of the events (previously set)
+				timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+
+				//** SmoothScroll functions **//
+				if (smoothScroll == true) {
+					// Smoothly scroll the document to the target
+					$('html, body').stop().animate(
+						{
+							'scrollTop': instanceRef.$element.offset().top - offset
+						}, 
+						speed, 
+						easing, 
+						function() {
+							// Once scrolling/animating the document is complete, update the target timeline.
+							goto(instanceRef);
+						}
+					); // End .animate function
+				}
+				else goto(instanceRef);
+			}
+			// The date is not in the timeline, so we can not go to it.
+			else return console.warn('The date '+ date +' is not in the Timeline, so we can not go to it.');
+		
+			function goto(instanceRef) {
+				// Check if the targeted event hasn't already been selected, if not continue the code.						
+				if (!selectedDate.hasClass('selected')) {
+					// Remove all selected classes from dates
+					prevDates.removeClass('selected');
+					// Add a selected class to the date we are targeting
+					selectedDate.addClass('selected');
+					// Update other dates as an older event for styling
+					instanceRef._updateOlderEvents(selectedDate);
+					// Update the filling line up to the selected date
+					instanceRef._updateFilling(selectedDate, timelineComponents['fillingLine'], timelineTotalWidth);
+					// Update the visible content of the selected event
+					instanceRef._updateVisibleContent(selectedDate, timelineComponents['eventsContent']);
+				}
+				// Translate (scroll) the timeline left or right according to the position of the targeted event date
+				instanceRef._updateTimelinePosition(selectedDate, timelineComponents, timelineTotalWidth);
+			} // End goto() function
+	} // End goTo() public method function
+	
 	Timeline.prototype._updateSlide = function (timelineComponents, timelineTotalWidth, string) {
 		// Retrieve translateX value of timelineComponents['eventsWrapper']
 		var translateValue = this._getTranslateValue(timelineComponents['eventsWrapper']),
@@ -1435,7 +1476,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			eventWidth = selectedEvent.css('width').replace('px', '');
 		// Add the left and width together and divide by 2
 		eventLeft = Number(eventLeft) + Number(eventWidth)/2;
-		// Divde the eventLeft and the totalTranslateValue to get the filling line value
+		// Divide the eventLeft and the totalTranslateValue to get the filling line value
 		var scaleValue = eventLeft/totalTranslateValue;
 		// Set the filling line value
 		this._setTransformValue(filling, 'scaleX', scaleValue);
@@ -1548,10 +1589,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			.removeClass('selected');
 		
 		// Update the height.
-		eventsContent.height(newContentHeight+'px');			  
-					  
+		eventsContent.height(newContentHeight+'px');
+		
+		// For use with autoplay...	  
 		if (this.settings.autoplay == true) this._setup.autoplay.moved(this);
-	}
+		
+		/* Custom namespaced event: eventChanged with the data passed to the event as the current selected eventDate. */
+		this.$element.trigger({
+			type: "eventChanged."+this._name,
+			currentEventDate: eventDate
+		});
+		
+	} // End _updateVisibleContent function
 	
 	Timeline.prototype._updateOlderEvents = function (event) {
 		event.prevAll('a').addClass('older-event').end()
@@ -1616,7 +1665,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		if (checkMQ == 'tinyMobile' || checkMQ == 'mobile') dateIntervals = this.settings.mobileDateIntervals;
 		// If tablet is detected, set dateIntervals to tablet
 		else if (checkMQ == 'smallTablet' || checkMQ == 'tablet') dateIntervals = this.settings.tabletDateIntervals;
-		// If not, set to desktop intevals
+		// If not, set to desktop intervals
 		else if (checkMQ == 'desktop') dateIntervals = this.settings.desktopDateIntervals;
 		// Set a minimum value for the intervals.
 		var minimumInterval = 120;
@@ -1666,7 +1715,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// If not, then enable the prev button
 			else prevButton.removeClass('inactive');
 	
-			// If last event is selected, then diable the next button
+			// If last event is selected, then disable the next button
 			if(lastEvent.is('.selected')) nextButton.addClass('inactive');
 			// If not, then enable the next button
 			else nextButton.removeClass('inactive');	

@@ -13,7 +13,7 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added new autoplay feature with a progress bar, pause/play buttons, adjustable speed and on-hover pause functionality.
    - Added new go-to timeline link with customisable scroll functionality.
    - Added support for mouse-wheel scrolling, touch and swipe for touch devices, and keyboard arrow keys, with the option to disable the loading of the required plugin files.
-   - Added new refresh, destroy, addEvent, removeEvent methods.
+   - Added new `refresh`, `destroy`, `addEvent`, `removeEvent`, and `goTo` methods with new attachable namespaced `eventAdded`, `eventRemoved`, `eventChanged`, `goToTimeline` DOM Events.
    - Added new options to change the button icons and to disable the use of the Font Awesome icon library.
    - **Deprecated** the use of multiple data attributes, _data-date_ and _data-custom-display_, in favour of the all new combined singular data attribute, _data-horizontal-timeline_, that utilises an object to house all previously-used data.
    - Added new animation options to customise the event content animation.
