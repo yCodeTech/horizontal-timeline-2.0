@@ -4,7 +4,7 @@ Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
 Version: 2.0.5
-	
+
 Original Horizontal Timeline by CodyHouse
 
 Licensed under the MIT license	
