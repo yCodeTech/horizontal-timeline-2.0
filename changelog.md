@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- ## 2.0.5.1 [v2.0.5.1] - TBC
+     ### Removed
+     - An unnecessary development console log in the goTo method in the minified file (.min.js)
+
 - ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - 25/02/2020
      ### Added
      - 3 new attachable namespaced DOM events: `eventAdded`, `eventRemoved`, `eventChanged` (the latter requested via email and an issue).
