@@ -40,5 +40,10 @@ If applicable, add screenshots to help explain your problem.
 **Errors:**
 Any errors printed in the dev console.
 
+**Link to jsFiddle or codepen of your code to reproduce the issue:**
+Create a simplistic version of your code in an online code bin of which will reproduce the issue or error, and link to it here.
+
+ - Code Link: e.g. [code](www.example.com)
+
 **Additional context**
 Add any other context about the problem here.
