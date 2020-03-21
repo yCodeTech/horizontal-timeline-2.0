@@ -3,7 +3,7 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5
+Version: 2.0.5.1
 
 Original Horizontal Timeline by CodyHouse
 
@@ -616,7 +616,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				return(false);
 			})
 			// Button on click...
-			.on('click.'+this._name, '.timeline-navigation a', $.proxy(function() {
+			.on('click.'+this._name, '.timeline-navigation:not(#pausePlay) a', $.proxy(function(event) {
 				event.preventDefault();
 				var $this = $(event.target);
 				
@@ -633,7 +633,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}, this))		
 			//** Event date function **//		
 			// Detect click on a single event date = show new event content
-			.on('click.'+this._name, '.events a', $.proxy(function() {
+			.on('click.'+this._name, '.events a', $.proxy(function(event) {
 				event.preventDefault();
 				var $this = $(event.target);
 				
@@ -813,6 +813,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}				 
 				// Change Buttons function
 				function changeButtons(event) {
+					event.preventDefault();
 					// Get the event data
 					var data = event.data,
 					    // Set variables using the corresponding data array selectors.
