@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 - ## 2.0.5.1 [v2.0.5.1] - TBC
      ### Removed
      - An unnecessary development console log in the goTo method in the minified file (.min.js)
+     
+     ### Fixed
+     - A bug that was caused by a missing `event` parameter in a function declaration when triggering a fake click on the autoplay pause button, it would spit out the error **Cannot read property 'preventDefault' of undefined**.
+
+     - The `.on` function relating to that of the timeline navigation which was inadvertently being run when the pause/play buttons were clicked or triggered - adding a `:not` CSS selector to exclude the buttons.
+
+     - A bug that appeared after the previous bug fixtures above was implemented. The pause/play `.on` function (`changeButtons`) would now refresh the page, so a `event.preventDefault();` was added.
 
 - ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - 25/02/2020
      ### Added
