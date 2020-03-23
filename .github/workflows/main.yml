@@ -29,7 +29,10 @@ jobs:
       with:
         version_file: Version
         prefix: v
+        branch: dev
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: dev
+        
+# [bump]
+# 2.0.5
 
