@@ -1,5 +1,0 @@
-- name: Bump Versions
-  uses: remorses/bump-version@v8
-  with:
-      version_file: ./Version
-      prefix: v # this will prefix the created tag
