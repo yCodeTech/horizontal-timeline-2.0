@@ -31,7 +31,3 @@ jobs:
           prefix: v
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-# "-": "[bump]"
-# "version": "2.0.5.0"
-
