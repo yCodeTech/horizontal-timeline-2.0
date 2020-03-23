@@ -1,6 +1,7 @@
 # Horizontal Timeline 2.0
 #### by [yCodeTech](https://github.com/yCodeTech)
 #### Twitter [@yCodeTech](https://twitter.com/yCodeTech)
+#### Current Version: 2.0.5.1
 
 Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a JavaScript plugin originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/), to create a dynamic timeline on the horizontal axis.
 
@@ -121,6 +122,11 @@ $('#example').horizontalTimeline({
 ## Known Issues
 
 - Autoplay can't be set on multiple timelines, meaning the maximum per page is 1.
-- The event content animation can become stuck between classes and glitch out.
 
 These issues are hopefully going to be fixed in the future. If you want to help me out and fix any of these issues yourself, please do so and make a pull request for me to review and merge it with the plugin. All help will be appreciated.
+
+## Known Issues that won't be fixed.
+
+- The event content animation can become stuck between classes and glitch out. Can not fix as it relies on the `animationend` event, which doesn't always get fired, presumably the cause of the issue.
+
+- IE11 and Safari 5.1.7 for Windows 10 both have issues with the timeline, and encounters errors. Will not fix due to the browsers being severely outdated and their dev console errors are lacking descriptions to even attempt to find the cause of the errors.
