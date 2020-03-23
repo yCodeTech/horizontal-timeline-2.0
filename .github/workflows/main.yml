@@ -24,10 +24,11 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v1
-      - name: Bump Versions
-        uses: remorses/bump-version@v8
+                
+      - name: Increment Semantic Version
+      - uses: christian-draeger/increment-semantic-version@1.0.1
         with:
-          version_file: ./VERSION
-          prefix: v
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          current-version: '2.11.7-alpha3'
+          version-fragment: 'bug'
+      - name: Do something with your bumped release version
+        run: echo ${{ steps.bump_version.outputs.next-version }}
