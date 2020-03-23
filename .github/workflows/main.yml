@@ -23,13 +23,15 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: Bump Versions
-      uses: remorses/bump-version@v8
-      with:
-        version_file: ./VERSION
-        prefix: v
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v1
+        
+      - name: Bump Versions
+        uses: remorses/bump-version@v8
+        with:
+          version_file: ./VERSION
+          prefix: v
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
 # "-": "[bump]"
 # "version": "2.0.5.0"
