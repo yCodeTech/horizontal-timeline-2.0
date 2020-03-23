@@ -27,7 +27,7 @@ jobs:
     - name: Bump Versions
       uses: remorses/bump-version@v8
       with:
-        version_file: Version
+        version_file: ./VERSION
         prefix: v
         branch: dev
       env:
