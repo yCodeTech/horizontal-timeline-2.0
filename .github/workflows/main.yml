@@ -29,7 +29,6 @@ jobs:
       with:
         version_file: ./VERSION
         prefix: v
-        branch: dev
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
