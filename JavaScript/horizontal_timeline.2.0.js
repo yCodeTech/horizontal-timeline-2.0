@@ -150,7 +150,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		// the options via the instance, e.g. this.element 
 		// and this.settings
 		var self = this, 
-	    	contentList = this.$element.find('li');
+	    	    contentList = this.$element.find('li');
 		if(contentList.length == 0) this.$element.css('opacity', 1).html('<h3>There are no events at this point in time.<br><br>Please add some content.</h3>');
 		if (this.settings.useFontAwesomeIcons == true) {
 			var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
@@ -285,7 +285,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		    iconScrollRight = (this._options.iconClass != undefined) ? iconClass.scrollRight : iconClass.scrollRight_iconClass,
 		    iconPrev = (this._options.iconClass != undefined) ? iconClass.prev : iconClass.prev_iconClass,
 		    iconNext = (this._options.iconClass != undefined) ? iconClass.next : iconClass.next_iconClass,
-		    iconPause = ` ? iconClass.pause : iconClass.pause_iconClass,
+		    iconPause = (this._options.iconClass != undefined) ? iconClass.pause : iconClass.pause_iconClass,
 			
 		    // Left Nav
 		    $leftNav = '<div class="timeline-navigation" id="leftNav"></div>',
