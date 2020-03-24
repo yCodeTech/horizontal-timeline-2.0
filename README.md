@@ -136,6 +136,7 @@ These issues are hopefully going to be fixed in the future. If you want to help 
 As of _v2.0.5-alpha.3_ ...
 - `data-date`
 - `data-custom-display`
+
 In favour of the combined singular data attribute: `data-horizontal-timeline` with key:value pairs.
 
 As of _v2.0.5.1_ ...
@@ -153,4 +154,5 @@ As of _v2.0.5.1_ ...
 - `animation_baseClass`
 - `enter_animationClass` object
 - `exit_animationClass` object
+
 In favour of object options and a combined nested object for the `animationClass`
