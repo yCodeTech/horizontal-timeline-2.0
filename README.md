@@ -2,6 +2,7 @@
 #### by [yCodeTech](https://github.com/yCodeTech)
 #### Twitter [@yCodeTech](https://twitter.com/yCodeTech)
 #### Current Version: 2.0.5.1
+#### Quick Links: <a href="#setup">Setup</a> | <a href="#options">Options</a> | <a href="#known-issues">Known Issues</a> | <a href="#known-issues-that-wont-be-fixed">Known Issues That Won't Be Fixed</a> | <a href="#deprecated">Deprecated</a>
 
 Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a JavaScript plugin originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/), to create a dynamic timeline on the horizontal axis.
 
@@ -130,3 +131,26 @@ These issues are hopefully going to be fixed in the future. If you want to help 
 - The event content animation can become stuck between classes and glitch out. Can not fix as it relies on the `animationend` event, which doesn't always get fired, presumably the cause of the issue.
 
 - IE11 and Safari 5.1.7 for Windows 10 both have issues with the timeline, and encounters errors. Will not fix due to the browsers being severely outdated and their dev console errors are lacking descriptions to even attempt to find the cause of the errors.
+
+## Deprecated
+As of _v2.0.5-alpha.3_ ...
+- `data-date`
+- `data-custom-display`
+In favour of the combined singular data attribute: `data-horizontal-timeline` with key:value pairs.
+
+As of _v2.0.5.1_ ...
+- `desktopDateIntervals`
+- `tabletDateIntervals`
+- `mobileDateIntervals`
+- `minimalFirstDateInterval`
+- `iconBaseClass`
+- `scrollLeft_iconClass`
+- `scrollRight_iconClass`
+- `prev_iconClass`
+- `next_iconClass`
+- `pause_iconClass`
+- `play_iconClass`
+- `animation_baseClass`
+- `enter_animationClass` object
+- `exit_animationClass` object
+In favour of object options and a combined nested object for the `animationClass`
