@@ -34,10 +34,29 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
     // Create the defaults once
     var pluginName = 'horizontalTimeline',
         defaults = {
+		// ! Deprecate these individual options in favour of the object options. //
+		
         	desktopDateIntervals: 200,   //************\\
 		tabletDateIntervals: 150,   // Minimum: 120 \\
 		mobileDateIntervals: 120,  //****************\\
 		minimalFirstDateInterval: true,
+		
+		// ! End Deprecated options //
+		
+		/* New object options... */
+		// If object doesn't exist in the user options, then default to the individual options,
+		// otherwise use the object.
+
+		// Can not use in conjunction with the single options... 
+		// If both single and object options are set in the options, the object will take precedence.
+
+		dateIntervals: {
+			"desktop": 200,   //************\\
+			"tablet": 150,   // Minimum: 120 \\
+			"mobile": 120,  //****************\\
+			"minimal": true
+		},
+		/* End new object options */
 			
 		dateDisplay: "dateTime", // dateTime, date, time, dayMonth, monthYear, year
 		dateOrder: "normal", // normal, reverse
@@ -54,6 +73,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		useNavBtns: true,
 		useScrollBtns: true,
 
+		// ! Deprecate these individual options in favour of the object options. //
+		
 		iconBaseClass: "fas fa-3x", // Space separated class names
 		scrollLeft_iconClass: "fa-chevron-circle-left",
 		scrollRight_iconClass: "fa-chevron-circle-right",
@@ -71,20 +92,53 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			"left": "exit-left",
 			"right": "exit-right"
 		},
+		
+		// ! End Deprecated options //
+		
+		/* New object options... */
+		// If object doesn't exist in the user options, then default to the individual options,
+		// otherwise use the object.
+
+		// Can not use in conjunction with the single options...
+		// If both single and object options are set in the options, the object will take precedence.
+
+		iconClass: {
+			"base": "fas fa-3x", // Space separated class names
+			"scrollLeft": "fa-chevron-circle-left",
+			"scrollRight": "fa-chevron-circle-right",
+			"prev": "fa-arrow-circle-left",
+			"next": "fa-arrow-circle-right",
+			"pause": "fa-pause-circle",
+			"play": "fa-play-circle"
+		},
+		animationClass: {
+			"base": "animationSpeed", // Space separated class names,
+			"enter": {
+				"left": "enter-left",
+				"right": "enter-right"
+			},
+			"exit": {
+				"left": "exit-left",
+				"right": "exit-right"
+			}
+		}
+		/* End new object options */
         };
 
     // The actual plugin constructor
     function Timeline( element, options ) {
-        this.element = element;
+	    this.element = element;
 
         // jQuery has an extend method that merges the 
         // contents of two or more objects, storing the 
         // result in the first object. The first object 
         // is generally empty because we don't want to alter 
         // the default options for future instances of the plugin
-        this.settings = $.extend( {}, defaults, options) ;
+	    // (deep recursive copy for nested objects, empty object, the defaults object, the options object)
+        this.settings = $.extend(true, {}, defaults, options);
 
         this._defaults = defaults;
+	this._options = (options != undefined)? options : "Nothing overridden";
         this._name = pluginName;
 	this.$element = $(element);
 		
@@ -126,8 +180,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					timelineComponents['timelineEvents'].first().addClass("first");
 				}
 				else {
+					// Check if the new object options are defined in the user options, if they are use them,
+					// otherwise use the deprecated single options.
+					var animationObj = (self._options.animationClass != undefined) ? self.settings.animationClass : self.settings,
+						animationBase = (self._options.animationClass != undefined) ? animationObj.base : animationObj.animation_baseClass;
+					
 					// Adds id to the first and last li of the event-content list respectively.
-					timelineComponents['eventsContentList'].addClass(self.settings.animation_baseClass)
+					timelineComponents['eventsContentList'].addClass(animationBase)
 						.first().attr('id', 'first').end()
 						.last().attr('id', 'last');
 			
@@ -204,8 +263,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			this.$element.addClass('loaded');
 			
 			this._setup(self, timelineComponents, timelineTotalWidth);
+			
 		}, this), 300);
-    };	
+    } // End init function
+	
 	/* Dynamically creates the timeline according to the amount of events. */
 	Timeline.prototype._create = function () {		
 		var $timelineWrapper = '<div class="timeline"></div>',
@@ -215,20 +276,29 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		    // Icons require Font Awesome CSS
 		    // This CSS file has been added to the document if not already present.
 			
+		    	// Check if the new object options are defined in the user options, if they are use them,
+			// otherwise use the deprecated single options.
+			iconClass = (this._options.iconClass != undefined) ? this.settings.iconClass : this.settings,
+			iconBase = (this._options.iconClass != undefined) ? iconClass.base : iconClass.iconBaseClass,
+			iconScrollLeft = (this._options.iconClass != undefined) ? iconClass.scrollLeft : iconClass.scrollLeft_iconClass,
+			iconScrollRight = (this._options.iconClass != undefined) ? iconClass.scrollRight : iconClass.scrollRight_iconClass,
+			iconPrev = (this._options.iconClass != undefined) ? iconClass.prev : iconClass.prev_iconClass,
+			iconNext = (this._options.iconClass != undefined) ? iconClass.next : iconClass.next_iconClass,
+			iconPause = ` ? iconClass.pause : iconClass.pause_iconClass,
+			
 		    // Left Nav
 		    $leftNav = '<div class="timeline-navigation" id="leftNav"></div>',
-		    $scrollLeftButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.scrollLeft_iconClass +' scroll-left inactive"></a>',
-		    $prevButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.prev_iconClass +' prev inactive"></a>',
+		    $scrollLeftButton = '<a href="" class="'+ iconBase +' '+ iconScrollLeft +' scroll-left inactive"></a>',
+		    $prevButton = '<a href="" class="'+ iconBase +' '+ iconPrev +' prev inactive"></a>',
 		    
-			
 		    // Right Nav
 		    $rightNav = '<div class="timeline-navigation" id="rightNav"></div>',
-		    $nextButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.next_iconClass +' next"></a>',
-		    $scrollRightButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.scrollRight_iconClass +' scroll-right"></a>',
+		    $nextButton = '<a href="" class="'+ iconBase +' '+ iconNext +' next"></a>',
+		    $scrollRightButton = '<a href="" class="'+ iconBase +' '+ iconScrollRight +' scroll-right"></a>',
 			
 		    // Pause/Play Nav
 		    $pausePlayWrapper = '<div class="timeline-navigation" id="pausePlay"></div>',
-		    $pauseButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.pause_iconClass +' pause"></a>';
+		    $pauseButton = '<a href="" class="'+ iconBase +' '+ iconPause +' pause"></a>';
 
 		//** Create the timeline HTML **//
 		
@@ -822,8 +892,15 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					    state = data[2],
 					    // Find the pause play button wrapper.
 					    $pausePlay = this.$element.find('#pausePlay'),
+
+						// Check if the new object options are defined in the user options, if they are use them,
+						// otherwise use the deprecated single options.
+						iconClass = (this._options.iconClass != undefined) ? this.settings.iconClass : this.settings,
+						iconBase = (this._options.iconClass != undefined) ? iconClass.base : iconClass.iconBaseClass,
+						iconPlay = (this._options.iconClass != undefined) ? iconClass.play : iconClass.play_iconClass,
+
 					    // Define the play button html
-					    $playButton = '<a href="" class="'+ this.settings.iconBaseClass +' '+ this.settings.play_iconClass +' play"></a>';
+					    $playButton = '<a href="" class="'+ iconBase +' '+ iconPlay +' play"></a>';
 						
 					// If the event type is click and pausebtnClicked is true (so the pause button was clicked)...
 					if (event.type == "click" && pausebtnClicked == true) {
@@ -1490,8 +1567,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			startingNum = 0;
 		
 		this._setDateIntervals(timelineComponents);
-		var checkMQ = this._checkMQ();
-		if (this.settings.minimalFirstDateInterval == true || checkMQ == 'tinyMobile' || checkMQ == 'mobile') {
+		var checkMQ = this._checkMQ(),
+
+			// Check if the new object options are defined in the user options, if they are use them,
+			// otherwise use the deprecated single options.
+			minimal = (this._options.dateIntervals != undefined) ? this.settings.dateIntervals.minimal : this.settings.minimalFirstDateInterval;
+		
+		if (minimal == true || checkMQ == 'tinyMobile' || checkMQ == 'mobile') {
 			// Set the 1st date to 0px on the timeline but with a padding left of 10px.	
 			timelineComponents['timelineEvents'].first().css({'left': '0px','padding-left': '10px'});
 			startingNum = 1;
@@ -1531,16 +1613,20 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		var eventDate = this._timelineData(event, "date");
 		    visibleContent = eventsContent.find('.selected'),
 		    // Function to find the new content...    
-	     	    newContent = eventsContent.find("li").filter($.proxy(function(index, element) {
-			var data = this._timelineData($(element), "date");
-			if (data == eventDate) return $(element);
-		     }, this)),
+	     	newContent = eventsContent.find("li").filter($.proxy(function(index, element) {
+				var data = this._timelineData($(element), "date");
+				if (data == eventDate) return $(element);
+		    }, this)),
 			    
-		     newContentHeight = newContent.outerHeight(),
-			    
-		     enterObj = this.settings.enter_animationClass,
-		     exitObj = this.settings.exit_animationClass,
-		     allClasses = exitObj.right + ' ' + exitObj.left + ' ' + enterObj.left + ' ' + enterObj.right; 
+		    newContentHeight = newContent.outerHeight(),
+
+			// Check if the new object options are defined in the user options, if they are use them,
+			// otherwise use the deprecated single options.    
+		    animationObj = (this._options.animationClass != undefined) ? this.settings.animationClass : this.settings,
+			enterObj = (this._options.animationClass != undefined) ? animationObj.enter : animationObj.enter_animationClass,
+			exitObj = (this._options.animationClass != undefined) ? animationObj.exit : animationObj.exit_animationClass,
+
+		    allClasses = exitObj.right + ' ' + exitObj.left + ' ' + enterObj.left + ' ' + enterObj.right; 
 		
 		// If newContent index is more than the visibleContent index,
 		// then we have selected an event to the right.
@@ -1661,13 +1747,21 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	}
 	
 	Timeline.prototype._setDateIntervals = function (timelineComponents) {
-		var checkMQ = this._checkMQ();		
+		var checkMQ = this._checkMQ(),
+
+			// Check if the new object options are defined in the user options, if they are use them,
+			// otherwise use the deprecated single options.
+			date_intervals = (this._options.dateIntervals != undefined) ? this.settings.dateIntervals : this.settings,
+			mobile = (this._options.dateIntervals != undefined) ? date_intervals.mobile : this.settings.mobileDateIntervals,
+			tablet = (this._options.dateIntervals != undefined) ? date_intervals.tablet : this.settings.tabletDateIntervals,
+			desktop = (this._options.dateIntervals != undefined) ? date_intervals.desktop : this.settings.desktopDateIntervals;
+		
 		// If mobile is detected, set dateIntervals to mobile
-		if (checkMQ == 'tinyMobile' || checkMQ == 'mobile') dateIntervals = this.settings.mobileDateIntervals;
+		if (checkMQ == 'tinyMobile' || checkMQ == 'mobile') dateIntervals = mobile;
 		// If tablet is detected, set dateIntervals to tablet
-		else if (checkMQ == 'smallTablet' || checkMQ == 'tablet') dateIntervals = this.settings.tabletDateIntervals;
+		else if (checkMQ == 'smallTablet' || checkMQ == 'tablet') dateIntervals = tablet;
 		// If not, set to desktop intervals
-		else if (checkMQ == 'desktop') dateIntervals = this.settings.desktopDateIntervals;
+		else if (checkMQ == 'desktop') dateIntervals = desktop;
 		// Set a minimum value for the intervals.
 		var minimumInterval = 120;
 		// If dateIntervals options are set to below the minimum value, then change it.
