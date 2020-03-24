@@ -125,147 +125,148 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		/* End new object options */
         };
 
-    // The actual plugin constructor
-    function Timeline( element, options ) {
-	this.element = element;
+    	// The actual plugin constructor
+    	function Timeline( element, options ) {
+		this.element = element;
 
-        // jQuery has an extend method that merges the 
-        // contents of two or more objects, storing the 
-        // result in the first object. The first object 
-        // is generally empty because we don't want to alter 
-        // the default options for future instances of the plugin
-	// (deep recursive copy for nested objects, empty object, the defaults object, the options object)
-        this.settings = $.extend(true, {}, defaults, options);
+		// jQuery has an extend method that merges the 
+		// contents of two or more objects, storing the 
+		// result in the first object. The first object 
+		// is generally empty because we don't want to alter 
+		// the default options for future instances of the plugin
+		// (deep recursive copy for nested objects, empty object, the defaults object, the options object)
+		this.settings = $.extend(true, {}, defaults, options);
 
-        this._defaults = defaults;
-	this._options = (options != undefined)? options : "Nothing overridden";
-        this._name = pluginName;
-	this.$element = $(element);
+		this._defaults = defaults;
+		this._options = (options != undefined)? options : "Nothing overridden";
+		this._name = pluginName;
+		this.$element = $(element);
+
+		this.init();
+    	}
+
+	Timeline.prototype.init = function () {
+		// You already have access to the DOM element and
+		// the options via the instance, e.g. this.element 
+		// and this.settings
+		var self = this, 
+	    	contentList = this.$element.find('li');
+		if(contentList.length == 0) this.$element.css('opacity', 1).html('<h3>There are no events at this point in time.<br><br>Please add some content.</h3>');
+		if (this.settings.useFontAwesomeIcons == true) {
+			var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
+				
+			// Function to load the file
+			// (url, type)	
+			this._addFile(url, 'css');
+		}
+		this._create();
 		
-        this.init();
-    }
-    Timeline.prototype.init = function () {
-        // You already have access to the DOM element and
-        // the options via the instance, e.g. this.element 
-        // and this.settings
-	var self = this, 
-	    contentList = this.$element.find('li');
-	if(contentList.length == 0) this.$element.css('opacity', 1).html('<h3>There are no events at this point in time.<br><br>Please add some content.</h3>');
-	if (this.settings.useFontAwesomeIcons == true) {
-		var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
+		// Wait about 300s to make sure the all elements are created properly.
+		// Otherwise the width of the timeline would report as bigger than it actually is.
+		window.setTimeout($.proxy(function(){
+			var timelineTotalWidth,
+		    	    timelineComponents = {};
+			
+			this._timelineComponents(timelineComponents);
+			
+			this.init.addIdsAndClasses = addIdsAndClasses;
+			this.init.addIdsAndClasses(this);
+			
+			function addIdsAndClasses(self) {
+				//** Adding IDs and Classes **//
+				self._timelineComponents(timelineComponents);
 				
-		// Function to load the file
-		// (url, type)	
-		this._addFile(url, 'css');
-	}
-	this._create();
-		
-	// Wait about 300s to make sure the all elements are created properly.
-	// Otherwise the width of the timeline would report as bigger than it actually is.
-	window.setTimeout($.proxy(function(){
-		var timelineTotalWidth,
-		    timelineComponents = {};
-			
-		this._timelineComponents(timelineComponents);
-			
-		this.init.addIdsAndClasses = addIdsAndClasses;
-		this.init.addIdsAndClasses(this);
-			
-		function addIdsAndClasses(self) {
-			//** Adding IDs and Classes **//
-			self._timelineComponents(timelineComponents);
-				
-			if (timelineComponents['eventsContentList'].length == 1) {
-				timelineComponents['eventsContentList'].first().attr('id', 'first');
-				timelineComponents['timelineEvents'].first().addClass("first");
-			}
-			else {
-				// Check if the new object options are defined in the user options, if they are use them,
-				// otherwise use the deprecated single options.
-				var animationObj = (self._options.animationClass != undefined) ? self.settings.animationClass : self.settings,
-				    animationBase = (self._options.animationClass != undefined) ? animationObj.base : animationObj.animation_baseClass;
-					
-				// Adds id to the first and last li of the event-content list respectively.
-				timelineComponents['eventsContentList'].addClass(animationBase)
-					.first().attr('id', 'first').end()
-					.last().attr('id', 'last');
-			
-				// Adds class to the first and last timeline event dates respectively.
-				timelineComponents['timelineEvents']
-					.first().addClass("first").end()
-					.last().addClass("last");
-			}
-		}
-		//** Select the correct event **//
-				
-		// If any events-content has .selected class...
-		if (timelineComponents['eventsContentList'].hasClass('selected')) {
-			    // Get date from data-attribute
-			var date = this._timelineData(timelineComponents['eventsContentSelected'], "date"),
-			    // Find the event date matching the date
-			    selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
-					var data = this._timelineData($(element), "date");
-					if (data == date) return $(element);
-			    }, this));
-					
-			// Add .selected class to the matched element
-			selectedDate.addClass('selected');
-			// Update all previous dates for styling.
-			this._updateOlderEvents(selectedDate);
-		}
-		// If no class found at all...
-		else {				
-			// If dateOrder is normal (Ascending)... start from the left.
-			if (this.settings.dateOrder == "normal") {
-				// Add .selected class to the first event.
-				timelineComponents['eventsWrapper'].find('a.first').addClass('selected');
+				if (timelineComponents['eventsContentList'].length == 1) {
+					timelineComponents['eventsContentList'].first().attr('id', 'first');
+					timelineComponents['timelineEvents'].first().addClass("first");
+				}
+				else {
+					// Check if the new object options are defined in the user options, if they are use them,
+					// otherwise use the deprecated single options.
+					var animationObj = (self._options.animationClass != undefined) ? self.settings.animationClass : self.settings,
+					    animationBase = (self._options.animationClass != undefined) ? animationObj.base : animationObj.animation_baseClass;
 
-				    // Find the selected event
-				var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
-				    // Get the selected event's date.
-				    selectedDate = this._timelineData(selectedEvent, "date");
-					
-				// Find the selected event's content using the date and add selected class to the content.
-				timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
-					var data = this._timelineData($(element), "date");
-					if (data == selectedDate) $(element).addClass('selected');
-				}, this));			
-			}
-			// Else dateOrder is reverse (Descending)... start from the right.
-			else if (this.settings.dateOrder == "reverse") {
-				// Add .selected class to the last event.
-				timelineComponents['eventsWrapper'].find('a.last').addClass('selected');
+					// Adds id to the first and last li of the event-content list respectively.
+					timelineComponents['eventsContentList'].addClass(animationBase)
+						.first().attr('id', 'first').end()
+						.last().attr('id', 'last');
 
-				    // Find the selected event
-				var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
-				    // Get the selected event's date.
-				    selectedDate = this._timelineData(selectedEvent, "date");
-					
-				// Find the selected event's content using the date and add selected class to the content.
-				timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
-					var data = this._timelineData($(element), "date");
-					if (data == selectedDate) $(element).addClass('selected');
-				}, this));
-					
-				this._updateOlderEvents(selectedEvent);	
+					// Adds class to the first and last timeline event dates respectively.
+					timelineComponents['timelineEvents']
+						.first().addClass("first").end()
+						.last().addClass("last");
+				}
 			}
-		}
+			//** Select the correct event **//
+				
+			// If any events-content has .selected class...
+			if (timelineComponents['eventsContentList'].hasClass('selected')) {
+				    // Get date from data-attribute
+				var date = this._timelineData(timelineComponents['eventsContentSelected'], "date"),
+				    // Find the event date matching the date
+				    selectedDate = timelineComponents['eventsWrapper'].find("a").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == date) return $(element);
+				    }, this));
+
+				// Add .selected class to the matched element
+				selectedDate.addClass('selected');
+				// Update all previous dates for styling.
+				this._updateOlderEvents(selectedDate);
+			}
+			// If no class found at all...
+			else {				
+				// If dateOrder is normal (Ascending)... start from the left.
+				if (this.settings.dateOrder == "normal") {
+					// Add .selected class to the first event.
+					timelineComponents['eventsWrapper'].find('a.first').addClass('selected');
+
+					    // Find the selected event
+					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
+					    // Get the selected event's date.
+					    selectedDate = this._timelineData(selectedEvent, "date");
+
+					// Find the selected event's content using the date and add selected class to the content.
+					timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == selectedDate) $(element).addClass('selected');
+					}, this));			
+				}
+				// Else dateOrder is reverse (Descending)... start from the right.
+				else if (this.settings.dateOrder == "reverse") {
+					// Add .selected class to the last event.
+					timelineComponents['eventsWrapper'].find('a.last').addClass('selected');
+
+					    // Find the selected event
+					var selectedEvent = timelineComponents['eventsWrapper'].find('a.selected'),
+					    // Get the selected event's date.
+					    selectedDate = this._timelineData(selectedEvent, "date");
+
+					// Find the selected event's content using the date and add selected class to the content.
+					timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						var data = this._timelineData($(element), "date");
+						if (data == selectedDate) $(element).addClass('selected');
+					}, this));
+
+					this._updateOlderEvents(selectedEvent);	
+				}
+			}
 			
 			
-		// Assign a left postion to the single events along the timeline
-		this._setDatePosition(timelineComponents);
-		// Assign a width to the timeline
-		timelineTotalWidth = this._setTimelineWidth(timelineComponents);
-		// Set the filling line to the selected event
-		this._updateFilling(timelineComponents['eventsWrapper']
-			.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
-		// The timeline has been initialised - show it
-		this.$element.addClass('loaded');
+			// Assign a left postion to the single events along the timeline
+			this._setDatePosition(timelineComponents);
+			// Assign a width to the timeline
+			timelineTotalWidth = this._setTimelineWidth(timelineComponents);
+			// Set the filling line to the selected event
+			this._updateFilling(timelineComponents['eventsWrapper']
+				.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
+			// The timeline has been initialised - show it
+			this.$element.addClass('loaded');
+
+			this._setup(self, timelineComponents, timelineTotalWidth);
 			
-		this._setup(self, timelineComponents, timelineTotalWidth);
-			
-	}, this), 300);
-    } // End init function
+		}, this), 300);
+    	} // End init function
 	
 	/* Dynamically creates the timeline according to the amount of events. */
 	Timeline.prototype._create = function () {		
@@ -276,15 +277,15 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		    // Icons require Font Awesome CSS
 		    // This CSS file has been added to the document if not already present.
 			
-		    	// Check if the new object options are defined in the user options, if they are use them,
-			// otherwise use the deprecated single options.
-			iconClass = (this._options.iconClass != undefined) ? this.settings.iconClass : this.settings,
-			iconBase = (this._options.iconClass != undefined) ? iconClass.base : iconClass.iconBaseClass,
-			iconScrollLeft = (this._options.iconClass != undefined) ? iconClass.scrollLeft : iconClass.scrollLeft_iconClass,
-			iconScrollRight = (this._options.iconClass != undefined) ? iconClass.scrollRight : iconClass.scrollRight_iconClass,
-			iconPrev = (this._options.iconClass != undefined) ? iconClass.prev : iconClass.prev_iconClass,
-			iconNext = (this._options.iconClass != undefined) ? iconClass.next : iconClass.next_iconClass,
-			iconPause = ` ? iconClass.pause : iconClass.pause_iconClass,
+		    // Check if the new object options are defined in the user options, if they are use them,
+		    // otherwise use the deprecated single options.
+		    iconClass = (this._options.iconClass != undefined) ? this.settings.iconClass : this.settings,
+		    iconBase = (this._options.iconClass != undefined) ? iconClass.base : iconClass.iconBaseClass,
+		    iconScrollLeft = (this._options.iconClass != undefined) ? iconClass.scrollLeft : iconClass.scrollLeft_iconClass,
+		    iconScrollRight = (this._options.iconClass != undefined) ? iconClass.scrollRight : iconClass.scrollRight_iconClass,
+		    iconPrev = (this._options.iconClass != undefined) ? iconClass.prev : iconClass.prev_iconClass,
+		    iconNext = (this._options.iconClass != undefined) ? iconClass.next : iconClass.next_iconClass,
+		    iconPause = ` ? iconClass.pause : iconClass.pause_iconClass,
 			
 		    // Left Nav
 		    $leftNav = '<div class="timeline-navigation" id="leftNav"></div>',
