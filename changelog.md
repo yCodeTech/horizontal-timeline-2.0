@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-- ## 2.0.5.1 [v2.0.5.1] - TBC
+- ## 2.0.5.1 [v2.0.5.1] - Cooming Soon
      ### Removed
      - An unnecessary development console log in the goTo method in the minified file (.min.js)
      
@@ -12,6 +12,37 @@ All notable changes to this project will be documented in this file.
      - The `.on` function relating to that of the timeline navigation which was inadvertently being run when the pause/play buttons were clicked or triggered - adding a `:not` CSS selector to exclude the buttons.
 
      - A bug that appeared after the previous bug fixtures above was implemented. The pause/play `.on` function (`changeButtons`) would now refresh the page, so a `event.preventDefault();` was added.
+     
+     ### Changed
+     - The jQuery options `$.extend` to deep nested recursion with the `true` boolean. Enables the possibility of deep nested objects in the options.
+     - Added a way to internally access the user options.
+     - Various code to check if the new object options is set in the user options, if so use them, otherwise use the deprecated single options. 
+     - The `animationClass` options objects and combined them into one nested object.
+     ### Added
+     - New object options instead of the single options:
+          - `dateIntervals` with keys `desktop`, `mobile`, `tablet` and `minimal`.
+          - `iconClass` with keys `base`, `scrollLeft`, `scrollRight`, `prev`, `next`, `pause` and `play`
+          - `animationClass` with keys `base`, `enter` and `exit`, the latter two are objects with keys `left` and `right`
+     
+     ### Deprecated
+     - The single options:
+          - `desktopDateIntervals`
+          - `tabletDateIntervals`
+          - `mobileDateIntervals`
+          - `minimalFirstDateInterval`
+          - `iconBaseClass`
+          - `scrollLeft_iconClass`
+          - `scrollRight_iconClass`
+          - `prev_iconClass`
+          - `next_iconClass`
+          - `pause_iconClass`
+          - `play_iconClass`
+          - `animation_baseClass`
+          - `enter_animationClass` object
+          - `exit_animationClass` object
+     
+     (In favour of object options and a combined nested object for the animationClass.)
+     
 
 - ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - 25/02/2020
      ### Added
