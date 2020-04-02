@@ -173,12 +173,14 @@ $('#example').horizontalTimeline({
 [Check out the docs](http://horizontal-timeline.ycodetech.co.uk/).
 
 ## Autoplay
-The idea of autoplay is that it continuously loops whilst in view, with manual buttons to pause and resume the loop cycle at the user's command. There is no current plans to implement a feature that allows autoplay to stop after a certain amound of loops, due to it conflicting with the sole purpose of autoplay.
+The idea of autoplay is that it continuously loops whilst in view, with manual buttons to pause and resume the loop cycle at the user's command. There is no current plans to implement a feature that allows autoplay to stop after a certain amount of loops, due to it conflicting with the sole purpose of autoplay. [[Feature Request](https://github.com/yCodeTech/horizontal-timeline-2.0/issues/10)]
 
 However, there is a workaround that utilises the `eventChanged` DOM event and triggering a click on the pause button. Please check out the codepens:
 
 - [Stop after 1 loop](https://codepen.io/ycodetech/pen/BaNPxzL)
 - [Stop after [X] amount of loops](https://codepen.io/ycodetech/pen/YzXMjNo)
+
+
 
 ## Known Issues
 
