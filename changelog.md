@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
           - `dateIntervals` with keys `desktop`, `mobile`, `tablet` and `minimal`.
           - `iconClass` with keys `base`, `scrollLeft`, `scrollRight`, `prev`, `next`, `pause` and `play`
           - `animationClass` with keys `base`, `enter` and `exit`, the latter two are objects with keys `left` and `right`
-     - Added a new DOM event `initialised` to combat the issue of undefined errors when trying to use the any of the public methods straight after the initialisation code. The errors are caused by the `setTimeout` in the init function to delay the code so it gets the correct width, which in turn makes everything else delayed. The DOM event will be fired after this delay, indicating the plugin has truly completed.
+     - Added a new DOM event `initialised` to combat the issue of undefined errors when trying to use the any of the public methods straight after the initialisation code. The errors are caused by the hotfix `setTimeout` in the init function to delay the code so it gets the correct width, which in turn makes everything else delayed. The DOM event will be fired after this delay, indicating the plugin has truly completed.
      
      ### Deprecated
      - The single options:
@@ -113,7 +113,7 @@ All notable changes to this project will be documented in this file.
      
      ### Fixed
      - The `useFontAwesomeIcons` option where it wouldn't do anything due to missing code.
-     - A bug that inconsistently and inaccurately calculates the width of the timeline on init, so the scrolling of the timeline was off slightly. (This was due to the function being called slightly before all elements had to chance to be created). Fixed with a 300s delay.
+     - A bug that inconsistently and inaccurately calculates the width of the timeline on init, so the scrolling of the timeline was off slightly. (This was due to the function being called slightly before all elements had to chance to be created). Fixed with a 300s `setTimeout` delay.
      - A bug that when the buttons are disiabled, the timeline appears to not to have a width and disappeared.
      - A persistant bug that shows the horizontal (x) scrollbar when translating the event content, added a line in the CSS.
      - A bug that broke multiple timelines by using the nav buttons that stored the wrong timeline instance when TouchSwipe was used.
