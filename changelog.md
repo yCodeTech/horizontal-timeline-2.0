@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
      - The internal function structure to a prototype object of functions, so it only adds the functions to the prototype once.
      - The anonymous functions of `init.addIdsAndClasses`, `create.date`, `create.eventDateDisplay`, and `autoplay`; and added them to the timeline prototype as separate functions `_addIdsAndClasses`, `_createDate`, `_eventDateDisplay`, `_autoplay`.
      - The `create` function to put together the HTML in a variable before adding to the document, avoiding the obsessive use of the jQuery `.append()`.
+     - The name of the event data `element` to `timelineSelector` of the `initialised` DOM event, to make it more obvious what is is - `element` could refer to any part of the timeline, where as `timelineSelector` would be more specific.
      
      ### Added
      - New object options instead of the single options:
