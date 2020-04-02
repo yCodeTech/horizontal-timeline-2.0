@@ -15,10 +15,11 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Added new autoplay feature with a progress bar, pause/play buttons, adjustable speed and on-hover pause functionality.
    - Added new go-to timeline link with customisable scroll functionality.
    - Added support for mouse-wheel scrolling, touch and swipe for touch devices, and keyboard arrow keys, with the option to disable the loading of the required plugin files.
-   - Added new `refresh`, `destroy`, `addEvent`, `removeEvent`, and `goTo` methods with new attachable namespaced `eventAdded`, `eventRemoved`, `eventChanged`, `goToTimeline` DOM Events.
+   - Added new `refresh`, `destroy`, `addEvent`, `removeEvent`, and `goTo` methods with new attachable namespaced `initialised`, `eventAdded`, `eventRemoved`, `eventChanged`, `goToTimeline` DOM Events.
    - Added new options to change the button icons and to disable the use of the Font Awesome icon library.
    - **Deprecated** the use of multiple data attributes, _data-date_ and _data-custom-display_, in favour of the all new combined singular data attribute, _data-horizontal-timeline_, that utilises an object to house all previously-used data.
    - Added new animation options to customise the event content animation.
+   - **Deprecated** some of the individual options in favour of the object options.
 
 For full documentation please check out the [Horizontal Timeline 2.0 website](http://horizontal-timeline.ycodetech.co.uk/)
 
@@ -78,10 +79,29 @@ $('#example').horizontalTimeline();
 /* The Defaults */
 
 $('#example').horizontalTimeline({
+   // ! Deprecated in favour of the object options. //
    desktopDateIntervals: 200,   //************\\
    tabletDateIntervals: 150,   // Minimum: 120 \\
    mobileDateIntervals: 120,  //****************\\
    minimalFirstDateInterval: true,
+   
+   // ! End Deprecated options //
+   
+   /* New object options... */
+   // If object doesn't exist in the user options, then default to the individual options,
+   // otherwise use the object.
+
+   // Can not use in conjunction with the single options...
+   // If both single and object options are set in the options, the object will take precedence.
+
+   dateIntervals: {
+      "desktop": 200,   //************\\
+      "tablet": 150,   // Minimum: 120 \\
+      "mobile": 120,  //****************\\
+      "minimal": true
+   },
+
+   /* End new object options */
 
    dateDisplay: "dateTime",  // dateTime, date, time, dayMonth, monthYear, year
    dateOrder: "normal", // normal, reverse
@@ -97,7 +117,8 @@ $('#example').horizontalTimeline({
    useFontAwesomeIcons: true,
    useNavBtns: true,
    useScrollBtns: true,
-			
+   
+   // ! Deprecated in favour of the object options. //
    iconBaseClass: "fas fa-3x", // Space separated class names
    scrollLeft_iconClass: "fa-chevron-circle-left",
    scrollRight_iconClass: "fa-chevron-circle-right",
@@ -115,6 +136,37 @@ $('#example').horizontalTimeline({
       "left": "exit-left",
       "right": "exit-right"
    },
+   // ! End Deprecated options //
+   
+   /* New object options... */
+   // If object doesn't exist in the user options, then default to the individual options,
+   // otherwise use the object.
+
+   // Can not use in conjunction with the single options...
+   // If both single and object options are set in the options, the object will take precedence.
+
+   iconClass: {
+      "base": "fas fa-3x", // Space separated class names
+      "scrollLeft": "fa-chevron-circle-left",
+      "scrollRight": "fa-chevron-circle-right",
+      "prev": "fa-arrow-circle-left",
+      "next": "fa-arrow-circle-right",
+      "pause": "fa-pause-circle",
+      "play": "fa-play-circle"
+   },
+   animationClass: {
+      "base": "animationSpeed", // Space separated class names,
+      "enter": {
+	  "left": "enter-left",
+	  "right": "enter-right"
+       },
+       "exit": {
+	  "left": "exit-left",
+	  "right": "exit-right"
+       }
+   }
+   
+   /* End new object options */
 });
 ```
 
