@@ -239,11 +239,11 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// The timeline has been initialised - show it
 				this.$element.addClass('loaded');
 				
-				/* Custom namespaced event: initialised with the data passed to the event as the instance and jQuery element object. */
+				/* Custom namespaced event: initialised with the data passed to the event as the instance and timelineSelector (jQuery object). */
 				this.$element.trigger({
 					type: "initialised."+this._name,
 					instance: this,
-					element: this.$element
+					timelineSelector: this.$element
 				});
 
 				this._setup(this, timelineComponents, timelineTotalWidth);
