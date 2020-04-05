@@ -45,8 +45,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// ! End Deprecated options //
 
 			/* New object options... */
-			// If object doesn't exist in the user options, then default to the individual options,
-			// otherwise use the object.
+			// If the deprecated single options exist in the user options, then use them,
+			// otherwise default to the new object options.
 
 			// Can not use in conjunction with the single options...
 			// If both single and object options are set in the options, the object will take precedence.
@@ -98,8 +98,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// ! End Deprecated options //
 
 			/* New object options... */
-			// If object doesn't exist in the user options, then default to the individual options,
-			// otherwise use the object.
+			// If the deprecated single options exist in the user options, then use them,
+			// otherwise default to the new object options.
 
 			// Can not use in conjunction with the single options...
 			// If both single and object options are set in the options, the object will take precedence.
