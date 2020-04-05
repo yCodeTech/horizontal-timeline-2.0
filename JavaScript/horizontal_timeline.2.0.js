@@ -260,10 +260,20 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				timelineComponents['timelineEvents'].first().addClass("first");
 			}
 			else {
-				// Check if the new object options are defined in the user options, if they are use them,
-				// otherwise use the deprecated single options.
-				var animationObj = (this._options.animationClass != undefined) ? this.settings.animationClass : this.settings,
-				animationBase = (this._options.animationClass != undefined) ? animationObj.base : animationObj.animation_baseClass;
+				// Check if the deprecated single options are defined in the user options, if they are use them,
+				// otherwise use the new object options.
+
+				// A variable to include in an if statement that queries if the single option is defined 
+				// AND the object option is also defined.
+				var bothDefined = (this._options.animation_baseClass != undefined && this._options.animationClass != undefined),
+
+					// If single option are undefined OR both single and object options are defined
+					// then default to the object options, otherwise use the deprecated single option.
+					animationObj = (this._options.animation_baseClass == undefined || bothDefined) ? this.settings.animationClass : this.settings,
+
+					// If animationObj equals the object options...
+					animationBase = (animationObj == this.settings.animationClass) ? animationObj.base : animationObj.animation_baseClass;
+
 				// Adds id to the first and last li of the event-content list respectively.
 				timelineComponents['eventsContentList'].addClass(animationBase)
 					.first().attr('id', 'first').end()
@@ -284,15 +294,51 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// Icons require Font Awesome CSS
 				// The CSS file has been added to the document if not already present.
 
-				// Check if the new object options are defined in the user options, if they are use them,
-				// otherwise use the deprecated single options.
-				iconClass = (this._options.iconClass != undefined) ? this.settings.iconClass : this.settings,
-				iconBase = (this._options.iconClass != undefined) ? iconClass.base : iconClass.iconBaseClass,
-				iconScrollLeft = (this._options.iconClass != undefined) ? iconClass.scrollLeft : iconClass.scrollLeft_iconClass,
-				iconScrollRight = (this._options.iconClass != undefined) ? iconClass.scrollRight : iconClass.scrollRight_iconClass,
-				iconPrev = (this._options.iconClass != undefined) ? iconClass.prev : iconClass.prev_iconClass,
-				iconNext = (this._options.iconClass != undefined) ? iconClass.next : iconClass.next_iconClass,
-				iconPause = (this._options.iconClass != undefined) ? iconClass.pause : iconClass.pause_iconClass,
+				// Check if the deprecated single options are defined in the user options, if they are use them,
+				// otherwise use the new object options.
+
+				// Set the single options into an array to check against.
+				optionArray = [this._options.iconBaseClass, 
+					this._options.scrollLeft_iconClass, 
+					this._options.scrollRight_iconClass, 
+					this._options.prev_iconClass, 
+					this._options.next_iconClass, 
+					this._options.pause_iconClass],
+
+				// A variable to include in an if statement that queries if the single options are undefined.
+				singleUndefined = (optionArray[0] == undefined 
+					&& optionArray[1] == undefined 
+					&& optionArray[2] == undefined 
+					&& optionArray[3] == undefined 
+					&& optionArray[4] == undefined 
+					&& optionArray[5] == undefined),
+
+				// A variable to include in an if statement that queries if the single option is defined 
+				// AND the object option is also defined.
+				bothDefined = (optionArray[0] != undefined && this._options.iconClass != undefined)
+					|| (optionArray[1] != undefined && this._options.iconClass != undefined) 
+					|| (optionArray[2] != undefined && this._options.iconClass != undefined)
+					|| (optionArray[3] != undefined && this._options.iconClass != undefined)
+					|| (optionArray[4] != undefined && this._options.iconClass != undefined)
+					|| (optionArray[5] != undefined && this._options.iconClass != undefined),
+
+				// If single option are undefined OR both single and object options are defined
+				// then default to the object options, otherwise use the deprecated single option.
+				iconClass = (singleUndefined || bothDefined) ? this.settings.iconClass : this.settings,
+
+				// If iconClass equals the object options...
+				
+				iconBase = (iconClass == this.settings.iconClass) ? iconClass.base : iconClass.iconBaseClass,
+
+				iconScrollLeft = (iconClass == this.settings.iconClass) ? iconClass.scrollLeft : iconClass.scrollLeft_iconClass,
+				
+				iconScrollRight = (iconClass == this.settings.iconClass) ? iconClass.scrollRight : iconClass.scrollRight_iconClass,
+				
+				iconPrev = (iconClass == this.settings.iconClass) ? iconClass.prev : iconClass.prev_iconClass,
+				
+				iconNext = (iconClass == this.settings.iconClass) ? iconClass.next : iconClass.next_iconClass,
+				
+				iconPause = (iconClass == this.settings.iconClass) ? iconClass.pause : iconClass.pause_iconClass,
 
 				// Left Nav
 				$scrollLeftButton = '<a href="" class="'+ iconBase +' '+ iconScrollLeft +' scroll-left inactive"></a>',
@@ -761,8 +807,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				if (this.settings.autoplayPause_onHover == true) {
 					var checkMQ = this._checkMQ();
 
-					// Only execute hover code if device is not tinyMobile or mobile.
-					if (checkMQ == 'smallTablet' || checkMQ == 'tablet' || checkMQ == 'desktop') {
+					// Only execute hover code if device is tablet or desktop.
+					if (checkMQ == 'tablet' || checkMQ == 'desktop') {
 						// On hover
 						this.$element
 							// On mouseenter of the element events-content, pass data to the event [pausebtnClicked, pausebtnHtml, state] and call the changeButtons function.
@@ -1050,7 +1096,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					var checkMQ = this._checkMQ();
 					// We need to adjust the calculations for percentTime because how slow it seems to be on mobile.
 					// If mobile, set the correct speed
-					if(checkMQ == 'tinyMobile' || checkMQ == 'mobile') percentTime += 3 / speed;
+					if(checkMQ == 'mobile') percentTime += 3 / speed;
 					// Everything else set the correct speed.
 					else percentTime += 1 / speed;
 					// Set the progress bar width
@@ -1583,7 +1629,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// otherwise use the deprecated single options.
 				minimal = (this._options.dateIntervals != undefined) ? this.settings.dateIntervals.minimal : this.settings.minimalFirstDateInterval;
 
-			if (minimal == true || checkMQ == 'tinyMobile' || checkMQ == 'mobile') {
+			if (minimal == true || checkMQ == 'mobile') {
 				// Set the 1st date to 0px on the timeline but with a padding left of 10px.
 				timelineComponents['timelineEvents'].first().css({'left': '0px','padding-left': '10px'});
 				startingNum = 1;
@@ -1629,11 +1675,28 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 
 				newContentHeight = newContent.outerHeight(),
 
-				// Check if the new object options are defined in the user options, if they are use them,
-				// otherwise use the deprecated single options.
-				animationObj = (this._options.animationClass != undefined) ? this.settings.animationClass : this.settings,
-				enterObj = (this._options.animationClass != undefined) ? animationObj.enter : animationObj.enter_animationClass,
-				exitObj = (this._options.animationClass != undefined) ? animationObj.exit : animationObj.exit_animationClass,
+				// Check if the deprecated single options are defined in the user options, if they are use them,
+				// otherwise use the new object options.
+
+				// Set the single options into an array to check against.
+				optionArray = [this._options.enter_animationClass, this._options.exit_animationClass],
+
+				// A variable to include in an if statement that queries if the single options are undefined.
+				singleUndefined = (optionArray[0] == undefined && optionArray[1] == undefined),
+
+				// A variable to include in an if statement that queries if the single option is defined 
+				// AND the object option is also defined.
+				bothDefined = (optionArray[0] != undefined && this._options.animationClass != undefined)
+					|| (optionArray[1] != undefined && this._options.animationClass != undefined),
+
+				// If single option are undefined OR both single and object options are defined
+				// then default to the object options, otherwise use the deprecated single option.
+				animationObj = (singleUndefined || bothDefined) ? this.settings.animationClass : this.settings,
+
+				// If animationObj equals the object options...
+
+				enterObj = (animationObj == this.settings.animationClass) ? animationObj.enter : animationObj.enter_animationClass,
+				exitObj = (animationObj == this.settings.animationClass) ? animationObj.exit : animationObj.exit_animationClass,
 
 				allClasses = exitObj.right + ' ' + exitObj.left + ' ' + enterObj.left + ' ' + enterObj.right;
 
@@ -1757,22 +1820,42 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 
 		_setDateIntervals: function (timelineComponents) {
 			var checkMQ = this._checkMQ(),
+				// Set a minimum value for the intervals.
+				minimumInterval = 120,
 
-				// Check if the new object options are defined in the user options, if they are use them,
-				// otherwise use the deprecated single options.
-				date_intervals = (this._options.dateIntervals != undefined) ? this.settings.dateIntervals : this.settings,
-				mobile = (this._options.dateIntervals != undefined) ? date_intervals.mobile : this.settings.mobileDateIntervals,
-				tablet = (this._options.dateIntervals != undefined) ? date_intervals.tablet : this.settings.tabletDateIntervals,
-				desktop = (this._options.dateIntervals != undefined) ? date_intervals.desktop : this.settings.desktopDateIntervals;
+				// Check if the deprecated single options are defined in the user options, if they are use them,
+				// otherwise use the new object options.
 
-			// If mobile is detected, set dateIntervals to mobile
-			if (checkMQ == 'tinyMobile' || checkMQ == 'mobile') dateIntervals = mobile;
+				// Set the single options into an array to check against.
+				optionArray = [this._options.desktopDateIntervals, this._options.tabletDateIntervals, this._options.mobileDateIntervals],
+
+				// A variable to include in an if statement that queries if the single options are undefined.
+				singleUndefined = (optionArray[0] == undefined && optionArray[1] == undefined && optionArray[2] == undefined),
+
+				// A variable to include in an if statement that queries if the single option is defined 
+				// AND the object option is also defined.
+				bothDefined = (optionArray[0] != undefined && this._options.dateIntervals != undefined) 
+					|| (optionArray[1] != undefined && this._options.dateIntervals != undefined) 
+					|| (optionArray[2] != undefined && this._options.dateIntervals != undefined),
+
+				// If single options are undefined OR both single and object options are defined
+				// then default to the object options, otherwise use the deprecated single options.
+				date_intervals = (singleUndefined || bothDefined) ? this.settings.dateIntervals : this.settings,
+
+				// If date_intervals equals the object options...
+				desktop = (date_intervals == this.settings.dateIntervals) ? date_intervals.desktop : date_intervals.desktopDateIntervals,
+
+				tablet = (date_intervals == this.settings.dateIntervals) ? date_intervals.tablet : date_intervals.tabletDateIntervals,
+
+				mobile = (date_intervals == this.settings.dateIntervals) ? date_intervals.mobile : date_intervals.mobileDateIntervals;
+				
+			// If desktop is detected, set dateIntervals to desktop
+			if (checkMQ == 'desktop') dateIntervals = desktop;
 			// If tablet is detected, set dateIntervals to tablet
-			else if (checkMQ == 'smallTablet' || checkMQ == 'tablet') dateIntervals = tablet;
-			// If not, set to desktop intervals
-			else if (checkMQ == 'desktop') dateIntervals = desktop;
-			// Set a minimum value for the intervals.
-			var minimumInterval = 120;
+			else if (checkMQ == 'tablet') dateIntervals = tablet;
+			// If mobile is detected, set dateIntervals to mobile
+			else if (checkMQ == 'mobile') dateIntervals = mobile;
+			
 			// If dateIntervals options are set to below the minimum value, then change it.
 			if (dateIntervals < minimumInterval) dateIntervals = minimumInterval;
 		},
