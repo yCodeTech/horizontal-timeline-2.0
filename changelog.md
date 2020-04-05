@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 - ## 2.0.5.1 [v2.0.5.1] - Coming Soon
      ### Removed
      - An unnecessary development console log in the goTo method in the minified file (.min.js)
+     - The use of `tinyMobile` and `smallTablet` in the CSS media queries.
+     - The use of `tinyMobile` and `smallTablet` in the `checkMQ` function and various if statements due to being redundant.
      
      ### Fixed
      - A bug that was caused by a missing `event` parameter in a function declaration when triggering a fake click on the autoplay pause button, it would spit out the error **Cannot read property 'preventDefault' of undefined**.
@@ -24,6 +26,8 @@ All notable changes to this project will be documented in this file.
      - The anonymous functions of `init.addIdsAndClasses`, `create.date`, `create.eventDateDisplay`, and `autoplay`; and added them to the timeline prototype as separate functions `_addIdsAndClasses`, `_createDate`, `_eventDateDisplay`, `_autoplay`.
      - The `create` function to put together the HTML in a variable before adding to the document, avoiding the obsessive use of the jQuery `.append()`.
      - The name of the event data `element` to `timelineSelector` of the `initialised` DOM event, to make it more obvious what is is - `element` could refer to any part of the timeline, where as `timelineSelector` would be more specific.
+     - The `mobile` and `tablet` CSS media queries widths to include the missing widths accordingly.
+     - The object options code so if no options are defined or both the single and the object options are defined, then it defaults to the new object options, otherwise use the deprecated single options.
      
      ### Added
      - New object options instead of the single options:
