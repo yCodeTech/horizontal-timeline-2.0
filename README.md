@@ -4,7 +4,7 @@
 #### Current Version: 2.0.5.1
 #### Quick Links: <a href="#setup">Setup</a> | <a href="#options">Options</a> | <a href="#autoplay">Autoplay</a> | <a href="#known-issues">Known Issues</a> | <a href="#known-issues-that-wont-be-fixed">Known Issues That Won't Be Fixed</a> | <a href="#deprecated">Deprecated</a>
 
-Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a JavaScript plugin originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/), to create a dynamic timeline on the horizontal axis.
+Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a script originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/), to create a dynamic timeline on the horizontal axis.
 
 Version 2.0 adds functionality that has been previously requested for the original version, and more:
    - Transformed into a jQuery plugin, with support for multiple timeline instances utilising ID's.
