@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
+- ## 2.0.5.1 [[v2.0.5.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.1) - 09/04/2020
+     ### Removed
+     - An unnecessary development console log in the goTo method in the minified file (.min.js)
+     - The use of `tinyMobile` and `smallTablet` in the CSS media queries.
+     - The use of `tinyMobile` and `smallTablet` in the `checkMQ` function and various if statements due to being redundant.
+     
+     ### Fixed
+     - A bug that was caused by a missing `event` parameter in a function declaration when triggering a fake click on the autoplay pause button, it would spit out the error **Cannot read property 'preventDefault' of undefined**.
+     - The `.on` function relating to that of the timeline navigation which was inadvertently being run when the pause/play buttons were clicked or triggered - adding a `:not` CSS selector to exclude the buttons.
+     - A bug that appeared after the previous bug fixtures above was implemented. The pause/play `.on` function (`changeButtons`) would now refresh the page, so a `event.preventDefault();` was added.
+     - An issue with the autoplay pause and play functions, that wouldn't get the instance correctly.
+     - A bug where the new autoplay prototype function would throw an error when the autoplay `isPaused` and `mouseEvent` data is being set to the element data object because the data object wasn't created at that point (throwing an `undefined` error). Solved by adding it in the plugin wrapper instead of the internal function.
+     - A bug with the goTo timeline links where if any of the data options were omitted from the links, the function didn't utilise the default options. This was caused by inconsistent naming and the name changes that occured wasn't reflected in the variable declarations, thereby throwing an `unrecognised` error.
+     - A bug where on first load or hard-reload, the page would have 2 scrollbars due to both the `HTML` and `body` having the `overflow-x: hidden` CSS attribute. Fixed by removing the `HTML` from the CSS rule.
+     
+     ### Changed
+     - The jQuery options `$.extend` to deep nested recursion with the `true` boolean. Enables the possibility of deep nested objects in the options.
+     - Added a way to internally access the user options.
+     - Various code to check if the new object options is set in the user options, if so use them, otherwise use the deprecated single options. 
+     - The `animationClass` options objects and combined them into one nested object.
+     - The internal function structure to a prototype object of functions, so it only adds the functions to the prototype once.
+     - The anonymous functions of `init.addIdsAndClasses`, `create.date`, `create.eventDateDisplay`, and `autoplay`; and added them to the timeline prototype as separate functions `_addIdsAndClasses`, `_createDate`, `_eventDateDisplay`, `_autoplay`.
+     - The `create` function to put together the HTML in a variable before adding to the document, avoiding the obsessive use of the jQuery `.append()`.
+     - The name of the event data `element` to `timelineSelector` of the `initialised` DOM event, to make it more obvious what is is - `element` could refer to any part of the timeline, where as `timelineSelector` would be more specific.
+     - The `mobile` and `tablet` CSS media queries widths to include the missing widths accordingly.
+     - The object options code so if no options are defined or both the single and the object options are defined, then it defaults to the new object options, otherwise use the deprecated single options.
+     
+     ### Added
+     - New object options instead of the single options:
+          - `dateIntervals` with keys `desktop`, `mobile`, `tablet` and `minimal`.
+          - `iconClass` with keys `base`, `scrollLeft`, `scrollRight`, `prev`, `next`, `pause` and `play`
+          - `animationClass` with keys `base`, `enter` and `exit`, the latter two are objects with keys `left` and `right`
+     - Added a new DOM event `initialised` to combat the issue of undefined errors when trying to use the any of the public methods straight after the initialisation code. The errors are caused by the hotfix `setTimeout` in the init function to delay the code so it gets the correct width, which in turn makes everything else delayed. The DOM event will be fired after this delay, indicating the plugin has truly completed.
+     
+     ### Deprecated
+     - The single options:
+          - `desktopDateIntervals`
+          - `tabletDateIntervals`
+          - `mobileDateIntervals`
+          - `minimalFirstDateInterval`
+          - `iconBaseClass`
+          - `scrollLeft_iconClass`
+          - `scrollRight_iconClass`
+          - `prev_iconClass`
+          - `next_iconClass`
+          - `pause_iconClass`
+          - `play_iconClass`
+          - `animation_baseClass`
+          - `enter_animationClass` object
+          - `exit_animationClass` object
+     
+     (In favour of object options and a combined nested object for the animationClass.)
+
 - ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - 25/02/2020
      ### Added
      - 3 new attachable namespaced DOM events: `eventAdded`, `eventRemoved`, `eventChanged` (the latter requested via email and an issue).
@@ -63,7 +116,7 @@ All notable changes to this project will be documented in this file.
      
      ### Fixed
      - The `useFontAwesomeIcons` option where it wouldn't do anything due to missing code.
-     - A bug that inconsistently and inaccurately calculates the width of the timeline on init, so the scrolling of the timeline was off slightly. (This was due to the function being called slightly before all elements had to chance to be created). Fixed with a 300s delay.
+     - A bug that inconsistently and inaccurately calculates the width of the timeline on init, so the scrolling of the timeline was off slightly. (This was due to the function being called slightly before all elements had to chance to be created). Fixed with a 300s `setTimeout` delay.
      - A bug that when the buttons are disiabled, the timeline appears to not to have a width and disappeared.
      - A persistant bug that shows the horizontal (x) scrollbar when translating the event content, added a line in the CSS.
      - A bug that broke multiple timelines by using the nav buttons that stored the wrong timeline instance when TouchSwipe was used.
