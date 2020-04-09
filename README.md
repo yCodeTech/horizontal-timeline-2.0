@@ -198,7 +198,7 @@ These issues are hopefully going to be fixed in the future. If you want to help 
 - IE11 and Safari 5.1.7 for Windows 10 both have issues with the timeline, and encounters errors. Will not fix due to the browsers being severely outdated and their dev console errors are lacking descriptions to even attempt to find the cause of the errors.
 
 ## Deprecated
-All the following options are deprecated and will be removed in version 2.0.5.2!
+All the following options are deprecated and will be removed in version 2.0.6!
 
 As of _v2.0.5-alpha.3_ ...
 - `data-date`
