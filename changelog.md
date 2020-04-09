@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-- ## 2.0.5.1 [v2.0.5.1] - Coming Soon
+- ## 2.0.5.1 [[v2.0.5.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.1) - 09/04/2020
      ### Removed
      - An unnecessary development console log in the goTo method in the minified file (.min.js)
      - The use of `tinyMobile` and `smallTablet` in the CSS media queries.
@@ -54,7 +54,6 @@ All notable changes to this project will be documented in this file.
           - `exit_animationClass` object
      
      (In favour of object options and a combined nested object for the animationClass.)
-     
 
 - ## 2.0.5 [[v2.0.5]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5) - 25/02/2020
      ### Added
