@@ -3,7 +3,7 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5.1
+Version: 2.0.5.2
 	
 Original Horizontal Timeline by CodyHouse
 
@@ -199,7 +199,9 @@ body {
   	height: inherit;
   	background: #002bff;
 }
-.horizontal-timeline .events-content li {
+.horizontal-timeline .events-content li[data-horizontal-timeline],
+/* data-date deprecated as of v2.0.5.alpha.3 */
+.horizontal-timeline .events-content li[data-date] {
 	position: absolute;
 	width: 100%;
 	left: 0;
@@ -225,7 +227,9 @@ body {
 	transition: opacity 1s;
 }
 /* The selected events content */
-.horizontal-timeline .events-content li.selected {
+.horizontal-timeline .events-content li[data-horizontal-timeline].selected,
+/* data-date deprecated as of v2.0.5.alpha.3 */
+.horizontal-timeline .events-content li[data-date].selected {
 	position: relative;
 	z-index: 2;
 	opacity: 1;
