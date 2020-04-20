@@ -3,7 +3,7 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5.1
+Version: 2.0.5.2
 
 Original Horizontal Timeline by CodyHouse
 
@@ -151,9 +151,15 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// You already have access to the DOM element and
 			// the options via the instance, e.g. this.element
 			// and this.settings
-			var contentList = this.$element.find('li');
-			if(contentList.length == 0) this.$element.css('opacity', 1).html('<h3>There are no events at this point in time.<br><br>Please add some content.</h3>');
+			var dataAttribute = this._eventContentListData(),
+			    contentList = this.$element.find('li['+ dataAttribute +']');
+			if(contentList.length == 0) {
+				var text = "There are no events at this point in time. Please add some content.";
 
+				this.$element.css('opacity', 1).append('<h3>'+ text +'</h3>');
+				throw new Error(text);
+			}
+			
 			if (this.settings.useFontAwesomeIcons == true) {
 				var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
 
@@ -203,7 +209,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 							selectedDate = this._timelineData(selectedEvent, "date");
 
 						// Find the selected event's content using the date and add selected class to the content.
-						timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						timelineComponents['eventsContentList'].filter($.proxy(function(index, element) {
 							var data = this._timelineData($(element), "date");
 							if (data == selectedDate) $(element).addClass('selected');
 						}, this));
@@ -219,7 +225,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 							selectedDate = this._timelineData(selectedEvent, "date");
 
 						// Find the selected event's content using the date and add selected class to the content.
-						timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+						timelineComponents['eventsContentList'].filter($.proxy(function(index, element) {
 							var data = this._timelineData($(element), "date");
 							if (data == selectedDate) $(element).addClass('selected');
 						}, this));
@@ -412,15 +418,16 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 
 		// (instance, insertMethod (append, before, after [last 2 for addEvent method]), date to insert before/after [from addEvent method])
 		_createDate: function (self, insertMethod, arrangementDate) {
+			var dataAttribute = this._eventContentListData();
 
 			// If dateOrder is normal (starting from the left).
 			if (self.settings.dateOrder == "normal") {
 				// Find the event content.
-				var $element = self.$element.children('.events-content').find('li');
+				var $element = self.$element.children('.events-content').find('li['+ dataAttribute +']');
 			}
 			// Else if dateOrder is reverse (starting from the right).
 			else if (self.settings.dateOrder == "reverse") {
-				var $element = $(self.$element.children('.events-content').find('li').get().reverse());
+				var $element = $(self.$element.children('.events-content').find('li['+ dataAttribute +']').get().reverse());
 			}
 
 			/* dateTime = the date and time */
@@ -683,10 +690,11 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		}, // End eventDateDisplay() function
 
 		_timelineComponents: function (timelineComponents) {
+			var dataAttribute = this._eventContentListData();
 			// Cache timeline components
 			timelineComponents['eventsContent'] = this.$element.children('.events-content');
-			timelineComponents['eventsContentList'] = timelineComponents['eventsContent'].find('li');
-			timelineComponents['eventsContentSelected'] = timelineComponents['eventsContent'].find('li.selected');
+			timelineComponents['eventsContentList'] = timelineComponents['eventsContent'].find('li['+ dataAttribute +']');
+			timelineComponents['eventsContentSelected'] = timelineComponents['eventsContent'].find('li['+ dataAttribute +'].selected');
 
 			timelineComponents['timelineWrapper'] = timelineComponents['eventsContent'].parent().find('.events-wrapper');
 			timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
@@ -1246,6 +1254,18 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				else if(type == "customDisplay") return dataCustomDisplay;
 			}
 		},
+		_eventContentListData: function () {
+			// Check if the data-horizontal-timeline attribute exists on the events-content li,
+			// If not then return the deprecated data-date.
+			if (this.$element.find('li').data('horizontal-timeline')) {
+				return "data-horizontal-timeline";
+			}
+			// data-date deprecated as of v2.0.5.alpha.3
+			// and will be removed in a later major version.
+			else {
+				return "data-date";
+			}
+		},
 
 		/* Refresh public method
 		*  - refreshes the timeline externally after initialisation.
@@ -1324,7 +1344,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// Get the new date from the HTML.
 			var	newDate = html.split("date")[1].split('"')[2],
 				// Select the specified event content
-				$eventContent = timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+				$eventContent = timelineComponents['eventsContentList'].filter($.proxy(function(index, element) {
 					var data = this._timelineData($(element), "date");
 					if (data == arrangementDate) return $(element);
 				}, this)),
@@ -1374,7 +1394,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					if (data == date) return $(element);
 				}, this)),
 				// Select the specified event content
-				$eventContent = timelineComponents['eventsContent'].find("li").filter($.proxy(function(index, element) {
+				$eventContent = timelineComponents['eventsContentList'].filter($.proxy(function(index, element) {
 					var data = this._timelineData($(element), "date");
 					if (data == date) return $(element);
 				}, this)),
@@ -1667,8 +1687,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		_updateVisibleContent: function (event, eventsContent) {
 			var eventDate = this._timelineData(event, "date");
 				visibleContent = eventsContent.find('.selected'),
+				dataAttribute = this._eventContentListData(),
 				// Function to find the new content...
-				newContent = eventsContent.find("li").filter($.proxy(function(index, element) {
+				newContent = eventsContent.find('li['+ dataAttribute +']').filter($.proxy(function(index, element) {
 					var data = this._timelineData($(element), "date");
 					if (data == eventDate) return $(element);
 				}, this)),
@@ -1733,7 +1754,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 			}
 
-			var animationEvent = whichAnimationEvent();
+			var animationEvent = whichAnimationEvent(),
+			    dataAttribute = this._eventContentListData();
 
 			// Add the enter class to the newContent.
 			newContent.addClass(classEntering);
@@ -1742,7 +1764,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				.addClass(classExiting)
 				.one(animationEvent, function(e){
 					// Remove all enter and exit classes from all the event content.
-					eventsContent.find('li').removeClass(allClasses);
+					eventsContent.find('li['+ dataAttribute +']').removeClass(allClasses);
 				})
 				// And then remove the selected class.
 				.removeClass('selected');
@@ -2041,7 +2063,11 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	$.fn[pluginName] = function (options) {
 		var args = arguments,
 			windowWidth = $(window).width(),
-			dateExists = $(this).find('.events-content').find('li').map(function() {
+		    	// data-date deprecated as of v2.0.5.alpha.3
+			// and will be removed in a later major version.
+			dataAttribute = ($(this).find('li').data('horizontal-timeline')) ? "data-horizontal-timeline": "data-date",
+		    
+			dateExists = $(this).find('.events-content').find('li['+ dataAttribute +']').map(function() {
 				if ($(this).data('horizontal-timeline')) {
 					var data = $(this).data('horizontal-timeline');
 
