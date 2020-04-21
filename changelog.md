@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+- ## 2.0.5.2 [[v2.0.5.2]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.2) - 21/04/2020
+     ### Fixed
+     - A bug that was caused when adding a list into the events content because the plugin was checking for **all** `<li>`s existing in the timeline elements when referencing the `.events-content li` that would extract information from it's data attribute, therefore the plugin wouldn't understand and throw an error when it found a li without a data attribute inside the content, causing timeline to crash and prevent it from displaying. Fixed by adding an attribute selector to check only li's with the data attribute.
+     
+     ### Added
+     - Added a simple function to determine which data attribute to check for, whether it being the `data-horizontal-timeline`, or the deprecated `data-date`, just until the deprecated attribute is removed.
+     
+     ### Changed
+     - The `if` statement when there are no event content, to stop the script from continuing by throwing an error, otherwise it would continue creating the timeline elements without events, which isn't necessary.
+     
 - ## 2.0.5.1 [[v2.0.5.1]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.1) - 09/04/2020
      ### Removed
      - An unnecessary development console log in the goTo method in the minified file (.min.js)

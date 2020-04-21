@@ -1,7 +1,7 @@
 # Horizontal Timeline 2.0
 #### by [yCodeTech](https://github.com/yCodeTech)
 #### Twitter [@yCodeTech](https://twitter.com/yCodeTech)
-#### Current Version: 2.0.5.1
+#### Current Version: 2.0.5.2
 #### Quick Links: <a href="#setup">Setup</a> | <a href="#options">Options</a> | <a href="#autoplay">Autoplay</a> | <a href="#known-issues">Known Issues</a> | <a href="#known-issues-that-wont-be-fixed">Known Issues That Won't Be Fixed</a> | <a href="#deprecated">Deprecated</a>
 
 Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a script originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/), to create a dynamic timeline on the horizontal axis.
