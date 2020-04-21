@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-- ## 2.0.5.1 [[v2.0.5.2]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.2) - 21/04/2020
+- ## 2.0.5.2 [[v2.0.5.2]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.2) - 21/04/2020
      ### Fixed
      - A bug that was caused when adding a list into the events content because the plugin was checking for **all** `<li>`s existing in the timeline elements when referencing the `.events-content li` that would extract information from it's data attribute, therefore the plugin wouldn't understand and throw an error when it found a li without a data attribute inside the content, causing timeline to crash and prevent it from displaying. Fixed by adding an attribute selector to check only li's with the data attribute.
      
