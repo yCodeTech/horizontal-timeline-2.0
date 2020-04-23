@@ -65,6 +65,8 @@ Unlike the original, 2.0 dynamically creates the timeline according to the amoun
    </div>
 </div>
 ```
+Note: Timeline must always have a minimum of one event, otherwise it will throw an error stopping the whole plugin and output a message in the DOM too, because it is pointless having an empty timeline.
+
 And then initialise the timeline with jQuery using the default options.
 
 ```html
