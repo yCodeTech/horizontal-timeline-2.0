@@ -3,7 +3,7 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5.2
+Version: 2.0.5.3
 
 Original Horizontal Timeline by CodyHouse
 
@@ -1055,10 +1055,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				percentTime,
 				current,
 				autoplayTimelineTotalWidth,
-				// Get the speed from the settings.
-				speed = Number(this.settings.autoplaySpeed),
-				// Get the button wrapper.
-				$pausePlay = this.$element.find('#pausePlay');
+				dataSpeed,
+				speed;
 
 			this._timelineComponents(timelineComponents);
 
@@ -1096,6 +1094,16 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			function interval() {
 				isPaused = this.$element.data('plugin_'+ this._name)['autoplay']['isPaused'];
 				this._timelineComponents(timelineComponents);
+				
+				// Speed
+
+				// Get the speed from the data attribute of the current events content.
+				dataSpeed = this._timelineData(timelineComponents['eventsContent'].find('.selected'),"speed");
+				// If the variable doesn't return an undefined value, then set the speed
+				// from the data attribute.
+				if (typeof dataSpeed !== 'undefined') speed = Number(dataSpeed);
+				// Otherwise, set the speed from the settings.
+				else speed = Number(this.settings.autoplaySpeed);
 
 				// If isPaused = false AND is in the viewport, start the autoplay cycle, otherwise pause the cycle.
 				if(isPaused === false && this._elementInViewport(this.element)){
@@ -1243,6 +1251,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 
 				if(type == "date") return data.date;
 				else if(type == "customDisplay") return data.customDisplay;
+				else if (type == "speed") return data.speed;
 			}
 			// data-date and data-custom-display deprecated as of v2.0.5.alpha.3
 			// and will be removed in a later major version.
