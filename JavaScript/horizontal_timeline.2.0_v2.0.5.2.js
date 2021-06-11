@@ -1056,9 +1056,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				current,
 				autoplayTimelineTotalWidth,
 				dataSpeed,
-				speed,
-				// Get the button wrapper.
-				$pausePlay = this.$element.find('#pausePlay');
+				speed;
 
 			this._timelineComponents(timelineComponents);
 
