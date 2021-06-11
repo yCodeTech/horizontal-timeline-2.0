@@ -1,7 +1,7 @@
 # Horizontal Timeline 2.0
 #### by [yCodeTech](https://github.com/yCodeTech)
 #### Twitter [@yCodeTech](https://twitter.com/yCodeTech)
-#### Current Version: 2.0.5.2
+#### Current Version: 2.0.5.3
 #### Quick Links: <a href="#setup">Setup</a> | <a href="#options">Options</a> | <a href="#autoplay">Autoplay</a> | <a href="#known-issues">Known Issues</a> | <a href="#known-issues-that-wont-be-fixed">Known Issues That Won't Be Fixed</a> | <a href="#deprecated">Deprecated</a>
 
 Horizontal Timeline 2.0, is a fully customisable jQuery adaptation of a script originally created by [CodyHouse](http://codyhouse.co/gem/horizontal-timeline/), to create a dynamic timeline on the horizontal axis.
@@ -12,7 +12,7 @@ Version 2.0 adds functionality that has been previously requested for the origin
    - Renamed prev/next buttons to scroll-left/scroll-right to reflect their functionality, added the real prev/next buttons to change the event content, added an option to disable the buttons altogether, and implemented new inactive button states.
    - Setup is now easier with minimal HTML, that allows the timeline to be created dynamically according to the total amount of event content, which has a natural support for ordering and reversing.
    - Event dates can now be displayed in various types: dateTime, date, time, dayMonth, monthYear, year, with completely customisable display text, and a new option for advanced reversing of the order and selection of the events.
-   - Added new autoplay feature with a progress bar, pause/play buttons, adjustable speed and on-hover pause functionality.
+   - Added new autoplay feature with a progress bar, pause/play buttons, adjustable speed and on-hover pause functionality, with an additional option to set different speeds on a per-event basis.
    - Added new go-to timeline link with customisable scroll functionality.
    - Added support for mouse-wheel scrolling, touch and swipe for touch devices, and keyboard arrow keys, with the option to disable the loading of the required plugin files.
    - Added new `refresh`, `destroy`, `addEvent`, `removeEvent`, and `goTo` methods with new attachable namespaced `initialised`, `eventAdded`, `eventRemoved`, `eventChanged`, `goToTimeline` DOM Events.
