@@ -3,7 +3,7 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5.3
+Version: 2.0.5.4
 
 Original Horizontal Timeline by CodyHouse
 
@@ -123,8 +123,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					"left": "exit-left",
 					"right": "exit-right"
 				}
-			}
+			},
 			/* End new object options */
+			contentContainerSelector: false // false, ".container" any selector string			
 		};
 
 	// The actual plugin constructor
@@ -1043,6 +1044,27 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						this._showNewContent(timelineComponents, timelineTotalWidth, 'next');
 				}
 			} // End useKeyboardKeys this.settings
+			
+			// Hide the events-content and append the content html to a separate specified selector.
+			if (this.settings.contentContainerSelector !== false) {
+				// Set the events-content to display none.
+				timelineComponents['eventsContent'].css("display", "none");
+
+				var contentContainerSelector = this.settings.contentContainerSelector,
+					newContentContainer = $(contentContainerSelector),
+					selectedContentHtml = timelineComponents['eventsContent'].find('li.selected').html();
+					
+					// Add the selected events-content html into the new container.
+					newContentContainer.html(selectedContentHtml);
+				
+				// Using the plugin's eventChanged DOM event...
+				$(this.element).on('eventChanged.'+this._name, function() {
+					// Get the newly selected events-content html and renew the new container's html.
+					selectedContentHtml = timelineComponents['eventsContent'].find('li.selected').html();
+					newContentContainer.html(selectedContentHtml);
+				});
+			} // End hide events-content
+			
 		}, // End _setup() function.
 
 		/* Autoplay function */
