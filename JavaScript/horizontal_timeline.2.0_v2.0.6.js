@@ -3,7 +3,7 @@
 Horizontal Timeline 2.0
 by Studocwho @ yCodeTech
 
-Version: 2.0.5.4
+Version: 2.0.6
 
 Original Horizontal Timeline by CodyHouse
 
@@ -12,7 +12,6 @@ Licensed under the MIT license
 Docs at http://horizontal-timeline.ycodetech.co.uk
 
 -------------------------------- */
-
 
 // the semi-colon before the function invocation is a safety
 // net against concatenated scripts and/or other plugins
@@ -35,21 +34,6 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	// Create the defaults once
 	var pluginName = 'horizontalTimeline',
 		defaults = {
-			// ! Deprecate these individual options in favour of the object options. //
-
-			desktopDateIntervals: 200,   //************\\
-			tabletDateIntervals: 150,   // Minimum: 120 \\
-			mobileDateIntervals: 120,  //****************\\
-			minimalFirstDateInterval: true,
-
-			// ! End Deprecated options //
-
-			/* New object options... */
-			// If the deprecated single options exist in the user options, then use them,
-			// otherwise default to the new object options.
-
-			// Can not use in conjunction with the single options...
-			// If both single and object options are set in the options, the object will take precedence.
 
 			dateIntervals: {
 				"desktop": 200,   //************\\
@@ -57,9 +41,6 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				"mobile": 120,  //****************\\
 				"minimal": true
 			},
-
-			/* End new object options */
-
 			dateDisplay: "dateTime", // dateTime, date, time, dayMonth, monthYear, year
 			dateOrder: "normal", // normal, reverse
 
@@ -75,35 +56,6 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			useNavBtns: true,
 			useScrollBtns: true,
 
-			// ! Deprecate these individual options in favour of the object options. //
-
-			iconBaseClass: "fas fa-3x", // Space separated class names
-			scrollLeft_iconClass: "fa-chevron-circle-left",
-			scrollRight_iconClass: "fa-chevron-circle-right",
-			prev_iconClass: "fa-arrow-circle-left",
-			next_iconClass: "fa-arrow-circle-right",
-			pause_iconClass: "fa-pause-circle",
-			play_iconClass: "fa-play-circle",
-
-			animation_baseClass: "animationSpeed", // Space separated class names
-			enter_animationClass: {
-				"left": "enter-left",
-				"right": "enter-right"
-			},
-			exit_animationClass: {
-				"left": "exit-left",
-				"right": "exit-right"
-			},
-
-			// ! End Deprecated options //
-
-			/* New object options... */
-			// If the deprecated single options exist in the user options, then use them,
-			// otherwise default to the new object options.
-
-			// Can not use in conjunction with the single options...
-			// If both single and object options are set in the options, the object will take precedence.
-
 			iconClass: {
 				"base": "fas fa-3x", // Space separated class names
 				"scrollLeft": "fa-chevron-circle-left",
@@ -114,7 +66,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				"play": "fa-play-circle"
 			},
 			animationClass: {
-				"base": "animationSpeed", // Space separated class names,
+				"base": "animationSpeed", // Space separated class names
 				"enter": {
 					"left": "enter-left",
 					"right": "enter-right"
@@ -124,8 +76,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					"right": "exit-right"
 				}
 			},
-			/* End new object options */
-			contentContainerSelector: false // false, ".container" any selector string			
+			contentContainerSelector: false // false, ".container" any selector string
 		};
 
 	// The actual plugin constructor
@@ -152,15 +103,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			// You already have access to the DOM element and
 			// the options via the instance, e.g. this.element
 			// and this.settings
-			var dataAttribute = this._eventContentListData(),
-			    contentList = this.$element.find('li['+ dataAttribute +']');
+			var contentList = this.$element.find('li["data-horizontal-timeline"]');
 			if(contentList.length == 0) {
 				var text = "There are no events at this point in time. Please add some content.";
 
 				this.$element.css('opacity', 1).append('<h3>'+ text +'</h3>');
 				throw new Error(text);
 			}
-			
+
 			if (this.settings.useFontAwesomeIcons == true) {
 				var url = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css";
 
@@ -245,7 +195,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					.find('a.selected'), timelineComponents['fillingLine'], timelineTotalWidth);
 				// The timeline has been initialised - show it
 				this.$element.addClass('loaded');
-				
+
 				/* Custom namespaced event: initialised with the data passed to the event as the instance and timelineSelector (jQuery object). */
 				this.$element.trigger({
 					type: "initialised."+this._name,
@@ -254,6 +204,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				});
 
 				this._setup(this, timelineComponents, timelineTotalWidth);
+
 			}, this), 300);
 
 		}, // End init function
@@ -267,22 +218,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				timelineComponents['timelineEvents'].first().addClass("first");
 			}
 			else {
-				// Check if the deprecated single options are defined in the user options, if they are use them,
-				// otherwise use the new object options.
-
-				// A variable to include in an if statement that queries if the single option is defined 
-				// AND the object option is also defined.
-				var bothDefined = (this._options.animation_baseClass != undefined && this._options.animationClass != undefined),
-
-					// If single option are undefined OR both single and object options are defined
-					// then default to the object options, otherwise use the deprecated single option.
-					animationObj = (this._options.animation_baseClass == undefined || bothDefined) ? this.settings.animationClass : this.settings,
-
-					// If animationObj equals the object options...
-					animationBase = (animationObj == this.settings.animationClass) ? animationObj.base : animationObj.animation_baseClass;
-
 				// Adds id to the first and last li of the event-content list respectively.
-				timelineComponents['eventsContentList'].addClass(animationBase)
+				timelineComponents['eventsContentList'].addClass(this.settings.animationClass.base)
 					.first().attr('id', 'first').end()
 					.last().attr('id', 'last');
 
@@ -301,51 +238,13 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				// Icons require Font Awesome CSS
 				// The CSS file has been added to the document if not already present.
 
-				// Check if the deprecated single options are defined in the user options, if they are use them,
-				// otherwise use the new object options.
-
-				// Set the single options into an array to check against.
-				optionArray = [this._options.iconBaseClass, 
-					this._options.scrollLeft_iconClass, 
-					this._options.scrollRight_iconClass, 
-					this._options.prev_iconClass, 
-					this._options.next_iconClass, 
-					this._options.pause_iconClass],
-
-				// A variable to include in an if statement that queries if the single options are undefined.
-				singleUndefined = (optionArray[0] == undefined 
-					&& optionArray[1] == undefined 
-					&& optionArray[2] == undefined 
-					&& optionArray[3] == undefined 
-					&& optionArray[4] == undefined 
-					&& optionArray[5] == undefined),
-
-				// A variable to include in an if statement that queries if the single option is defined 
-				// AND the object option is also defined.
-				bothDefined = (optionArray[0] != undefined && this._options.iconClass != undefined)
-					|| (optionArray[1] != undefined && this._options.iconClass != undefined) 
-					|| (optionArray[2] != undefined && this._options.iconClass != undefined)
-					|| (optionArray[3] != undefined && this._options.iconClass != undefined)
-					|| (optionArray[4] != undefined && this._options.iconClass != undefined)
-					|| (optionArray[5] != undefined && this._options.iconClass != undefined),
-
-				// If single option are undefined OR both single and object options are defined
-				// then default to the object options, otherwise use the deprecated single option.
-				iconClass = (singleUndefined || bothDefined) ? this.settings.iconClass : this.settings,
-
-				// If iconClass equals the object options...
-				
-				iconBase = (iconClass == this.settings.iconClass) ? iconClass.base : iconClass.iconBaseClass,
-
-				iconScrollLeft = (iconClass == this.settings.iconClass) ? iconClass.scrollLeft : iconClass.scrollLeft_iconClass,
-				
-				iconScrollRight = (iconClass == this.settings.iconClass) ? iconClass.scrollRight : iconClass.scrollRight_iconClass,
-				
-				iconPrev = (iconClass == this.settings.iconClass) ? iconClass.prev : iconClass.prev_iconClass,
-				
-				iconNext = (iconClass == this.settings.iconClass) ? iconClass.next : iconClass.next_iconClass,
-				
-				iconPause = (iconClass == this.settings.iconClass) ? iconClass.pause : iconClass.pause_iconClass,
+				iconClass = this.settings.iconClass,
+				iconBase = iconClass.base,
+				iconScrollLeft = iconClass.scrollLeft,
+				iconScrollRight = iconClass.scrollRight,
+				iconPrev = iconClass.prev,
+				iconNext = iconClass.next,
+				iconPause = iconClass.pause,
 
 				// Left Nav
 				$scrollLeftButton = '<a href="" class="'+ iconBase +' '+ iconScrollLeft +' scroll-left inactive"></a>',
@@ -419,16 +318,14 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 
 		// (instance, insertMethod (append, before, after [last 2 for addEvent method]), date to insert before/after [from addEvent method])
 		_createDate: function (self, insertMethod, arrangementDate) {
-			var dataAttribute = this._eventContentListData();
-
 			// If dateOrder is normal (starting from the left).
 			if (self.settings.dateOrder == "normal") {
 				// Find the event content.
-				var $element = self.$element.children('.events-content').find('li['+ dataAttribute +']');
+				var $element = self.$element.children('.events-content').find('li["data-horizontal-timeline"]');
 			}
 			// Else if dateOrder is reverse (starting from the right).
 			else if (self.settings.dateOrder == "reverse") {
-				var $element = $(self.$element.children('.events-content').find('li['+ dataAttribute +']').get().reverse());
+				var $element = $(self.$element.children('.events-content').find('li["data-horizontal-timeline"]').get().reverse());
 			}
 
 			/* dateTime = the date and time */
@@ -521,18 +418,9 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			}
 
 			var dateExists = $eventDateDisplay.children('a').map(function() {
-					if ($(this).data('horizontal-timeline')) {
-						var data = $(this).data('horizontal-timeline');
+					var data = $(this).data('horizontal-timeline');
 
-						return data.date;
-					}
-					// data-date deprecated as of v2.0.5.alpha.3
-					// and will be removed in a later major version.
-					else {
-						var dataDate = $(this).data('date');
-
-						return dataDate;
-					}
+					return data.date;
 				}).get();
 
 			if(jQuery.inArray(dataDate, dateExists) == -1) {
@@ -691,11 +579,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		}, // End eventDateDisplay() function
 
 		_timelineComponents: function (timelineComponents) {
-			var dataAttribute = this._eventContentListData();
 			// Cache timeline components
 			timelineComponents['eventsContent'] = this.$element.children('.events-content');
-			timelineComponents['eventsContentList'] = timelineComponents['eventsContent'].find('li['+ dataAttribute +']');
-			timelineComponents['eventsContentSelected'] = timelineComponents['eventsContent'].find('li['+ dataAttribute +'].selected');
+			timelineComponents['eventsContentList'] = timelineComponents['eventsContent'].find('li["data-horizontal-timeline"]');
+			timelineComponents['eventsContentSelected'] = timelineComponents['eventsContent'].find('li["data-horizontal-timeline"].selected');
 
 			timelineComponents['timelineWrapper'] = timelineComponents['eventsContent'].parent().find('.events-wrapper');
 			timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
@@ -1044,19 +931,19 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						this._showNewContent(timelineComponents, timelineTotalWidth, 'next');
 				}
 			} // End useKeyboardKeys this.settings
-			
+
 			// Hide the events-content and append the content html to a separate specified selector.
 			if (this.settings.contentContainerSelector !== false) {
 				// Set the events-content to display none.
 				timelineComponents['eventsContent'].css("display", "none");
-
+				
 				var contentContainerSelector = this.settings.contentContainerSelector,
 					newContentContainer = $(contentContainerSelector),
 					selectedContentHtml = timelineComponents['eventsContent'].find('li.selected').html();
-					
+
 					// Add the selected events-content html into the new container.
 					newContentContainer.html(selectedContentHtml);
-				
+
 				// Using the plugin's eventChanged DOM event...
 				$(this.element).on('eventChanged.'+this._name, function() {
 					// Get the newly selected events-content html and renew the new container's html.
@@ -1064,7 +951,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					newContentContainer.html(selectedContentHtml);
 				});
 			} // End hide events-content
-			
+
 		}, // End _setup() function.
 
 		/* Autoplay function */
@@ -1116,7 +1003,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			function interval() {
 				isPaused = this.$element.data('plugin_'+ this._name)['autoplay']['isPaused'];
 				this._timelineComponents(timelineComponents);
-				
+
 				// Speed
 
 				// Get the speed from the data attribute of the current events content.
@@ -1126,7 +1013,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				if (typeof dataSpeed !== 'undefined') speed = Number(dataSpeed);
 				// Otherwise, set the speed from the settings.
 				else speed = Number(this.settings.autoplaySpeed);
-
+				
 				// If isPaused = false AND is in the viewport, start the autoplay cycle, otherwise pause the cycle.
 				if(isPaused === false && this._elementInViewport(this.element)){
 					// Set percentTime using the speed from the settings.
@@ -1200,14 +1087,8 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 					// Find the pause play button wrapper.
 					$pausePlay = this.$element.find('#pausePlay'),
 
-					// Check if the new object options are defined in the user options, if they are use them,
-					// otherwise use the deprecated single options.
-					iconClass = (this._options.iconClass != undefined) ? this.settings.iconClass : this.settings,
-					iconBase = (this._options.iconClass != undefined) ? iconClass.base : iconClass.iconBaseClass,
-					iconPlay = (this._options.iconClass != undefined) ? iconClass.play : iconClass.play_iconClass,
-
 					// Define the play button html
-					$playButton = '<a href="" class="'+ iconBase +' '+ iconPlay +' play"></a>';
+					$playButton = '<a href="" class="'+ this.settings.iconClass.base +' '+ this.settings.iconClass.play +' play"></a>';
 
 				// If the event type is click and pausebtnClicked is true (so the pause button was clicked)...
 				if (event.type == "click" && pausebtnClicked == true) {
@@ -1268,34 +1149,11 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 
 		/* Get data from the data-attribute object */
 		_timelineData: function (element, type) {
-			if (element.data('horizontal-timeline')) {
-				var data = element.data('horizontal-timeline');
+			var data = element.data('horizontal-timeline');
 
-				if(type == "date") return data.date;
-				else if(type == "customDisplay") return data.customDisplay;
-				else if (type == "speed") return data.speed;
-			}
-			// data-date and data-custom-display deprecated as of v2.0.5.alpha.3
-			// and will be removed in a later major version.
-			else {
-				var dataDate = element.data('date'),
-					dataCustomDisplay = element.data('custom-display');
-
-				if(type == "date") return dataDate;
-				else if(type == "customDisplay") return dataCustomDisplay;
-			}
-		},
-		_eventContentListData: function () {
-			// Check if the data-horizontal-timeline attribute exists on the events-content li,
-			// If not then return the deprecated data-date.
-			if (this.$element.find('li').data('horizontal-timeline')) {
-				return "data-horizontal-timeline";
-			}
-			// data-date deprecated as of v2.0.5.alpha.3
-			// and will be removed in a later major version.
-			else {
-				return "data-date";
-			}
+			if(type == "date") return data.date;
+			else if(type == "customDisplay") return data.customDisplay;
+			else if (type == "speed") return data.speed;
 		},
 
 		/* Refresh public method
@@ -1318,7 +1176,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				.find('.last').removeClass('last').end();
 
 			// Adds classes and IDs.
-			this._addIdsAndClasses(timelineComponents);	 // changed
+			this._addIdsAndClasses(timelineComponents);
 
 			this._setDatePosition(timelineComponents);
 			timelineTotalWidth = this._setTimelineWidth(timelineComponents);
@@ -1676,9 +1534,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			this._setDateIntervals(timelineComponents);
 
 			var checkMQ = this._checkMQ(),
-				// Check if the new object options are defined in the user options, if they are use them,
-				// otherwise use the deprecated single options.
-				minimal = (this._options.dateIntervals != undefined) ? this.settings.dateIntervals.minimal : this.settings.minimalFirstDateInterval;
+				minimal = this.settings.dateIntervals.minimal;
 
 			if (minimal == true || checkMQ == 'mobile') {
 				// Set the 1st date to 0px on the timeline but with a padding left of 10px.
@@ -1718,37 +1574,22 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 		_updateVisibleContent: function (event, eventsContent) {
 			var eventDate = this._timelineData(event, "date");
 				visibleContent = eventsContent.find('.selected'),
-				dataAttribute = this._eventContentListData(),
 				// Function to find the new content...
-				newContent = eventsContent.find('li['+ dataAttribute +']').filter($.proxy(function(index, element) {
+				newContent = eventsContent.find('li["data-horizontal-timeline"]').filter($.proxy(function(index, element) {
 					var data = this._timelineData($(element), "date");
 					if (data == eventDate) return $(element);
 				}, this)),
 
 				newContentHeight = newContent.outerHeight(),
 
-				// Check if the deprecated single options are defined in the user options, if they are use them,
-				// otherwise use the new object options.
+				
 
-				// Set the single options into an array to check against.
-				optionArray = [this._options.enter_animationClass, this._options.exit_animationClass],
-
-				// A variable to include in an if statement that queries if the single options are undefined.
-				singleUndefined = (optionArray[0] == undefined && optionArray[1] == undefined),
-
-				// A variable to include in an if statement that queries if the single option is defined 
-				// AND the object option is also defined.
-				bothDefined = (optionArray[0] != undefined && this._options.animationClass != undefined)
-					|| (optionArray[1] != undefined && this._options.animationClass != undefined),
-
-				// If single option are undefined OR both single and object options are defined
-				// then default to the object options, otherwise use the deprecated single option.
-				animationObj = (singleUndefined || bothDefined) ? this.settings.animationClass : this.settings,
+				animationObj = this.settings.animationClass,
 
 				// If animationObj equals the object options...
 
-				enterObj = (animationObj == this.settings.animationClass) ? animationObj.enter : animationObj.enter_animationClass,
-				exitObj = (animationObj == this.settings.animationClass) ? animationObj.exit : animationObj.exit_animationClass,
+				enterObj = animationObj.enter,
+				exitObj = animationObj.exit,
 
 				allClasses = exitObj.right + ' ' + exitObj.left + ' ' + enterObj.left + ' ' + enterObj.right;
 
@@ -1785,9 +1626,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				}
 			}
 
-			var animationEvent = whichAnimationEvent(),
-			    dataAttribute = this._eventContentListData();
-
+			var animationEvent = whichAnimationEvent();
 			// Add the enter class to the newContent.
 			newContent.addClass(classEntering);
 			// Add the exit class to the visibleContent and on animation end...
@@ -1795,7 +1634,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 				.addClass(classExiting)
 				.one(animationEvent, function(e){
 					// Remove all enter and exit classes from all the event content.
-					eventsContent.find('li['+ dataAttribute +']').removeClass(allClasses);
+					eventsContent.find('li["data-horizontal-timeline"]').removeClass(allClasses);
 				})
 				// And then remove the selected class.
 				.removeClass('selected');
@@ -1875,32 +1714,11 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 			var checkMQ = this._checkMQ(),
 				// Set a minimum value for the intervals.
 				minimumInterval = 120,
-
-				// Check if the deprecated single options are defined in the user options, if they are use them,
-				// otherwise use the new object options.
-
-				// Set the single options into an array to check against.
-				optionArray = [this._options.desktopDateIntervals, this._options.tabletDateIntervals, this._options.mobileDateIntervals],
-
-				// A variable to include in an if statement that queries if the single options are undefined.
-				singleUndefined = (optionArray[0] == undefined && optionArray[1] == undefined && optionArray[2] == undefined),
-
-				// A variable to include in an if statement that queries if the single option is defined 
-				// AND the object option is also defined.
-				bothDefined = (optionArray[0] != undefined && this._options.dateIntervals != undefined) 
-					|| (optionArray[1] != undefined && this._options.dateIntervals != undefined) 
-					|| (optionArray[2] != undefined && this._options.dateIntervals != undefined),
-
-				// If single options are undefined OR both single and object options are defined
-				// then default to the object options, otherwise use the deprecated single options.
-				date_intervals = (singleUndefined || bothDefined) ? this.settings.dateIntervals : this.settings,
-
-				// If date_intervals equals the object options...
-				desktop = (date_intervals == this.settings.dateIntervals) ? date_intervals.desktop : date_intervals.desktopDateIntervals,
-
-				tablet = (date_intervals == this.settings.dateIntervals) ? date_intervals.tablet : date_intervals.tabletDateIntervals,
-
-				mobile = (date_intervals == this.settings.dateIntervals) ? date_intervals.mobile : date_intervals.mobileDateIntervals;
+				
+				date_intervals = this.settings.dateIntervals,
+				desktop = date_intervals.desktop,
+				tablet = date_intervals.tablet,
+				mobile = date_intervals.mobile;
 				
 			// If desktop is detected, set dateIntervals to desktop
 			if (checkMQ == 'desktop') dateIntervals = desktop;
@@ -2094,23 +1912,10 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 	$.fn[pluginName] = function (options) {
 		var args = arguments,
 			windowWidth = $(window).width(),
-		    	// data-date deprecated as of v2.0.5.alpha.3
-			// and will be removed in a later major version.
-			dataAttribute = ($(this).find('li').data('horizontal-timeline')) ? "data-horizontal-timeline": "data-date",
-		    
-			dateExists = $(this).find('.events-content').find('li['+ dataAttribute +']').map(function() {
-				if ($(this).data('horizontal-timeline')) {
-					var data = $(this).data('horizontal-timeline');
+			dateExists = $(this).find('.events-content').find('li["data-horizontal-timeline"]').map(function() {
+				var data = $(this).data('horizontal-timeline');
 
-					return data.date;
-				}
-				// data-date deprecated as of v2.0.5.alpha.3
-				// and will be removed in a later major version.
-				else {
-					var dataDate = $(this).data('date');
-
-					return dataDate;
-				}
+				return data.date;
 			}).get();
 
 		// Is the first parameter an object (options), or was omitted,
@@ -2132,7 +1937,7 @@ Docs at http://horizontal-timeline.ycodetech.co.uk
 						'existingDates': dateExists,
 						'Timeline': new Timeline(this, options)
 					});
-					if (options !== undefined && options.autoplay == true) { // changed
+					if (options !== undefined && options.autoplay == true) {
 						autoplayObj = {
 							"isPaused": false,
 							"mouseEvent": false
