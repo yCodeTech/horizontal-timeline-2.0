@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- ## 2.0.5.4 [[v2.0.5.4]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.4) - 05/10/2021
+     ### Added
+     - A new `contentContainerSelector` option, as requested, to specify a container element externally from the plugin in order to append the events-content HTML and hide the plugin's default events-content.
+
 - ## 2.0.5.3 [[v2.0.5.3]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.3) - 11/06/2021
      ### Added
      - A new `speed` option to the events content `data-horizontal-timeline` attribute for Autoplay, to enable a different speed to a specific event, as requested.
