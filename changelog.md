@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+- ## 2.0.6 [v2.0.6] - Upcoming
+     ### Removed
+     - All deprecated options and related code.
+
 - ## 2.0.5.4 [[v2.0.5.4]](https://github.com/yCodeTech/horizontal-timeline-2.0/tree/v2.0.5.4) - 05/10/2021
      ### Added
      - A new `contentContainerSelector` option, as requested, to specify a container element externally from the plugin in order to append the events-content HTML and hide the plugin's default events-content.
