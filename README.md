@@ -164,7 +164,8 @@ $('#example').horizontalTimeline({
 	  "left": "exit-left",
 	  "right": "exit-right"
        }
-   }
+   },
+   contentContainerSelector: false // false, ".container" any selector string
    
    /* End new object options */
 });
